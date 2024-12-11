@@ -4,6 +4,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+type Response struct {
+	Status  int         `json:"status"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
 func Success(c *fiber.Ctx, data interface{}, message string) error {
 	response := Response{
 		Status:  fiber.StatusOK,
