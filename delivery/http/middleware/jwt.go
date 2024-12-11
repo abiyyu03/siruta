@@ -2,56 +2,82 @@ package middleware
 
 import (
 	"crypto/rsa"
-	"fmt"
-	"net/http"
-	"strings"
+	"log"
+	"os"
+	"reflect"
 
+	"github.com/abiyyu03/siruta/entity"
+	"github.com/abiyyu03/siruta/repository"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
+	jwtware "github.com/gofiber/jwt/v3"
+	"github.com/golang-jwt/jwt/v4"
 )
 
-// func ValidateJWT(ctx *fiber.Ctx) error {
-// 	publicKey := usecase.GoDotEnv("PUBLIC_KEY")
-// 	token, err := getToken(publicKey)
+// var privateKey *rsa.PrivateKey
 
-// 	if err != nil {
-// 		return ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{
-// 			"error": err,
-// 		})
-// 	}
-
-// 	_, ok = token.Claims(jwt.)
-// 	if
-// }
-
-func ValidateToken(publicKey *rsa.PublicKey) fiber.Handler { //publicKey *rsa.PublicKey
-	return func(ctx *fiber.Ctx) error {
-		tokenString, _ := getTokenFromHeader(ctx)
-		if tokenString == "" {
-			return ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{
-				"error": "Token not found",
-			})
-		}
-
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-				return nil, fmt.Errorf("invalid token")
-			}
-			return publicKey, nil
-		})
-
-		if err != nil || !token.Valid {
-			return ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{
-				"error": err.Error(),
-			})
-		}
-
-		return ctx.Next()
+func loadPublicKey() (*rsa.PublicKey, error) {
+	// publicKeyPath := os.Getenv("JWT_PUBLIC_KEY_PATH")
+	publicKeyData, err := os.ReadFile("./keys/public.pem")
+	if err != nil {
+		return nil, err
 	}
+
+	publicKey, err := jwt.ParseRSAPublicKeyFromPEM(publicKeyData)
+	if err != nil {
+		return nil, err
+	}
+
+	return publicKey, nil
 }
 
-func getTokenFromHeader(ctx *fiber.Ctx) (string, error) {
-	bearerToken := ctx.Get("Authorization")
+// JWTMiddleware returns the configured Fiber JWT middleware
+func JWTMiddleware(allowedRoles []int) fiber.Handler {
+	publicKey, err := loadPublicKey()
+	if err != nil {
+		log.Fatalf("Failed to load public key: %v", err)
+	}
+	log.Println("JWT Middleware initialized with public key")
+	return jwtware.New(jwtware.Config{
+		SigningMethod: "RS256",
+		SigningKey:    publicKey,
+		ContextKey:    "user",
+		ErrorHandler: func(c *fiber.Ctx, err error) error {
+			return entity.Error(c, fiber.StatusUnauthorized, err.Error())
+		},
+		SuccessHandler: func(ctx *fiber.Ctx) error {
+			// Extract user claims from the token
+			user := ctx.Locals("user").(*jwt.Token)
+			claims := user.Claims.(jwt.MapClaims)
 
-	return strings.Replace(bearerToken, "Bearer ", "", -1), nil
+			if claims["role_id"] != 0 {
+				log.Printf("signed role id is : %v", reflect.TypeOf((claims["role_id"])))
+			}
+
+			// Extract the role_id from the JWT claims
+			roleID := claims["role_id"].(float64)
+
+			allowedRoleId, err := new(repository.RolesRepository).FetchById(roleID)
+
+			//konsepnya : role id diambil dari param middleware -> role id tersebut sebagai array -> di cocokan dengan allRoles (db)
+
+			if err != nil {
+				return err
+			}
+
+			if !HasRequiredRole(allowedRoleId.ID, allowedRoles) {
+				return entity.Error(ctx, fiber.StatusForbidden, "Insufficient role")
+			}
+
+			return ctx.Next()
+		},
+	})
+}
+
+func HasRequiredRole(userRoles int, allowedRoles []int) bool {
+	for _, allowed := range allowedRoles {
+		if userRoles == allowed {
+			return true
+		}
+	}
+	return false
 }
