@@ -1,0 +1,31 @@
+package helper
+
+import (
+	"math/rand"
+	"regexp"
+	"strings"
+	"time"
+)
+
+const letterBytes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+// RandomString generates a random string of a specified length.
+func RandomString(length int) string {
+	b := make([]byte, length)
+	seed := rand.NewSource(time.Now().UnixNano()) // Seed for randomness
+	r := rand.New(seed)
+
+	for i := range b {
+		b[i] = letterBytes[r.Intn(len(letterBytes))]
+	}
+	return string(b)
+}
+
+func ConvertPascalCaseToSnakeCase(input string) string {
+	// Use regex to insert underscores before capital letters
+	regex := regexp.MustCompile("([a-z0-9])([A-Z])")
+	snake := regex.ReplaceAllString(input, "${1}_${2}")
+
+	// Convert to lowercase
+	return strings.ToLower(snake)
+}
