@@ -48,8 +48,7 @@ func (m *MemberUsecase) Store(ctx *fiber.Ctx, memberData *model.Member) error {
 		ReligionId:    memberData.ReligionId,
 		UserId:        memberData.UserId,
 		Occupation:    memberData.Occupation,
-		FirstName:     memberData.FirstName,
-		LastName:      memberData.LastName,
+		Fullname:      memberData.Fullname,
 		NikNumber:     memberData.NikNumber,
 		KKNumber:      memberData.KKNumber,
 		BornPlace:     memberData.BornPlace,
@@ -73,8 +72,7 @@ func (m *MemberUsecase) Update(ctx *fiber.Ctx, id string, memberData *model.Memb
 		ReligionId:    memberData.ReligionId,
 		UserId:        memberData.UserId,
 		Occupation:    memberData.Occupation,
-		FirstName:     memberData.FirstName,
-		LastName:      memberData.LastName,
+		Fullname:      memberData.Fullname,
 		NikNumber:     memberData.NikNumber,
 		KKNumber:      memberData.KKNumber,
 		BornPlace:     memberData.BornPlace,
@@ -94,5 +92,5 @@ func (m *MemberUsecase) Update(ctx *fiber.Ctx, id string, memberData *model.Memb
 		return entity.Error(ctx, fiber.StatusNotFound, fiber.ErrNotFound.Message)
 	}
 
-	return entity.Success(ctx, fiber.StatusOK, "update Data successfully")
+	return entity.Success(ctx, fiber.StatusOK, "Data updated successfully")
 }
