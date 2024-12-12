@@ -8,19 +8,25 @@ import (
 
 type Member struct {
 	*gorm.Model
-	ID            int       `json:"id" gorm:"primaryKey"`
-	FirstName     string    `json:"first_name" validate:"required, max=32"`
-	LastName      string    `json:"last_name" validate:"required, max=32"`
-	NikNumber     string    `json:"nik_number"`
-	KKNumber      string    `json:"kk_number"`
-	BornPlace     string    `json:"born_place"`
-	Birthdate     time.Time `json:"birthdate"`
-	Gender        string    `json:"gender"`
-	HomeAddress   string    `json:"home_address"`
-	MartialStatus string    `json:"martial_status"`
-	ReligionId    uint      `json:"religion_id"`
-	Religion      Religion  `gorm:"foreignKey:ReligionId"`
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
-	DeletedAt     gorm.DeletedAt `gorm:"index"`
+	ID              string            `json:"id" gorm:"column:id;column:id;primaryKey;not null"`
+	Fullname        string            `json:"first_name" gorm:"column:first_name;not null" validate:"required,max=40"`
+	NikNumber       *string           `json:"nik_number" gorm:"column:nik_number;uniqueIndex"`
+	KKNumber        *string           `json:"kk_number" gorm:"column:kk_number"`
+	BornPlace       *string           `json:"born_place" gorm:"column:born_place"`
+	BirthDate       *string           `json:"birth_date" gorm:"column:birth_date"`
+	Gender          *string           `json:"gender" gorm:"column:gender"`
+	HomeAddress     *string           `json:"home_address" gorm:"column:home_address"`
+	MaritalStatus   *string           `json:"marital_status" gorm:"column:marital_status"`
+	ReligionId      uint              `json:"religion_id" gorm:"column:religion_id;not null"`
+	Religion        Religion          `json:"-" gorm:"foreignKey:ReligionId;not null"`
+	MemberStatusId  uint              `json:"member_status_id" gorm:"column:member_status_id;not null"`
+	MemberStatus    MemberStatus      `json:"-" gorm:"foreignKey:MemberStatusId;not null"`
+	UserId          *string           `json:"user_id" gorm:"column:user_id"`
+	User            User              `json:"-" gorm:"foreignKey:UserId;not null"`
+	Occupation      *string           `json:"occupation" gorm:"column:occupation"`
+	Status          string            `json:"status" gorm:"column:status;default:resident"` //resident or guest
+	OutcomingLetter []OutcomingLetter `gorm:"foreignKey:MemberId"`
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	DeletedAt       gorm.DeletedAt `gorm:"index"`
 }

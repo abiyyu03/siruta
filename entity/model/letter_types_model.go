@@ -6,11 +6,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type Role struct {
+type LetterType struct {
 	*gorm.Model
 	ID        int    `json:"id" gorm:"column:id;primaryKey;autoIncrement"`
-	Name      string `json:"name" gorm:"column:name;not null"`
-	Users     []User `gorm:"foreignKey:RoleID"`
+	TypeName  string `json:"type_name" validate:"required" gorm:"not null"`
+	Code      string `json:"code" validate:"required;max=6" gorm:"not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`

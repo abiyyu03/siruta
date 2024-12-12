@@ -7,14 +7,14 @@ import (
 )
 
 type User struct {
-	ID        string `json:"id" gorm:"primaryKey"`
-	FirstName string `json:"first_name" validate:"required, max=32"`
-	LastName  string `json:"last_name" validate:"required, max=32"`
-	RoleID    uint   `json:"role_id"`           // Karena one-to-many, gunakan uint sebagai foreign key
-	Role      Role   `gorm:"foreignKey:RoleID"` // Menghubungkan dengan model Role
-	Email     string `json:"email" gorm:"uniqueIndex" validate:"required"`
-	Username  string `json:"username" gorm:"uniqueIndex" validate:"required"`
-	Password  string `json:"-" validate:"required, min=8"` // Jangan tampilkan password dalam JSON
+	*gorm.Model
+	ID       string `json:"id" gorm:"column:id;column:id;primaryKey;not null"`
+	RoleID   uint   `json:"role_id" gorm:"column:role_id;not null"`
+	Role     Role   `json:"-" gorm:"foreignKey:RoleID;not null"`
+	Email    string `json:"email" gorm:"column:email;uniqueIndex;not null" validate:"required"`
+	Username string `json:"username" gorm:"column:username;uniqueIndex;not null" validate:"required"`
+	Password string `json:"password,omitempty" gorm:"column:password;not null" validate:"required,min=8"`
+	// Member    Member `json:"members"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
