@@ -3,7 +3,6 @@ package repository
 import (
 	"github.com/abiyyu03/siruta/config"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/repository/register"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -50,26 +49,4 @@ func (u *UserRepository) RegisterUser(user *model.User, roleId uint) (*model.Use
 	config.DB.Create(&createdUser)
 
 	return createdUser, nil
-}
-
-func (u *UserRepository) RegisterUserWithTokenVerification(user *model.User, roleId uint, token string) (*model.User, string, error) {
-	regToken := &register.RegTokenRepository{}
-	isTokenValid, err := regToken.Validate(token)
-
-	if err != nil {
-		return nil, "invalid", err
-	}
-
-	if !isTokenValid {
-		return nil, "invalid", nil
-	}
-
-	registerUser, err := u.RegisterUser(user, roleId)
-
-	if err != nil {
-		return nil, "invalid", err
-	}
-
-	return registerUser, "valid", nil
-
 }
