@@ -6,15 +6,14 @@ import (
 
 	"github.com/abiyyu03/siruta/config"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/entity/request"
 	"gorm.io/gorm"
 )
 
 type RTProfileRegistrationRepository struct{}
 
-func (r *RTProfileRegistrationRepository) Register(rtProfile *request.RTProfileRegisterRequest) (*request.RTProfileRegisterRequest, error) {
+// var emailNotificationRepository = new(email.EmailUserRegistrationRepository)
 
-	// err := config.DB.Transaction(func(tx *gorm.DB) error {
+func (r *RTProfileRegistrationRepository) Register(rtProfile *model.RTProfile, referalCode string) (*model.RTProfile, error) {
 	tx := config.DB.Begin()
 
 	defer func() {
@@ -23,66 +22,63 @@ func (r *RTProfileRegistrationRepository) Register(rtProfile *request.RTProfileR
 		}
 	}()
 
-	isVerified, rwProfileId, err := r.GetAndVerifyRWReferalCode(rtProfile.ReferalCode)
-
-	if isVerified {
-		return nil, err
-	}
-
-	r.CreateRTProfile(tx, rtProfile, rwProfileId)
+	isVerified, rwProfileId, err := r.getAndVerifyRWReferalCode(referalCode)
 
 	if err != nil {
 		tx.Rollback()
 		return nil, err
 	}
-	// if err != nil {
-	// 	tx.Rollback()
-	// 	return nil, err
-	// }
+
+	if !isVerified {
+		return nil, err
+	}
+
+	_, err = r.createRTProfile(tx, rtProfile, rwProfileId)
+
+	if err != nil {
+		log.Printf("failed : %v", err)
+		tx.Rollback()
+		return nil, err
+	}
+
 	tx.Commit()
 
 	return rtProfile, nil
 }
 
-func (r *RTProfileRegistrationRepository) CreateRTProfile(tx *gorm.DB, rtProfile *request.RTProfileRegisterRequest, RWProfileId string) (*model.RTProfile, error) {
-	newRTProfile := model.RTProfile{
-		RTNumber:    rtProfile.RTNumber,
-		Latitude:    rtProfile.Latitude,
-		Longitude:   rtProfile.Longitude,
-		RTEmail:     rtProfile.RTEmail,
-		MobilePhone: rtProfile.MobilePhone,
-		RWProfileId: RWProfileId,
-		// RTLogo:      rtProfile.RTLogo,
-		// Description: rtProfile.Description,
-	}
+func (r *RTProfileRegistrationRepository) createRTProfile(tx *gorm.DB, rtProfile *model.RTProfile, rwProfileId string) (*model.RTProfile, error) {
+	rtProfile.RWProfileId = rwProfileId
 
-	if err := tx.Create(&newRTProfile).Error; err != nil {
+	if err := tx.Debug().Create(&rtProfile).Error; err != nil {
 		log.Printf("failed to create RTProfile: %v", err)
 		return nil, err
 	}
 
-	return &newRTProfile, nil
+	return rtProfile, nil
 }
 
-func (r *RTProfileRegistrationRepository) GetAndVerifyRWReferalCode(inputedReferalCode string) (bool, string, error) {
+func (r *RTProfileRegistrationRepository) getAndVerifyRWReferalCode(inputedReferalCode string) (bool, string, error) {
 	var referalCode *model.ReferalCode
-	// var rtProfile *model.RTProfile
 
-	if err := config.DB.Where("code = ? OR expired_at > ?", inputedReferalCode, time.Now()).First(&referalCode).Error; err != nil {
+	if err := config.DB.Where("code = ? AND expired_at > ?", inputedReferalCode, time.Now()).First(&referalCode).Error; err != nil {
 		log.Printf("error : %v", err)
 		return false, "", err
 	}
 
-	if &referalCode == nil {
+	if referalCode == nil {
 		return false, "", nil
 	}
 
 	return true, referalCode.RWProfileId, nil
 }
 
-func (r *RTProfileRegistrationRepository) CheckRTNumberAvailability(rtProfile *model.RTProfile, rtNumber string) (bool, error) {
-	if err := config.DB.Where("rt_number = ?", rtNumber).First(&rtProfile).Error; err != nil {
+func (r *RTProfileRegistrationRepository) CheckRtNumberAvailability(rtProfile *model.RTProfile, RtNumber string) (bool, error) {
+	if err := config.DB.Where("rt_number = ?", RtNumber).First(&rtProfile).Error; err != nil {
 		return false, err
+	}
+
+	if rtProfile == nil {
+		return false, nil
 	}
 
 	return true, nil
@@ -91,10 +87,9 @@ func (r *RTProfileRegistrationRepository) CheckRTNumberAvailability(rtProfile *m
 func (r *RTProfileRegistrationRepository) ApproveRegistrant(rtProfileId string) (*model.RTProfile, error) {
 	var rtProfile *model.RTProfile
 
-	if err := config.DB.First(&rtProfile, rtProfileId).Error; err != nil {
+	if err := config.DB.Model(&rtProfile).Where("id = ?", rtProfileId).Update("is_authorized", true).Error; err != nil {
 		return nil, err
 	}
 
 	return rtProfile, nil
-
 }
