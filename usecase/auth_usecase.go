@@ -14,7 +14,7 @@ import (
 
 type AuthUsecase struct{}
 
-var userRepository = new(repository.UserRepository)
+var authRepository = new(repository.AuthRepository)
 
 var privateKey *rsa.PrivateKey
 
@@ -32,9 +32,9 @@ func init() {
 }
 
 func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, username string, password string) (string, error) {
-	user, err := userRepository.FetchLogin(username, password)
+	user, err := authRepository.FetchLogin(username, password)
 	if err != nil {
-		return "", entity.Error(ctx, fiber.StatusForbidden, "User not found")
+		return "", entity.Error(ctx, fiber.StatusForbidden, "Username or password invalid")
 	}
 
 	token := jwt.New(jwt.SigningMethodRS256)
