@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/usecase"
+	"github.com/abiyyu03/siruta/helper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -12,12 +12,12 @@ import (
 var DB *gorm.DB
 
 func InitDB() error {
-	username := usecase.GoDotEnv("DB_USERNAME")
-	password := usecase.GoDotEnv("DB_PASSWORD")
-	name := usecase.GoDotEnv("DB_NAME")
-	port := usecase.GoDotEnv("DB_PORT")
-	host := usecase.GoDotEnv("DB_HOST")
-	timezone := usecase.GoDotEnv("DB_TIMEZONE")
+	username := helper.GoDotEnv("DB_USERNAME")
+	password := helper.GoDotEnv("DB_PASSWORD")
+	name := helper.GoDotEnv("DB_NAME")
+	port := helper.GoDotEnv("DB_PORT")
+	host := helper.GoDotEnv("DB_HOST")
+	timezone := helper.GoDotEnv("DB_TIMEZONE")
 
 	var err error
 
@@ -29,8 +29,10 @@ func InitDB() error {
 		port,
 		timezone,
 	)
+
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
-		PrepareStmt: true,
+		PrepareStmt:            true,
+		SkipDefaultTransaction: true,
 	})
 
 	if err != nil {
@@ -40,6 +42,19 @@ func InitDB() error {
 	DB.AutoMigrate(
 		&model.User{},
 		&model.Role{},
+		&model.Member{},
+		&model.Religion{},
+		&model.RWProfile{},
+		// &model.RWLeader{},
+		&model.Village{},
+		&model.ReferalCode{},
+		&model.Religion{},
+		// &model.RTLeader{},
+		&model.RTProfile{},
+		&model.IncomingLetter{},
+		&model.OutcomingLetter{},
+		&model.RegistrationToken{},
+		&model.LetterType{},
 	)
 
 	return nil
