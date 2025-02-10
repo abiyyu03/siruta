@@ -8,9 +8,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserRepository struct{}
+type AuthRepository struct{}
 
-func (u *UserRepository) FetchLogin(username, password string) (*model.User, error) {
+func (u *AuthRepository) FetchLogin(username, password string) (*model.User, error) {
 	var user model.User
 
 	var query = config.DB.Where("username = ?", username).First(&user)
@@ -28,7 +28,7 @@ func (u *UserRepository) FetchLogin(username, password string) (*model.User, err
 
 }
 
-func (u *UserRepository) RegisterUser(user *model.User, roleId uint) (*model.User, error) {
+func (u *AuthRepository) RegisterUser(user *model.User, roleId uint) (*model.User, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword(
 		[]byte(user.Password),
 		14,
@@ -52,7 +52,7 @@ func (u *UserRepository) RegisterUser(user *model.User, roleId uint) (*model.Use
 	return createdUser, nil
 }
 
-func (u *UserRepository) RegisterUserWithTokenVerification(user *model.User, roleId uint, token string) (*model.User, string, error) {
+func (u *AuthRepository) RegisterUserWithTokenVerification(user *model.User, roleId uint, token string) (*model.User, string, error) {
 	regToken := &register.RegTokenRepository{}
 	isTokenValid, err := regToken.Validate(token)
 
