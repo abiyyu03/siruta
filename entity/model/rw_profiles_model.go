@@ -19,7 +19,7 @@ type RWProfile struct {
 	RwEmail      string        `json:"rw_email" gorm:"column:rw_email;uniqueIndex;not null" validate:"required,email,unique"`
 	MobilePhone  string        `json:"mobile_phone" gorm:"column:mobile_phone;uniqueIndex;not null" validate:"required,unique"`
 	RegencyLogo  *string       `json:"regency_logo" gorm:"column:regency_logo"`
-	Description  *string       `json:"description" gorm:"column:description;type:text"`
+	FullAddress  string        `json:"full_address" gorm:"column:full_address;type:text"`
 	ReferalCodes []ReferalCode `json:"referal_codes"`
 	RTProfiles   []RTProfile   `json:"rt_profiles"`
 	CreatedAt    time.Time

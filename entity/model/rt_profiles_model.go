@@ -16,7 +16,7 @@ type RTProfile struct {
 	IsAuthorized   bool             `json:"is_authorized" gorm:"column:is_authorized;default:false;not null"`
 	RTEmail        string           `json:"rt_email" gorm:"column:rt_email;uniqueIndex;not null"`
 	MobilePhone    string           `json:"mobile_phone" gorm:"column:mobile_phone;uniqueIndex;not null"`
-	Description    *string          `json:"description" gorm:"column:description;type:text"`
+	FullAddress    string           `json:"full_address" gorm:"column:full_address;type:text"`
 	RWProfileId    string           `json:"rw_profile_id" gorm:"column:rw_profile_id;not null"`
 	RWProfile      RWProfile        `json:"-" gorm:"foreignKey:RWProfileId;not null"`
 	IncomingLetter []IncomingLetter `gorm:"foreignKey:RTProfileId"`
