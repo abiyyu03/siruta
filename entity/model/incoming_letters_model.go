@@ -13,7 +13,7 @@ type IncomingLetter struct {
 	LetterDate   time.Time `json:"letter_date" gorm:"column:letter_date;not null" validate:"required"`
 	OriginLetter string    `json:"origin_letter" gorm:"column:origin_letter;not null" validate:"required"`
 	RTProfileId  string    `json:"rt_profile_id" gorm:"column:rt_profile_id;not null" validate:"required"`
-	RTProfile    RTProfile `gorm:"foreignKey:RTProfileId;not null"`
+	RTProfile    RTProfile `gorm:"foreignKey:RTProfileId"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	DeletedAt    gorm.DeletedAt `gorm:"index"`

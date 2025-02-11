@@ -8,10 +8,12 @@ import (
 
 type LetterType struct {
 	*gorm.Model
-	ID        int    `json:"id" gorm:"column:id;primaryKey;autoIncrement"`
-	TypeName  string `json:"type_name" validate:"required" gorm:"not null"`
-	Code      string `json:"code" validate:"required;max=6" gorm:"not null"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	ID                 int               `json:"id" gorm:"column:id;primaryKey;autoIncrement"`
+	TypeName           string            `json:"type_name" validate:"required" gorm:"not null"`
+	Code               string            `json:"code" validate:"required;max=6" gorm:"not null"`
+	OutcomingLetter    []OutcomingLetter `gorm:"foreignKey:LetterTypeId"`
+	IsForLocalResident bool              `json:"is_for_local_resident" gorm:"column:is_for_local_resident;default:true"`
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
+	DeletedAt          gorm.DeletedAt `gorm:"index"`
 }
