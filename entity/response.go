@@ -1,18 +1,38 @@
 package entity
 
 import (
+	"time"
+
+	"github.com/abiyyu03/siruta/entity/model"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
+type UserResponse struct {
+	ID        string     `json:"id"`
+	RoleID    uint       `json:"role_id"`
+	Role      model.Role `json:"role"`
+	Email     string     `json:"email"`
+	Username  string     `json:"username"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+}
+
+//------------------------------------------------------------------------------
+// Standard Response
+
 type Response struct {
-	Status  int         `json:"status"`
+	Status  string      `json:"status"`
+	Code    int         `json:"code"`
 	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	Data    interface{} `json:"data,omitempty"`
 }
 
 func Success(c *fiber.Ctx, data interface{}, message string) error {
 	response := Response{
-		Status:  fiber.StatusOK,
+		Status:  "Success",
+		Code:    fiber.StatusOK,
 		Message: message,
 		Data:    data,
 	}
@@ -22,7 +42,8 @@ func Success(c *fiber.Ctx, data interface{}, message string) error {
 
 func Error(c *fiber.Ctx, statusCode int, message string) error {
 	response := Response{
-		Status:  statusCode,
+		Status:  "Error",
+		Code:    statusCode,
 		Message: message,
 		// Data:    nil,
 	}
