@@ -73,11 +73,11 @@ func (v *VillageUsecase) Update(village *model.Village, ctx *fiber.Ctx, id int) 
 }
 
 func (v *VillageUsecase) Delete(ctx *fiber.Ctx, id int) error {
-	village, err := villageRepository.Delete(id)
+	_, err := villageRepository.Delete(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, "Server error")
 	}
 
-	return entity.Success(ctx, &village, "Data deleted successfully")
+	return entity.Success(ctx, nil, "Data deleted successfully")
 }
