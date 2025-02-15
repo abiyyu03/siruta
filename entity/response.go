@@ -10,6 +10,7 @@ import (
 
 type AuthResponse struct {
 	Username    string `json:"username"`
+	FullName    string `json:"full_name"`
 	Email       string `json:"email"`
 	RoleName    string `json:"role_name"`
 	AccessToken string `json:"accessToken"`
