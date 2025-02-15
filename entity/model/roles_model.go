@@ -10,7 +10,7 @@ type Role struct {
 	*gorm.Model
 	ID        int    `json:"id" gorm:"column:id;primaryKey;autoIncrement"`
 	Name      string `json:"name" gorm:"column:name;not null"`
-	Users     []User `gorm:"foreignKey:RoleID"`
+	Users     []User `json:"-" gorm:"foreignKey:RoleID"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
