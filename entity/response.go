@@ -8,6 +8,13 @@ import (
 	"gorm.io/gorm"
 )
 
+type AuthResponse struct {
+	Username    string `json:"username"`
+	Email       string `json:"email"`
+	RoleName    string `json:"role_name"`
+	AccessToken string `json:"accessToken"`
+}
+
 type UserResponse struct {
 	ID        string     `json:"id"`
 	RoleID    uint       `json:"role_id"`
