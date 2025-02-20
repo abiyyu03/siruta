@@ -31,10 +31,10 @@ func init() {
 	}
 }
 
-func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, username string, password string) (string, error) {
-	user, err := authRepository.FetchLogin(username, password)
+func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, username string, password string) (*entity.AuthResponse, error) {
+	user, member, err := authRepository.FetchLogin(username, password)
 	if err != nil {
-		return "", entity.Error(ctx, fiber.StatusForbidden, "Username or password invalid")
+		return nil, entity.Error(ctx, fiber.StatusForbidden, "Username or password invalid")
 	}
 
 	token := jwt.New(jwt.SigningMethodRS256)
@@ -47,11 +47,18 @@ func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, username string, password s
 
 	// Sign the token with the private RSA key
 	generatedToken, err := token.SignedString(privateKey)
+
 	if err != nil {
-		return "", entity.Error(ctx, fiber.ErrUnauthorized.Code, "Login failed")
+		return nil, entity.Error(ctx, fiber.ErrUnauthorized.Code, "Login failed")
 	}
 
-	return generatedToken, nil
+	return &entity.AuthResponse{
+		Username:    user.Username,
+		FullName:    member.Fullname,
+		Email:       user.Email,
+		RoleName:    user.Role.Name,
+		AccessToken: generatedToken,
+	}, nil
 
 }
 
