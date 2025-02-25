@@ -3,12 +3,12 @@ package repository
 import (
 	"github.com/abiyyu03/siruta/config"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 type MemberRepository struct{}
 
-func (m *MemberRepository) Fetch(ctx *fiber.Ctx) ([]*model.Member, error) {
+func (m *MemberRepository) Fetch() ([]*model.Member, error) {
 	var members []*model.Member
 
 	if err := config.DB.Find(&members).Error; err != nil {
@@ -28,8 +28,8 @@ func (m *MemberRepository) FetchById(id string) (*model.Member, error) {
 	return member, nil
 }
 
-func (m *MemberRepository) Store(memberData *model.Member) (*model.Member, error) {
-	if err := config.DB.Create(&memberData).Error; err != nil {
+func (m *MemberRepository) Store(tx *gorm.DB, memberData *model.Member) (*model.Member, error) {
+	if err := tx.Create(&memberData).Error; err != nil {
 		return nil, err
 	}
 

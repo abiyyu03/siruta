@@ -56,9 +56,9 @@ func JWTMiddleware(allowedRoles []int) fiber.Handler {
 			// Extract the role_id from the JWT claims
 			roleID := claims["role_id"].(float64)
 
-			allowedRoleId, err := new(repository.RolesRepository).FetchById(roleID)
+			castedRoleID := int(roleID)
 
-			//konsepnya : role id diambil dari param middleware -> role id tersebut sebagai array -> di cocokan dengan allRoles (db)
+			allowedRoleId, err := new(repository.RoleRepository).FetchById(castedRoleID)
 
 			if err != nil {
 				return err

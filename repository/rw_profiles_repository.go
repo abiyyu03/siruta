@@ -9,7 +9,6 @@ type RWProfileRepository struct{}
 
 func (r *RWProfileRepository) Fetch() ([]*model.RWProfile, error) {
 	var rwProfiles []*model.RWProfile
-	// var village *model.Village
 
 	if err := config.DB.Find(&rwProfiles).Error; err != nil {
 		return nil, err
@@ -21,7 +20,6 @@ func (r *RWProfileRepository) Fetch() ([]*model.RWProfile, error) {
 func (r *RWProfileRepository) FetchById(id string) (*model.RWProfile, error) {
 	var rwProfile *model.RWProfile
 
-	// log.Printf("[DEBUG] fetching")
 	if err := config.DB.Where("id = ?", id).First(&rwProfile).Error; err != nil {
 		return nil, err
 	}

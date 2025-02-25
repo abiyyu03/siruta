@@ -4,16 +4,16 @@ import (
 	"reflect"
 
 	"github.com/abiyyu03/siruta/config"
-	"github.com/abiyyu03/siruta/usecase/helper"
+	"github.com/abiyyu03/siruta/helper"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
 
 // ErrorResponse formats the error response
 type ErrorResponse struct {
-	FailedField string
-	Tag         string
-	Value       string
+	Field          string `json:"field"`
+	ValidationType string `json:"validation_type"`
+	Message        string `json:"message"`
 }
 
 // uniqueValidation function that works dynamically across different models
@@ -37,16 +37,6 @@ func uniqueValidation(fl validator.FieldLevel) bool {
 	return false
 }
 
-// func rtNumberUniqueValidation(fl validator.FieldLevel) bool {
-// 	var rtProfile *model.RTProfile
-//     fieldValue := fl.Field().Interface()
-
-// 	if err := config.DB.Where("rt_number_id = ? AND rw_email = ?").First(&rtProfile).Error; err != nil {
-// 		return false
-// 	}
-// 	return true
-// }
-
 // ValidateStruct is a generic function to validate struct data
 func ValidateStruct(data interface{}) []*ErrorResponse {
 	validate := validator.New()
@@ -54,16 +44,16 @@ func ValidateStruct(data interface{}) []*ErrorResponse {
 
 	// Register the unique validation function
 	validate.RegisterValidation("unique", uniqueValidation)
-	// validate.RegisterValidation("rt_number_unique", rtNumberUniqueValidation)
+	// validate.RegisterValidation("rt_number_unique", RtNumberUniqueValidation)
 
 	// Run the validations
 	err := validate.Struct(data)
 	if err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
 			errors = append(errors, &ErrorResponse{
-				FailedField: err.StructNamespace(),
-				Tag:         err.Tag(),
-				// Value:       err.Err,
+				Field:          err.StructNamespace(),
+				ValidationType: err.Tag(),
+				Message:        err.Error(),
 			})
 		}
 	}

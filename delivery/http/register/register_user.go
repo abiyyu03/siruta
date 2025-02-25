@@ -1,30 +1,20 @@
 package register
 
-import (
-	"github.com/abiyyu03/siruta/entity"
-	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/repository"
-	"github.com/gofiber/fiber/v2"
-)
+// var userRepository = new(repository.UserRepository)
 
-func Register(ctx *fiber.Ctx) error {
-	var user *model.User
+// func Register(ctx *fiber.Ctx) error {
+// 	var user *model.User
 
-	if err := ctx.BodyParser(&user); err != nil {
-		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
-			"message": err.Error(),
-		})
-	}
+// 	if err := ctx.BodyParser(&user); err != nil {
+// 		return entity.Error(ctx, fiber.StatusUnprocessableEntity, fiber.ErrUnprocessableEntity.Message)
+// 	}
 
-	userRepository := new(repository.UserRepository)
-	registeredUser, err := userRepository.RegisterUser(user, user.RoleID)
+// 	registeredUser, err := userRepository.RegisterUser(user, user.RoleID)
 
-	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": err.Error(),
-		})
-	}
+// 	if err != nil {
+// 		return entity.Error(ctx, fiber.StatusInternalServerError, fiber.ErrInternalServerError.Message)
+// 	}
 
-	return entity.Success(ctx, &registeredUser, "Register user successfully")
+// 	return entity.Success(ctx, &registeredUser, "Register user successfully")
 
-}
+// }

@@ -16,13 +16,11 @@ func Login(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.ErrBadRequest.Code, fiber.ErrBadRequest.Message)
 	}
 
-	generatedToken, err := authUsecase.IssueAuthToken(ctx, request.Username, request.Password)
+	response, err := authUsecase.IssueAuthToken(ctx, request.Username, request.Password)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.ErrBadRequest.Code, fiber.ErrBadRequest.Message)
 	}
 
-	return entity.Success(ctx, map[string]interface{}{
-		"accessToken": generatedToken,
-	}, "login successfully")
+	return entity.Success(ctx, response, "login successfully")
 }
