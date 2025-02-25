@@ -27,10 +27,6 @@ func (u *AuthRepository) FetchLogin(username, password string) (*model.User, *mo
 		return &user, nil, nil
 	}
 
-	// if fetchedMember.Error != nil {
-	// 	return nil, nil, err
-	// }
-
 	return &user, &member, nil
 
 }
