@@ -6,14 +6,17 @@ import (
 	"github.com/abiyyu03/siruta/repository"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
-type MemberUsecase struct{}
+type MemberUsecase struct {
+	db *gorm.DB
+}
 
 var memberRepository = new(repository.MemberRepository)
 
 func (m *MemberUsecase) Fetch(ctx *fiber.Ctx) error {
-	members, err := memberRepository.Fetch(ctx)
+	members, err := memberRepository.Fetch()
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, "Error fetching data")
@@ -27,7 +30,7 @@ func (m *MemberUsecase) Fetch(ctx *fiber.Ctx) error {
 }
 
 func (m *MemberUsecase) FetchById(ctx *fiber.Ctx, id string) error {
-	members, err := memberRepository.Fetch(ctx)
+	members, err := memberRepository.FetchById(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, "Error fetching data")
@@ -44,21 +47,22 @@ func (m *MemberUsecase) Store(ctx *fiber.Ctx, memberData *model.Member) error {
 	id := uuid.New()
 
 	createdMember := &model.Member{
-		ID:            id.String(),
-		ReligionId:    memberData.ReligionId,
-		UserId:        memberData.UserId,
-		Occupation:    memberData.Occupation,
-		Fullname:      memberData.Fullname,
-		NikNumber:     memberData.NikNumber,
-		KKNumber:      memberData.KKNumber,
-		BornPlace:     memberData.BornPlace,
-		BirthDate:     memberData.BirthDate,
-		Gender:        memberData.Gender,
-		HomeAddress:   memberData.HomeAddress,
-		MaritalStatus: memberData.MaritalStatus,
+		ID:             id.String(),
+		ReligionId:     memberData.ReligionId,
+		UserId:         memberData.UserId,
+		Occupation:     memberData.Occupation,
+		Fullname:       memberData.Fullname,
+		NikNumber:      memberData.NikNumber,
+		KKNumber:       memberData.KKNumber,
+		BornPlace:      memberData.BornPlace,
+		BirthDate:      memberData.BirthDate,
+		Gender:         memberData.Gender,
+		HomeAddress:    memberData.HomeAddress,
+		MaritalStatus:  memberData.MaritalStatus,
+		MemberStatusId: memberData.MemberStatusId,
 	}
 
-	create, err := memberRepository.Store(createdMember)
+	create, err := memberRepository.Store(m.db, createdMember)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, fiber.ErrInternalServerError.Message)

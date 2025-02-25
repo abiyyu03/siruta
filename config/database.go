@@ -32,7 +32,7 @@ func InitDB() error {
 
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
 		PrepareStmt:            true,
-		SkipDefaultTransaction: true,
+		SkipDefaultTransaction: false,
 	})
 
 	if err != nil {

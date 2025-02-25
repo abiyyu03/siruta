@@ -37,8 +37,7 @@ func HttpRoutes(app *fiber.App) {
 	//authentication
 	v1.Post("/login", middleware.ValidateField[request.LoginRequest](), auth.Login)
 	// v1.Post("/logout", ,auth.Login)
-
-	v1.Post("/register", register.Register)
+	// v1.Post("/register", register.Register)
 
 	// members
 	v1.Get("/members", adminOnly, member.GetData)
@@ -49,6 +48,7 @@ func HttpRoutes(app *fiber.App) {
 	// register
 	v1.Post("/registers/rw", middleware.ValidateField[model.RWProfile](), rwProfileRegister.RegisterRWProfile)
 	v1.Put("/registers/rw/:id/approve", rwProfileRegister.ApproveRegistration)
+	v1.Post("/registers/rw/user-account", rwProfileRegister.RegisterUserRw)
 	// v1.Post("/registers/rt", middleware.ValidateField[model.RTProfile](), rtProfileRegister.RegisterRTProfile)
 	// v1.Post("/registers/rt/:referalCode", rtProfileRegister.RegisterRTProfile)
 	// v1.Put("/registers/rt/:id/approve", rtProfileRegister.ApproveRegistrant)

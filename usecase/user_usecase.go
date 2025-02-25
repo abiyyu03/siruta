@@ -6,9 +6,12 @@ import (
 	"github.com/abiyyu03/siruta/repository"
 	"github.com/abiyyu03/siruta/repository/register"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
-type UserUsecase struct{}
+type UserUsecase struct {
+	db *gorm.DB
+}
 
 var userRepository = new(repository.UserRepository)
 
@@ -59,7 +62,7 @@ func (u *UserUsecase) Register(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusUnprocessableEntity, fiber.ErrUnprocessableEntity.Message)
 	}
 
-	_, err := userRepository.RegisterUser(user, user.RoleID)
+	_, err := userRepository.RegisterUser(u.db, user, user.RoleID)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, fiber.ErrInternalServerError.Message)
@@ -91,17 +94,17 @@ func (u *UserUsecase) RegisterUserWithTokenVerification(ctx *fiber.Ctx, user *mo
 
 func (u *UserUsecase) registerUserWithTokenVerification(user *model.User, roleId uint, token string) (*model.User, string, error) {
 	regToken := &register.RegTokenRepository{}
-	isTokenValid, err := regToken.Validate(token)
+	tokenFetched, err := regToken.Validate(token)
 
 	if err != nil {
 		return nil, "invalid", err
 	}
 
-	if !isTokenValid {
+	if tokenFetched == "" {
 		return nil, "invalid", nil
 	}
 
-	registerUser, err := userRepository.RegisterUser(user, roleId)
+	registerUser, err := userRepository.RegisterUser(u.db, user, roleId)
 
 	if err != nil {
 		return nil, "invalid", err

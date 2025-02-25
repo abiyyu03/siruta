@@ -14,7 +14,7 @@ type User struct {
 	Email    string `json:"email" gorm:"column:email;uniqueIndex;not null" validate:"required"`
 	Username string `json:"username" gorm:"column:username;uniqueIndex;not null" validate:"required"`
 	Password string `json:"password,omitempty" gorm:"column:password;not null" validate:"required,min=8"`
-	// Member    Member `json:"members"`
+	// Member    []Member `json:"-" gorm:"foreignKey:UserId,omitempty"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
