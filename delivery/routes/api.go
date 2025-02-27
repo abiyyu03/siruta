@@ -28,6 +28,7 @@ func HttpRoutes(app *fiber.App) {
 	memberStatus := new(http.MemberStatusHttp)
 	user := new(http.UserHttp)
 	religion := new(http.ReligionHttp)
+	referalCode := new(http.ReferalCodeHttp)
 
 	adminOnly := middleware.JWTMiddleware([]int{1})
 	// rwLeaderOnly := middleware.JWTMiddleware([]int{2})
@@ -53,6 +54,21 @@ func HttpRoutes(app *fiber.App) {
 	v1.Put("/registers/rt/:rtProfileId/approve", rtProfileRegister.ApproveRegistration)
 	v1.Post("/registers/rt/user-account", rtProfileRegister.RegisterUserRt)
 	// v1.Post("/registers/rt/:referalCode", rtProfileRegister.RegisterRTProfile)
+
+	//register tokens
+	// v1.Get("/token-registrations", adminOnly, rwProfile.GetData)
+	// v1.Get("/token-registrations/validate", adminOnly, rwProfile.GetData)
+
+	//referal code
+	v1.Get("/referal-codes", adminOnly, referalCode.GetData)
+	v1.Get("/referal-codes/:id", adminOnly, referalCode.GetDataById)
+	v1.Post("/referal-codes/validate", referalCode.ValidateReferalCode)
+
+	//----------------------------------------------------------------
+	//
+	// Admin Authority
+	//
+	//----------------------------------------------------------------
 
 	//rw profiles
 	v1.Get("/rw-profiles", adminOnly, rwProfile.GetData)
