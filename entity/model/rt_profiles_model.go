@@ -19,7 +19,7 @@ type RTProfile struct {
 	FullAddress    string           `json:"full_address" gorm:"column:full_address;type:text"`
 	RWProfileId    string           `json:"rw_profile_id" gorm:"column:rw_profile_id;not null"`
 	RWProfile      RWProfile        `json:"-" gorm:"foreignKey:RWProfileId;not null"`
-	IncomingLetter []IncomingLetter `gorm:"foreignKey:RTProfileId"`
+	IncomingLetter []IncomingLetter `json:"-" gorm:"foreignKey:RTProfileId"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	DeletedAt      gorm.DeletedAt `gorm:"index"`

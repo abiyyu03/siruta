@@ -16,7 +16,7 @@ func HttpRoutes(app *fiber.App) {
 
 	member := new(http.MemberHttp)
 	rwProfileRegister := new(register.RWProfileRegisterHttp)
-	// rtProfileRegister := new(register.RTProfileRegisterHttp)
+	rtProfileRegister := new(register.RTProfileRegisterHttp)
 	village := new(http.VillageHttp)
 	letterType := new(http.LetterTypeHttp)
 	rwProfile := new(http.RWProfileHttp)
@@ -47,12 +47,12 @@ func HttpRoutes(app *fiber.App) {
 
 	// register
 	v1.Post("/registers/rw", middleware.ValidateField[model.RWProfile](), rwProfileRegister.RegisterRWProfile)
-	v1.Put("/registers/rw/:id/approve", rwProfileRegister.ApproveRegistration)
+	v1.Put("/registers/rw/:rwProfileId/approve", rwProfileRegister.ApproveRegistration)
 	v1.Post("/registers/rw/user-account", rwProfileRegister.RegisterUserRw)
-	// v1.Post("/registers/rt", middleware.ValidateField[model.RTProfile](), rtProfileRegister.RegisterRTProfile)
+	v1.Post("/registers/rt", middleware.ValidateField[request.RTProfileRegisterRequest](), rtProfileRegister.RegisterRTProfile)
+	v1.Put("/registers/rt/:rtProfileId/approve", rtProfileRegister.ApproveRegistration)
+	v1.Post("/registers/rt/user-account", rtProfileRegister.RegisterUserRt)
 	// v1.Post("/registers/rt/:referalCode", rtProfileRegister.RegisterRTProfile)
-	// v1.Put("/registers/rt/:id/approve", rtProfileRegister.ApproveRegistrant)
-	// v1.Post("/registers/rt/user-account", rtProfileRegister.RegisterUserAccount)
 
 	//rw profiles
 	v1.Get("/rw-profiles", adminOnly, rwProfile.GetData)

@@ -16,11 +16,6 @@ func Login(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.ErrBadRequest.Code, fiber.ErrBadRequest.Message)
 	}
 
-	response, err := authUsecase.IssueAuthToken(ctx, request.Username, request.Password)
+	return authUsecase.IssueAuthToken(ctx, request.Username, request.Password)
 
-	if err != nil {
-		return entity.Error(ctx, fiber.ErrBadRequest.Code, fiber.ErrBadRequest.Message)
-	}
-
-	return entity.Success(ctx, response, "login successfully")
 }

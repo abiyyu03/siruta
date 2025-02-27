@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"log"
-
 	"github.com/abiyyu03/siruta/repository/register"
 )
 
@@ -17,9 +15,6 @@ func TokenRegisterValidator(token string) bool {
 	if err != nil {
 		return false
 	}
-	log.Print(token)
-
-	log.Print(fetchedToken)
 
 	if fetchedToken != token {
 		return false
