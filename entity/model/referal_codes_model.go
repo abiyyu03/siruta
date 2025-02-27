@@ -13,7 +13,7 @@ type ReferalCode struct {
 	ExpiredAt   time.Time `json:"expired_at"`
 	IsExpired   bool      `json:"is_expired" gorm:"default:false;not null"`
 	RWProfileId string    `json:"rw_profile_id" gorm:"not null"`
-	RWProfile   RWProfile `gorm:"foreignKey:RWProfileId;not null"`
+	RWProfile   RWProfile `json:"-" gorm:"foreignKey:RWProfileId;not null"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`

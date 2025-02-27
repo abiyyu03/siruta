@@ -31,6 +31,7 @@ var Errors = map[string]ErrorMessage{
 	"Unauthorized":          {Message: "Akses ditolak", Clue: "Pastikan Anda memiliki izin yang sesuai."},
 	"AccountInputError":     {Message: "Email atau Password anda salah", Clue: "Pastikan Anda memasukannya dengan benar"},
 	"InvalidData":           {Message: "Data yang dimasukkan salah", Clue: "Periksa kembali format dan isi data yang dikirim."},
+	"InvalidReferalCode":    {Message: "Referal Code salah", Clue: "Periksa kembali referal code yang dikirim"},
 	"AlreadyExists":         {Message: "Data sudah ada", Clue: "Coba gunakan data yang berbeda atau edit data yang ada."},
 	"DuplicateData":         {Message: "Data sudah ada", Clue: "Hindari memasukkan data yang sama lebih dari satu kali."},
 	"InternalError":         {Message: "Terjadi kesalahan internal", Clue: "Silakan coba lagi nanti atau hubungi admin."},
