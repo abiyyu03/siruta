@@ -19,7 +19,7 @@ type RWProfileRegisterRepository struct {
 var userRepository = new(UserRepository)
 var memberRepository = new(MemberRepository)
 var tokenRegisterRepository = new(register.RegTokenRepository)
-var registerNotification = new(email.EmailRegistrationRepository)
+var rwNotification = new(email.EmailRegistrationRepository)
 
 func (r *RWProfileRegisterRepository) RegisterRWProfile(rwProfileRequest *model.RWProfile) (*model.RWProfile, error) {
 	if err := config.DB.Create(&rwProfileRequest).Error; err != nil {
@@ -93,14 +93,12 @@ func (r *RWProfileRegisterRepository) ApproveRegistrant(rwProfileId string) erro
 			log.Printf("RWProfile %v is already authorized", rwProfileId)
 			return nil // No update needed
 		}
-		// log.Printf("User is not authorized yet: %v", rwProfile)
 
 		// Update authorization status
 		if err := r.UpdateRWAuthorization(tx, rwProfileId, &rwProfile); err != nil {
 			log.Printf("Failed to update authorization: %v", err)
 			return err // Trigger rollback
 		}
-		// log.Printf("RWProfile %v authorized successfully", rwProfileId)
 
 		// Generate referral code
 		if err := r.GenerateReferalCode(tx, rwProfile.ID); err != nil {
@@ -108,7 +106,7 @@ func (r *RWProfileRegisterRepository) ApproveRegistrant(rwProfileId string) erro
 			return err // Trigger rollback
 		}
 
-		if err := registerNotification.RwNotification(fetchedRwProfile.RwEmail); err != nil {
+		if err := rwNotification.RwNotification(fetchedRwProfile.RwEmail); err != nil {
 			return err
 		}
 
@@ -145,7 +143,7 @@ func (r *RWProfileRegisterRepository) RegisterUserRW(memberData *model.Member, u
 			return err
 		}
 
-		return nil // Commit transaction if no errors
+		return nil
 	})
 	if err != nil {
 		log.Printf("Transaction failed, rolled back due to error: %v", err.Error())
