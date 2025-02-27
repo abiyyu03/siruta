@@ -20,7 +20,7 @@ func (u *UserUsecase) Fetch(ctx *fiber.Ctx) error {
 	users, err := userRepository.Fetch()
 
 	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, "Server error")
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	var userResponses []entity.UserResponse
@@ -39,7 +39,7 @@ func (u *UserUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 	user, err := userRepository.FetchById(id)
 
 	if user == nil {
-		return entity.Error(ctx, fiber.StatusNotFound, "user not found")
+		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
 	}
 
 	if err != nil {

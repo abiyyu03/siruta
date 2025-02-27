@@ -47,7 +47,6 @@ func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, email string, password stri
 	claims := token.Claims.(jwt.MapClaims)
 
 	claims["email"] = user.Email
-	claims["email"] = email
 	claims["role_id"] = user.RoleID
 	claims["exp"] = time.Now().Add(time.Hour * 2).Unix()
 
