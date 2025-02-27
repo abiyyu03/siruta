@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/abiyyu03/siruta/entity"
+	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/repository"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
@@ -35,7 +36,11 @@ func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, username string, password s
 	user, member, err := authRepository.FetchLogin(username, password)
 
 	if err != nil {
-		return entity.Error(ctx, fiber.StatusUnauthorized, "Username atau password kamu salah, coba lagi")
+		return entity.Error(ctx,
+			fiber.StatusUnauthorized,
+			constant.Errors["AccountInputError"].Message,
+			constant.Errors["AccountInputError"].Clue,
+		)
 	}
 
 	token := jwt.New(jwt.SigningMethodRS256)
@@ -50,7 +55,7 @@ func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, username string, password s
 	generatedToken, err := token.SignedString(privateKey)
 
 	if err != nil {
-		return entity.Error(ctx, fiber.ErrForbidden.Code, "Akses kamu ditolak")
+		return entity.Error(ctx, fiber.ErrForbidden.Code, constant.Errors["Unauthorized"].Message, constant.Errors["Unauthorized"].Clue)
 	}
 
 	finalResponse := &entity.AuthResponse{

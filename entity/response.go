@@ -49,11 +49,11 @@ func Success(c *fiber.Ctx, data interface{}, message string) error {
 	return c.Status(fiber.StatusOK).JSON(response)
 }
 
-func Error(c *fiber.Ctx, statusCode int, message string) error {
+func Error(c *fiber.Ctx, statusCode int, message string, desc string) error {
 	response := Response{
 		Status:      "Gagal",
 		Code:        statusCode,
-		Description: "-",
+		Description: desc,
 		Message:     message,
 		// Data:    nil,
 	}

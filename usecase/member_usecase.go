@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"github.com/abiyyu03/siruta/entity"
+	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
 	"github.com/abiyyu03/siruta/repository"
 	"github.com/gofiber/fiber/v2"
@@ -19,7 +20,7 @@ func (m *MemberUsecase) Fetch(ctx *fiber.Ctx) error {
 	members, err := memberRepository.Fetch()
 
 	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, "Error fetching data")
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	if members == nil {
@@ -33,11 +34,11 @@ func (m *MemberUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 	members, err := memberRepository.FetchById(id)
 
 	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, "Error fetching data")
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	if members == nil {
-		return entity.Error(ctx, fiber.StatusNotFound, fiber.ErrNotFound.Message)
+		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
 	}
 
 	return entity.Success(ctx, &members, "Data fetched successfully")
@@ -65,7 +66,7 @@ func (m *MemberUsecase) Store(ctx *fiber.Ctx, memberData *model.Member) error {
 	create, err := memberRepository.Store(m.db, createdMember)
 
 	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, fiber.ErrInternalServerError.Message)
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	return entity.Success(ctx, create, "Data created successfully")
@@ -89,11 +90,11 @@ func (m *MemberUsecase) Update(ctx *fiber.Ctx, id string, memberData *model.Memb
 	update, err := memberRepository.Update(updatedMember, id)
 
 	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, fiber.ErrInternalServerError.Message)
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	if update == nil {
-		return entity.Error(ctx, fiber.StatusNotFound, fiber.ErrNotFound.Message)
+		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
 	}
 
 	return entity.Success(ctx, fiber.StatusOK, "Data updated successfully")
