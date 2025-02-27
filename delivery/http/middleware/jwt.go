@@ -4,9 +4,9 @@ import (
 	"crypto/rsa"
 	"log"
 	"os"
-	"reflect"
 
 	"github.com/abiyyu03/siruta/entity"
+	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/repository"
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
@@ -41,8 +41,8 @@ func JWTMiddleware(allowedRoles []int) fiber.Handler {
 		SigningMethod: "RS256",
 		SigningKey:    publicKey,
 		ContextKey:    "user",
-		ErrorHandler: func(c *fiber.Ctx, err error) error {
-			return entity.Error(c, fiber.StatusUnauthorized, err.Error())
+		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
+			return entity.Error(ctx, fiber.StatusUnauthorized, constant.Errors["Unauthorized"].Message, constant.Errors["Unauthorized"].Clue)
 		},
 		SuccessHandler: func(ctx *fiber.Ctx) error {
 			// Extract user claims from the token
@@ -50,7 +50,7 @@ func JWTMiddleware(allowedRoles []int) fiber.Handler {
 			claims := user.Claims.(jwt.MapClaims)
 
 			if claims["role_id"] != 0 {
-				log.Printf("signed role id is : %v", reflect.TypeOf((claims["role_id"])))
+				log.Printf("role signed")
 			}
 
 			// Extract the role_id from the JWT claims
@@ -65,7 +65,7 @@ func JWTMiddleware(allowedRoles []int) fiber.Handler {
 			}
 
 			if !HasRequiredRole(allowedRoleId.ID, allowedRoles) {
-				return entity.Error(ctx, fiber.StatusForbidden, "Insufficient role")
+				return entity.Error(ctx, fiber.StatusUnauthorized, constant.Errors["InvalidRole"].Message, constant.Errors["InvalidRole"].Clue)
 			}
 
 			return ctx.Next()

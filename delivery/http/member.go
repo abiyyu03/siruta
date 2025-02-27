@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/abiyyu03/siruta/entity"
+	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
 	"github.com/abiyyu03/siruta/usecase"
 	"github.com/gofiber/fiber/v2"
@@ -25,7 +26,7 @@ func (m *MemberHttp) StoreData(ctx *fiber.Ctx) error {
 	var member *model.Member
 
 	if err := ctx.BodyParser(&member); err != nil {
-		return entity.Error(ctx, fiber.ErrBadRequest.Code, err.Error())
+		return entity.Error(ctx, fiber.StatusUnprocessableEntity, constant.Errors["UnprocessableEntity"].Message, constant.Errors["UnprocessableEntity"].Clue)
 	}
 
 	return memberUsecase.Store(ctx, member)
@@ -36,7 +37,7 @@ func (m *MemberHttp) UpdateData(ctx *fiber.Ctx) error {
 	id := string(ctx.Params("id"))
 
 	if err := ctx.BodyParser(&member); err != nil {
-		return entity.Error(ctx, fiber.ErrBadRequest.Code, err.Error())
+		return entity.Error(ctx, fiber.StatusUnprocessableEntity, constant.Errors["UnprocessableEntity"].Message, constant.Errors["UnprocessableEntity"].Clue)
 	}
 
 	return memberUsecase.Update(ctx, id, member)

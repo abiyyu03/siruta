@@ -1,9 +1,8 @@
 package usecase
 
 import (
-	"log"
-
 	"github.com/abiyyu03/siruta/entity"
+	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
 	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/abiyyu03/siruta/repository"
@@ -33,12 +32,12 @@ func (r *RWProfileRegisterUsecase) RegisterProfileRW(rwProfile *model.RWProfile,
 	rwProfileRegistration, err := rwProfileRegisterRepository.RegisterRWProfile(newRWProfile)
 
 	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, err.Error())
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	return entity.Success(ctx, &rwProfileRegistration, "RW Profile Registered successfully")
 }
-func (r *RWProfileRegisterUsecase) RegisterUserRW(register *request.RegisterRWRequest, ctx *fiber.Ctx, token string) error {
+func (r *RWProfileRegisterUsecase) RegisterUserRw(register *request.RegisterRWRequest, ctx *fiber.Ctx, token string) error {
 	//token verif
 	userId, _ := uuid.NewV7()
 	memberId, _ := uuid.NewV7()
@@ -77,18 +76,18 @@ func (r *RWProfileRegisterUsecase) RegisterUserRW(register *request.RegisterRWRe
 	}
 	err = rwProfileRegisterRepository.RegisterUserRW(member, user, 3, token)
 
-	log.Print("member status: ", register.MemberStatusId)
-
 	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, err.Error())
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	return entity.Success(ctx, nil, "User Registered successfully")
 }
 
 func (r *RWProfileRegisterUsecase) Approve(emailDestination string, rwProfileId string, ctx *fiber.Ctx) error {
-	if err := rwProfileRegisterRepository.ApproveRegistrant(rwProfileId); err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, err.Error())
+	err := rwProfileRegisterRepository.ApproveRegistrant(rwProfileId)
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	return entity.Success(ctx, nil, "RW Profile approved successfully")

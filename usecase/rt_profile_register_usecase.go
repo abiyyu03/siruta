@@ -35,7 +35,7 @@ func (r *RTProfileRegisterUsecase) RegisterRTProfile(rtProfile *request.RTProfil
 	log.Print(registeredUser)
 
 	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, err.Error())
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	return entity.Success(ctx, newRTProfile, "RT Profile Registered successfully")
@@ -45,7 +45,7 @@ func (r *RTProfileRegisterUsecase) Approve(emailDestination string, rtProfileId 
 	err := rtProfileRegisterRepository.ApproveRegistrant(rtProfileId)
 
 	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, err.Error())
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	return entity.Success(ctx, nil, "RT Profile approved successfully")
@@ -62,7 +62,7 @@ func (r *RTProfileRegisterUsecase) RegisterUserRt(userRt *request.RegisterRTRequ
 	)
 
 	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, "Error generating password hash")
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	newUser := &model.User{
@@ -93,7 +93,7 @@ func (r *RTProfileRegisterUsecase) RegisterUserRt(userRt *request.RegisterRTRequ
 	err = rtProfileRegisterRepository.RegisterUserRt(newMember, newUser, constant.ROLE_RT, token)
 
 	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, err.Error())
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	return entity.Success(ctx, nil, "User Registered successfully")
