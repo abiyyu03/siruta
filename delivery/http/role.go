@@ -4,13 +4,10 @@ import (
 	"strconv"
 
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/usecase"
 	"github.com/gofiber/fiber/v2"
 )
 
 type RoleHttp struct{}
-
-var roleUsecase = new(usecase.RoleUsecase)
 
 func (r *RoleHttp) GetData(ctx *fiber.Ctx) error {
 	return roleUsecase.Fetch(ctx)

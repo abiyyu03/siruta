@@ -4,13 +4,10 @@ import (
 	"strconv"
 
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/usecase"
 	"github.com/gofiber/fiber/v2"
 )
 
 type VillageHttp struct{}
-
-var villageUsecase = new(usecase.VillageUsecase)
 
 func (v *VillageHttp) GetData(ctx *fiber.Ctx) error {
 	return villageUsecase.Fetch(ctx)

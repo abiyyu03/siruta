@@ -4,13 +4,10 @@ import (
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/usecase"
 	"github.com/gofiber/fiber/v2"
 )
 
 type MemberHttp struct{}
-
-var memberUsecase = new(usecase.MemberUsecase)
 
 func (m *MemberHttp) GetData(ctx *fiber.Ctx) error {
 	return memberUsecase.Fetch(ctx)
