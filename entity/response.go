@@ -31,15 +31,16 @@ type UserResponse struct {
 // Standard Response
 
 type Response struct {
-	Status  string      `json:"status"`
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data,omitempty"`
+	Status      string      `json:"status"`
+	Code        int         `json:"code"`
+	Message     string      `json:"message"`
+	Description string      `json:"description,omitempty"`
+	Data        interface{} `json:"data,omitempty"`
 }
 
 func Success(c *fiber.Ctx, data interface{}, message string) error {
 	response := Response{
-		Status:  "Success",
+		Status:  "Berhasil",
 		Code:    fiber.StatusOK,
 		Message: message,
 		Data:    data,
@@ -50,9 +51,10 @@ func Success(c *fiber.Ctx, data interface{}, message string) error {
 
 func Error(c *fiber.Ctx, statusCode int, message string) error {
 	response := Response{
-		Status:  "Error",
-		Code:    statusCode,
-		Message: message,
+		Status:      "Gagal",
+		Code:        statusCode,
+		Description: "-",
+		Message:     message,
 		// Data:    nil,
 	}
 
