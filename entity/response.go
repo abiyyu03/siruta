@@ -9,7 +9,6 @@ import (
 )
 
 type AuthResponse struct {
-	Username    string `json:"username"`
 	FullName    string `json:"full_name"`
 	Email       string `json:"email"`
 	RoleName    string `json:"role_name"`
@@ -21,7 +20,6 @@ type UserResponse struct {
 	RoleID    uint       `json:"role_id"`
 	Role      model.Role `json:"role"`
 	Email     string     `json:"email"`
-	Username  string     `json:"username"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`

@@ -6,15 +6,20 @@ package register
 // 	var user *model.User
 
 // 	if err := ctx.BodyParser(&user); err != nil {
-// 		return entity.Error(ctx, fiber.StatusUnprocessableEntity, fiber.ErrUnprocessableEntity.Message)
+// 		return entity.Error(
+// 	ctx,
+// 	fiber.ErrBadRequest.Code,
+// 	constant.Errors["UnprocessableEntity"].Message,
+// 	constant.Errors["UnprocessableEntity"].Clue,
+// )
 // 	}
 
 // 	registeredUser, err := userRepository.RegisterUser(user, user.RoleID)
 
 // 	if err != nil {
-// 		return entity.Error(ctx, fiber.StatusInternalServerError, fiber.ErrInternalServerError.Message)
+// 		return entity.Error( ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 // 	}
 
-// 	return entity.Success(ctx, &registeredUser, "Register user successfully")
+// 	return entity.Success(ctx, &registeredUser, "Registrasi Pengguna/User Berhasil")
 
 // }

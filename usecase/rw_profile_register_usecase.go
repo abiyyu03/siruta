@@ -54,7 +54,6 @@ func (r *RWProfileRegisterUsecase) RegisterUserRw(register *request.RegisterRWRe
 		ID:       userId.String(),
 		RoleID:   uint(4),
 		Email:    register.Email,
-		Username: register.Username,
 		Password: string(hashedPassword),
 	}
 
