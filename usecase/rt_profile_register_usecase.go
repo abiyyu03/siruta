@@ -67,7 +67,6 @@ func (r *RTProfileRegisterUsecase) RegisterUserRt(userRt *request.RegisterRTRequ
 
 	newUser := &model.User{
 		ID:       userId.String(),
-		Username: userRt.Username,
 		RoleID:   constant.ROLE_RT,
 		Email:    userRt.Email,
 		Password: string(hashedPassword),

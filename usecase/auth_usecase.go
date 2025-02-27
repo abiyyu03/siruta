@@ -32,8 +32,8 @@ func init() {
 	}
 }
 
-func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, username string, password string) error {
-	user, member, err := authRepository.FetchLogin(username, password)
+func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, email string, password string) error {
+	user, member, err := authRepository.FetchLogin(email, password)
 
 	if err != nil {
 		return entity.Error(ctx,
@@ -47,7 +47,7 @@ func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, username string, password s
 	claims := token.Claims.(jwt.MapClaims)
 
 	claims["email"] = user.Email
-	claims["username"] = username
+	claims["email"] = email
 	claims["role_id"] = user.RoleID
 	claims["exp"] = time.Now().Add(time.Hour * 2).Unix()
 
@@ -59,7 +59,6 @@ func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, username string, password s
 	}
 
 	finalResponse := &entity.AuthResponse{
-		Username:    user.Username,
 		FullName:    member.Fullname,
 		Email:       user.Email,
 		RoleName:    user.Role.Name,

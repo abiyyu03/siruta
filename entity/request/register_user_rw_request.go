@@ -2,7 +2,6 @@ package request
 
 type RegisterRWRequest struct {
 	Email          string `json:"email" validate:"required"`
-	Username       string `json:"username" validate:"required"`
 	Password       string `json:"password" validate:"required"`
 	Fullname       string `json:"fullname" validate:"required"`
 	NikNumber      string `json:"nik_number" validate:"required"`

@@ -8,11 +8,11 @@ import (
 
 type AuthRepository struct{}
 
-func (u *AuthRepository) FetchLogin(username, password string) (*model.User, *model.Member, error) {
+func (u *AuthRepository) FetchLogin(email, password string) (*model.User, *model.Member, error) {
 	var user model.User
 	var member model.Member
 
-	if err := config.DB.Preload("Role").Where("username = ?", username).First(&user).Error; err != nil {
+	if err := config.DB.Preload("Role").Where("email = ? ", email).First(&user).Error; err != nil {
 		return nil, nil, err
 	}
 
