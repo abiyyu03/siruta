@@ -28,11 +28,9 @@ func (r *RoleSeederStruct) RoleSeeder() *cobra.Command {
 			// Do Stuff Here
 			roles := []*model.Role{
 				{ID: 1, Name: "Super Admin"},
-				{ID: 2, Name: "Ketua RW"},
-				{ID: 3, Name: "Pengurus RW"},
-				{ID: 4, Name: "Ketua RT"},
-				{ID: 5, Name: "Pengurus RT"},
-				{ID: 6, Name: "Member"},
+				{ID: 2, Name: "Pengurus RW"},
+				{ID: 3, Name: "Pengurus RT"},
+				{ID: 4, Name: "Member"},
 			}
 
 			tx := config.DB.Begin()
