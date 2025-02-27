@@ -22,6 +22,6 @@ func Login(ctx *fiber.Ctx) error {
 		)
 	}
 
-	return authUsecase.IssueAuthToken(ctx, request.Username, request.Password)
+	return authUsecase.IssueAuthToken(ctx, request.Email, request.Password)
 
 }
