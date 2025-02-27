@@ -29,8 +29,14 @@ func (r *LetterTypeSeeder) LetterTypeSeeder() *cobra.Command {
 			types := []*model.LetterType{
 				{ID: 1, TypeName: "Surat Pengantar", Code: "SP"},
 				{ID: 2, TypeName: "Surat Keterangan Domisili", Code: "SKD"},
-				{ID: 3, TypeName: "Surat Keterangan Tidak Mampu", Code: "SKTM"},
-				{ID: 4, TypeName: "Surat Keterangan Usaha", Code: "SKU"},
+				{ID: 3, TypeName: "Surat Keterangan Usaha", Code: "SKU"},
+				{ID: 4, TypeName: "Surat Keterangan Kelahiran", Code: "SKL"},
+				{ID: 5, TypeName: "Surat Keterangan Kematian", Code: "SKM"},
+				{ID: 6, TypeName: "Surat Pengantar SKCK", Code: "SPSKCK"},
+				{ID: 7, TypeName: "Surat Izin Keramaian", Code: "SIK"},
+				{ID: 8, TypeName: "Surat Keterangan Pindah", Code: "SKP"},
+				{ID: 9, TypeName: "Surat Keterangan Tidak Mampu", Code: "SKTM"},
+				{ID: 10, TypeName: "Surat Rekomendasi", Code: "SR"},
 			}
 
 			tx := config.DB.Begin()

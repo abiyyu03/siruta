@@ -12,10 +12,10 @@ func main() {
 	config.InitDB()
 
 	// seed := new(seeder.SeederStruct)
-	// seed.Run()
+	// seed.RunSeeders()
 
 	app := fiber.New()
-	//register routes
+
 	routes.HttpRoutes(app)
 
 	app.Listen(":8080")
