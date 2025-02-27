@@ -20,7 +20,7 @@ func (r *RTProfileRepository) Fetch() ([]*model.RTProfile, error) {
 func (r *RTProfileRepository) FetchById(id string) (*model.RTProfile, error) {
 	var rtProfile *model.RTProfile
 
-	if err := config.DB.First(&rtProfile, id).Error; err != nil {
+	if err := config.DB.Where("id = ?", id).First(&rtProfile).Error; err != nil {
 		return nil, err
 	}
 
