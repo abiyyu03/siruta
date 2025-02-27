@@ -43,8 +43,7 @@ func (u *UserUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 	}
 
 	if err != nil {
-		return entity.Error(
-			ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 	userResponse := entity.UserResponse{
 		ID:     user.ID,
