@@ -15,6 +15,7 @@ func HttpRoutes(app *fiber.App) {
 	v1 := api.Group("/v1")
 
 	member := new(http.MemberHttp)
+	memberRegister := new(register.MemberRegisterHttp)
 	rwProfileRegister := new(register.RWProfileRegisterHttp)
 	rtProfileRegister := new(register.RTProfileRegisterHttp)
 	village := new(http.VillageHttp)
@@ -42,7 +43,7 @@ func HttpRoutes(app *fiber.App) {
 
 	// members
 	v1.Get("/members", adminOnly, member.GetData)
-	v1.Get("/members/:id", adminOnly, middleware.ValidateField[model.Member](), member.GetDataById)
+	v1.Get("/members/:id", adminOnly, member.GetDataById)
 	v1.Put("/members/:id", adminOnly, member.UpdateData)
 	v1.Post("/members", adminOnly, member.StoreData)
 
@@ -53,7 +54,7 @@ func HttpRoutes(app *fiber.App) {
 	v1.Post("/registers/rt", middleware.ValidateField[request.RTProfileRegisterRequest](), rtProfileRegister.RegisterRTProfile)
 	v1.Put("/registers/rt/:rtProfileId/approve", rtProfileRegister.ApproveRegistration)
 	v1.Post("/registers/rt/user-account", rtProfileRegister.RegisterUserRt)
-	// v1.Post("/registers/rt/:referalCode", rtProfileRegister.RegisterRTProfile)
+	v1.Post("/registers/member", middleware.ValidateField[request.RegisterRequest](), memberRegister.Register)
 
 	//register tokens
 	// v1.Get("/token-registrations", adminOnly, rwProfile.GetData)

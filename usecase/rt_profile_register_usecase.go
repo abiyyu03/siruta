@@ -51,7 +51,7 @@ func (r *RTProfileRegisterUsecase) Approve(emailDestination string, rtProfileId 
 	return entity.Success(ctx, nil, "RT Profile approved successfully")
 }
 
-func (r *RTProfileRegisterUsecase) RegisterUserRt(userRt *request.RegisterRTRequest, ctx *fiber.Ctx, token string) error {
+func (r *RTProfileRegisterUsecase) RegisterUserRt(userRt *request.RegisterRequest, ctx *fiber.Ctx, token string) error {
 	//token verif
 	userId, _ := uuid.NewV7()
 	memberId, _ := uuid.NewV7()
