@@ -43,7 +43,7 @@ func HttpRoutes(app *fiber.App) {
 
 	// members
 	v1.Get("/members", adminOnly, member.GetData)
-	v1.Get("/members/:id", adminOnly, middleware.ValidateField[model.Member](), member.GetDataById)
+	v1.Get("/members/:id", adminOnly, member.GetDataById)
 	v1.Put("/members/:id", adminOnly, member.UpdateData)
 	v1.Post("/members", adminOnly, member.StoreData)
 
