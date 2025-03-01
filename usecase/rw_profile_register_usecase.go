@@ -37,7 +37,7 @@ func (r *RWProfileRegisterUsecase) RegisterProfileRW(rwProfile *model.RWProfile,
 
 	return entity.Success(ctx, &rwProfileRegistration, "RW Profile Registered successfully")
 }
-func (r *RWProfileRegisterUsecase) RegisterUserRw(register *request.RegisterRWRequest, ctx *fiber.Ctx, token string) error {
+func (r *RWProfileRegisterUsecase) RegisterUserRw(register *request.RegisterRequest, ctx *fiber.Ctx, token string) error {
 	//token verif
 	userId, _ := uuid.NewV7()
 	memberId, _ := uuid.NewV7()
