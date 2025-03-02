@@ -2,13 +2,13 @@ package register
 
 import (
 	"github.com/abiyyu03/siruta/entity/request"
-	"github.com/abiyyu03/siruta/usecase"
+	"github.com/abiyyu03/siruta/usecase/register"
 	"github.com/gofiber/fiber/v2"
 )
 
-type MemberRegisterHttp struct{}
-
-var memberRegisterUsecase = new(usecase.MemberRegisterUsecase)
+type MemberRegisterHttp struct {
+	memberRegisterUsecase *register.MemberRegisterUsecase
+}
 
 func (m *MemberRegisterHttp) Register(ctx *fiber.Ctx) error {
 	var userMember *request.RegisterRequest
@@ -17,5 +17,5 @@ func (m *MemberRegisterHttp) Register(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return memberRegisterUsecase.RegisterMember(ctx, userMember)
+	return m.memberRegisterUsecase.RegisterMember(ctx, userMember)
 }

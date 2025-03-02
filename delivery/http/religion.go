@@ -4,32 +4,35 @@ import (
 	"strconv"
 
 	"github.com/abiyyu03/siruta/entity/model"
+	"github.com/abiyyu03/siruta/usecase/religion"
 	"github.com/gofiber/fiber/v2"
 )
 
-type ReligionHttp struct{}
-
-func (v *ReligionHttp) GetData(ctx *fiber.Ctx) error {
-	return religionUsecase.Fetch(ctx)
+type ReligionHttp struct {
+	religionUsecase *religion.ReligionUsecase
 }
 
-func (v *ReligionHttp) GetDataById(ctx *fiber.Ctx) error {
+func (r *ReligionHttp) GetData(ctx *fiber.Ctx) error {
+	return r.religionUsecase.Fetch(ctx)
+}
+
+func (r *ReligionHttp) GetDataById(ctx *fiber.Ctx) error {
 	id, _ := strconv.Atoi(ctx.Params("id"))
 
-	return religionUsecase.FetchById(ctx, id)
+	return r.religionUsecase.FetchById(ctx, id)
 }
 
-func (v *ReligionHttp) StoreData(ctx *fiber.Ctx) error {
+func (r *ReligionHttp) StoreData(ctx *fiber.Ctx) error {
 	var religion *model.Religion
 
 	if err := ctx.BodyParser(&religion); err != nil {
 		return err
 	}
 
-	return religionUsecase.Store(religion, ctx)
+	return r.religionUsecase.Store(religion, ctx)
 }
 
-func (v *ReligionHttp) UpdateData(ctx *fiber.Ctx) error {
+func (r *ReligionHttp) UpdateData(ctx *fiber.Ctx) error {
 	var religion *model.Religion
 	id, _ := strconv.Atoi(ctx.Params("id"))
 
@@ -37,11 +40,11 @@ func (v *ReligionHttp) UpdateData(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return religionUsecase.Update(religion, ctx, id)
+	return r.religionUsecase.Update(religion, ctx, id)
 }
 
-func (v *ReligionHttp) DeleteData(ctx *fiber.Ctx) error {
+func (r *ReligionHttp) DeleteData(ctx *fiber.Ctx) error {
 	id, _ := strconv.Atoi(ctx.Params("id"))
 
-	return religionUsecase.Delete(ctx, id)
+	return r.religionUsecase.Delete(ctx, id)
 }

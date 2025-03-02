@@ -6,13 +6,13 @@ import (
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
 	"github.com/abiyyu03/siruta/entity/request"
-	"github.com/abiyyu03/siruta/usecase"
+	"github.com/abiyyu03/siruta/usecase/rw_profile"
 	"github.com/gofiber/fiber/v2"
 )
 
-type RWProfileRegisterHttp struct{}
-
-var rwProfileRegisterUsecase = new(usecase.RWProfileRegisterUsecase)
+type RWProfileRegisterHttp struct {
+	rwProfileRegisterUsecase *rw_profile.RWProfileRegisterUsecase
+}
 
 func (r *RWProfileRegisterHttp) RegisterRWProfile(ctx *fiber.Ctx) error {
 	var rwProfile *model.RWProfile
@@ -20,7 +20,7 @@ func (r *RWProfileRegisterHttp) RegisterRWProfile(ctx *fiber.Ctx) error {
 	if err := ctx.BodyParser(&rwProfile); err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
-	return rwProfileRegisterUsecase.RegisterProfileRW(rwProfile, ctx)
+	return r.rwProfileRegisterUsecase.RegisterProfileRW(rwProfile, ctx)
 }
 
 func (r *RWProfileRegisterHttp) RegisterUserRw(ctx *fiber.Ctx) error {
@@ -38,7 +38,7 @@ func (r *RWProfileRegisterHttp) RegisterUserRw(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return rwProfileRegisterUsecase.RegisterUserRw(userRw, ctx, params["token"])
+	return r.rwProfileRegisterUsecase.RegisterUserRw(userRw, ctx, params["token"])
 }
 
 func (r *RWProfileRegisterHttp) ApproveRegistration(ctx *fiber.Ctx) error {
@@ -46,7 +46,7 @@ func (r *RWProfileRegisterHttp) ApproveRegistration(ctx *fiber.Ctx) error {
 	queryParam := ctx.Queries()
 
 	if queryParam["email"] != "" {
-		return rwProfileRegisterUsecase.Approve(queryParam["email"], rwProfileId, ctx)
+		return r.rwProfileRegisterUsecase.Approve(queryParam["email"], rwProfileId, ctx)
 	}
 
 	return entity.Error(ctx, fiber.StatusUnprocessableEntity, constant.Errors["EmailQueryRequired"].Message, constant.Errors["EmailQueryRequired"].Clue)

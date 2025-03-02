@@ -4,19 +4,22 @@ import (
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
+	"github.com/abiyyu03/siruta/usecase/member"
 	"github.com/gofiber/fiber/v2"
 )
 
-type MemberHttp struct{}
+type MemberHttp struct {
+	memberUsecase *member.MemberUsecase
+}
 
 func (m *MemberHttp) GetData(ctx *fiber.Ctx) error {
-	return memberUsecase.Fetch(ctx)
+	return m.memberUsecase.Fetch(ctx)
 }
 
 func (m *MemberHttp) GetDataById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
-	return memberUsecase.FetchById(ctx, id)
+	return m.memberUsecase.FetchById(ctx, id)
 }
 
 func (m *MemberHttp) StoreData(ctx *fiber.Ctx) error {
@@ -26,7 +29,7 @@ func (m *MemberHttp) StoreData(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusUnprocessableEntity, constant.Errors["UnprocessableEntity"].Message, constant.Errors["UnprocessableEntity"].Clue)
 	}
 
-	return memberUsecase.Store(ctx, member)
+	return m.memberUsecase.Store(ctx, member)
 }
 
 func (m *MemberHttp) UpdateData(ctx *fiber.Ctx) error {
@@ -37,5 +40,5 @@ func (m *MemberHttp) UpdateData(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusUnprocessableEntity, constant.Errors["UnprocessableEntity"].Message, constant.Errors["UnprocessableEntity"].Clue)
 	}
 
-	return memberUsecase.Update(ctx, id, member)
+	return m.memberUsecase.Update(ctx, id, member)
 }

@@ -4,11 +4,11 @@ import (
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/request"
-	"github.com/abiyyu03/siruta/usecase"
+	"github.com/abiyyu03/siruta/usecase/auth"
 	"github.com/gofiber/fiber/v2"
 )
 
-var authUsecase = new(usecase.AuthUsecase)
+var authUsecase = auth.AuthUsecase{}
 
 func Login(ctx *fiber.Ctx) error {
 	var request request.LoginRequest

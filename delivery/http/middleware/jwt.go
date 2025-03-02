@@ -7,13 +7,13 @@ import (
 
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
-	"github.com/abiyyu03/siruta/repository"
+	"github.com/abiyyu03/siruta/repository/role"
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
 	"github.com/golang-jwt/jwt/v4"
 )
 
-// var privateKey *rsa.PrivateKey
+// privateKey *rsa.PrivateKey
 
 func loadPublicKey() (*rsa.PublicKey, error) {
 	// publicKeyPath := os.Getenv("JWT_PUBLIC_KEY_PATH")
@@ -58,7 +58,7 @@ func JWTMiddleware(allowedRoles []int) fiber.Handler {
 
 			castedRoleID := int(roleID)
 
-			allowedRoleId, err := new(repository.RoleRepository).FetchById(castedRoleID)
+			allowedRoleId, err := new(role.RoleRepository).FetchById(castedRoleID)
 
 			if err != nil {
 				return err
