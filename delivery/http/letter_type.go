@@ -4,32 +4,35 @@ import (
 	"strconv"
 
 	"github.com/abiyyu03/siruta/entity/model"
+	"github.com/abiyyu03/siruta/usecase/letter_type"
 	"github.com/gofiber/fiber/v2"
 )
 
-type LetterTypeHttp struct{}
-
-func (v *LetterTypeHttp) GetData(ctx *fiber.Ctx) error {
-	return letterTypeUsecase.Fetch(ctx)
+type LetterTypeHttp struct {
+	letterTypeUsecase *letter_type.LetterTypeUsecase
 }
 
-func (v *LetterTypeHttp) GetDataById(ctx *fiber.Ctx) error {
+func (l *LetterTypeHttp) GetData(ctx *fiber.Ctx) error {
+	return l.letterTypeUsecase.Fetch(ctx)
+}
+
+func (l *LetterTypeHttp) GetDataById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
-	return letterTypeUsecase.FetchById(ctx, id)
+	return l.letterTypeUsecase.FetchById(ctx, id)
 }
 
-func (v *LetterTypeHttp) StoreData(ctx *fiber.Ctx) error {
+func (l *LetterTypeHttp) StoreData(ctx *fiber.Ctx) error {
 	var letterType *model.LetterType
 
 	if err := ctx.BodyParser(&letterType); err != nil {
 		return err
 	}
 
-	return letterTypeUsecase.Store(letterType, ctx)
+	return l.letterTypeUsecase.Store(letterType, ctx)
 }
 
-func (v *LetterTypeHttp) UpdateData(ctx *fiber.Ctx) error {
+func (l *LetterTypeHttp) UpdateData(ctx *fiber.Ctx) error {
 	var letterType *model.LetterType
 	id, _ := strconv.Atoi(ctx.Params("id"))
 
@@ -37,11 +40,11 @@ func (v *LetterTypeHttp) UpdateData(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return letterTypeUsecase.Update(letterType, ctx, id)
+	return l.letterTypeUsecase.Update(letterType, ctx, id)
 }
 
-func (v *LetterTypeHttp) DeleteData(ctx *fiber.Ctx) error {
+func (l *LetterTypeHttp) DeleteData(ctx *fiber.Ctx) error {
 	id, _ := strconv.Atoi(ctx.Params("id"))
 
-	return letterTypeUsecase.Delete(ctx, id)
+	return l.letterTypeUsecase.Delete(ctx, id)
 }

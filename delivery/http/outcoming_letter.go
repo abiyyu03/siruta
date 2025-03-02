@@ -1,14 +1,14 @@
 package http
 
 import (
-	"github.com/abiyyu03/siruta/usecase"
+	"github.com/abiyyu03/siruta/usecase/letter"
 	"github.com/gofiber/fiber/v2"
 )
 
-type OutcomingLetterHttp struct{}
+type OutcomingLetterHttp struct {
+	outcomingLetterUsecase *letter.OutcomingLetterUsecase
+}
 
-var outcomingLetterUsecase = new(usecase.OutcomingLetterUsecase)
-
-func (l *OutcomingLetterHttp) GetData(ctx *fiber.Ctx) error {
-	return outcomingLetterUsecase.Fetch(ctx)
+func (o *OutcomingLetterHttp) GetData(ctx *fiber.Ctx) error {
+	return o.outcomingLetterUsecase.Fetch(ctx)
 }

@@ -5,13 +5,13 @@ import (
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/request"
-	"github.com/abiyyu03/siruta/usecase"
+	"github.com/abiyyu03/siruta/usecase/rt_profile"
 	"github.com/gofiber/fiber/v2"
 )
 
-type RTProfileRegisterHttp struct{}
-
-var rtProfileRegisterUsecase = new(usecase.RTProfileRegisterUsecase)
+type RTProfileRegisterHttp struct {
+	rtProfileRegisterUsecase *rt_profile.RTProfileRegisterUsecase
+}
 
 func (r *RTProfileRegisterHttp) RegisterRTProfile(ctx *fiber.Ctx) error {
 	var rtProfile *request.RTProfileRegisterRequest
@@ -20,7 +20,7 @@ func (r *RTProfileRegisterHttp) RegisterRTProfile(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return rtProfileRegisterUsecase.RegisterRTProfile(rtProfile, ctx)
+	return r.rtProfileRegisterUsecase.RegisterRTProfile(rtProfile, ctx)
 }
 
 func (r *RTProfileRegisterHttp) ApproveRegistration(ctx *fiber.Ctx) error {
@@ -28,7 +28,7 @@ func (r *RTProfileRegisterHttp) ApproveRegistration(ctx *fiber.Ctx) error {
 	queryParam := ctx.Queries()
 
 	if queryParam["email"] != "" {
-		return rtProfileRegisterUsecase.Approve(queryParam["email"], rtProfileId, ctx)
+		return r.rtProfileRegisterUsecase.Approve(queryParam["email"], rtProfileId, ctx)
 	}
 
 	return entity.Error(ctx, fiber.StatusUnprocessableEntity, constant.Errors["EmailQueryRequired"].Message, constant.Errors["EmailQueryRequired"].Clue)
@@ -49,5 +49,5 @@ func (r *RTProfileRegisterHttp) RegisterUserRt(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return rtProfileRegisterUsecase.RegisterUserRt(userRt, ctx, params["token"])
+	return r.rtProfileRegisterUsecase.RegisterUserRt(userRt, ctx, params["token"])
 }

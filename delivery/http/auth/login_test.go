@@ -1,4 +1,4 @@
-package main
+package auth
 
 import (
 	"encoding/json"
@@ -21,8 +21,8 @@ type MockAuthUsecase struct {
 	mock.Mock
 }
 
-func (m *MockAuthUsecase) IssueAuthToken(ctx *fiber.Ctx, username, password string) (string, error) {
-	args := m.Called(ctx, username, password)
+func (m *MockAuthUsecase) IssueAuthToken(ctx *fiber.Ctx, email, password string) (string, error) {
+	args := m.Called(ctx, email, password)
 	return args.String(0), args.Error(1)
 }
 
@@ -67,7 +67,7 @@ func TestLoginHandler(t *testing.T) {
 
 			app.Post("/login", func(ctx *fiber.Ctx) error {
 				var request struct {
-					Username string `json:"username"`
+					email    string `json:"email"`
 					Password string `json:"password"`
 				}
 				if err := ctx.BodyParser(&request); err != nil {
@@ -79,7 +79,7 @@ func TestLoginHandler(t *testing.T) {
 				// Use private key for signing (log for debugging)
 				log.Printf("Using private key for signing: %s", privateKey)
 
-				generatedToken, err := mockAuth.IssueAuthToken(ctx, request.Username, request.Password)
+				generatedToken, err := mockAuth.IssueAuthToken(ctx, request.email, request.Password)
 				if err != nil {
 					return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 						"message": fiber.ErrBadRequest.Message,
