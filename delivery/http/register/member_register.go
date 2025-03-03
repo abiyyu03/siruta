@@ -1,16 +1,27 @@
 package register
 
 import (
+	"github.com/abiyyu03/siruta/entity"
+	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/request"
+	"github.com/abiyyu03/siruta/usecase/referal_code"
 	"github.com/abiyyu03/siruta/usecase/register"
 	"github.com/gofiber/fiber/v2"
 )
 
 type MemberRegisterHttp struct {
 	memberRegisterUsecase *register.MemberRegisterUsecase
+	referalCodeUsecase    *referal_code.ReferalCodeUsecase
 }
 
 func (m *MemberRegisterHttp) Register(ctx *fiber.Ctx) error {
+	params := ctx.Queries()
+	//token verif
+	isReferalCodeValid := m.referalCodeUsecase.Validate(ctx, params["referal_code"])
+
+	if isReferalCodeValid == nil {
+		return entity.Error(ctx, fiber.StatusForbidden, constant.Errors["InvalidReferalCode"].Message, constant.Errors["InvalidReferalCode"].Clue)
+	}
 	var userMember *request.RegisterRequest
 
 	if err := ctx.BodyParser(&userMember); err != nil {
