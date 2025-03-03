@@ -74,10 +74,10 @@ func (r *RTProfileRegisterRepository) GetAndVerifyRWReferalCode(inputedReferalCo
 	}
 
 	if referalCode == nil {
-		return false, "", errors.New("Kode referal tidak valid")
+		return false, "", errors.New("kode referal tidak valid")
 	}
 
-	return true, referalCode.RWProfileId, nil
+	return true, referalCode.ProfileId, nil
 }
 
 func (r *RTProfileRegisterRepository) CheckRTNumberAvailability(rtProfile *model.RTProfile, rtNumber string) (bool, error) {

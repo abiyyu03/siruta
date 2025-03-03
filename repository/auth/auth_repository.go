@@ -9,8 +9,8 @@ import (
 type AuthRepository struct{}
 
 func (u *AuthRepository) FetchLogin(email, password string) (*model.User, *model.Member, error) {
-	var user model.User
-	var member model.Member
+	var user *model.User
+	var member *model.Member
 
 	if err := config.DB.Preload("Role").Where("email = ? ", email).First(&user).Error; err != nil {
 		return nil, nil, err
@@ -24,9 +24,9 @@ func (u *AuthRepository) FetchLogin(email, password string) (*model.User, *model
 	fetchedMember := config.DB.Where("user_id = ?", user.ID).First(&member)
 
 	if fetchedMember == nil {
-		return &user, nil, nil
+		return user, nil, nil
 	}
 
-	return &user, &member, nil
+	return user, member, nil
 
 }

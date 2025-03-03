@@ -1,4 +1,4 @@
-package referal_code
+package repository
 
 import (
 	"github.com/abiyyu03/siruta/entity"
@@ -11,10 +11,14 @@ type ReferalCodeUsecase struct {
 	referalCodeRepository *referal_code.ReferalCodeRepository
 }
 
+func NewReferalCodeUsecase(repo *referal_code.ReferalCodeRepository) *ReferalCodeUsecase {
+	return &ReferalCodeUsecase{referalCodeRepository: repo}
+}
+
 type RWProfileResponse struct {
-	ID        string `json:"id"`
-	RWNumber  string `json:"rw_number"`
-	VillageID uint   `json:"village_id"`
+	ID string `json:"id"`
+	// RWNumber  string `json:"rw_number"`
+	// VillageID uint   `json:"village_id"`
 }
 
 func (r *ReferalCodeUsecase) Fetch(ctx *fiber.Ctx) error {
@@ -42,7 +46,7 @@ func (r *ReferalCodeUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 }
 
 func (r *ReferalCodeUsecase) Validate(ctx *fiber.Ctx, code string) error {
-	rwProfile, isValid, err := r.referalCodeRepository.Validate(code)
+	rwProfileId, isValid, err := r.referalCodeRepository.Validate(code)
 
 	if !isValid {
 		return entity.Error(ctx, fiber.StatusBadRequest, constant.Errors["InvalidReferalCode"].Message, constant.Errors["InvalidReferalCode"].Clue)
@@ -53,9 +57,7 @@ func (r *ReferalCodeUsecase) Validate(ctx *fiber.Ctx, code string) error {
 	}
 
 	restructureRwProfile := &RWProfileResponse{
-		ID:        rwProfile.ID,
-		RWNumber:  rwProfile.RWNumber,
-		VillageID: rwProfile.VillageID,
+		ID: rwProfileId,
 	}
 
 	return entity.Success(ctx, &restructureRwProfile, "Referal code is valid")

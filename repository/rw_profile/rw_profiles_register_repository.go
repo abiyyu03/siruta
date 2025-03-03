@@ -2,13 +2,12 @@ package rw_profile
 
 import (
 	"log"
-	"time"
 
 	"github.com/abiyyu03/siruta/config"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/helper"
 	"github.com/abiyyu03/siruta/repository/email"
 	"github.com/abiyyu03/siruta/repository/member"
+	"github.com/abiyyu03/siruta/repository/referal_code"
 	"github.com/abiyyu03/siruta/repository/register"
 	"github.com/abiyyu03/siruta/repository/user"
 	"gorm.io/gorm"
@@ -20,6 +19,7 @@ type RWProfileRegisterRepository struct {
 	memberRepository        *member.MemberRepository
 	tokenRegisterRepository *register.RegTokenRepository
 	rwNotification          *email.EmailRegistrationRepository
+	referalCode             *referal_code.ReferalCodeRepository
 }
 
 func (r *RWProfileRegisterRepository) RegisterRWProfile(rwProfileRequest *model.RWProfile) (*model.RWProfile, error) {
@@ -28,23 +28,6 @@ func (r *RWProfileRegisterRepository) RegisterRWProfile(rwProfileRequest *model.
 	}
 
 	return rwProfileRequest, nil
-}
-
-func (r *RWProfileRegisterRepository) GenerateReferalCode(tx *gorm.DB, rwProfileId string) error {
-	code := helper.RandomString(6)
-
-	referal := model.ReferalCode{
-		Code:        code,
-		ExpiredAt:   time.Now().AddDate(1, 0, 0),
-		RWProfileId: rwProfileId,
-	}
-
-	if err := tx.Create(&referal).Error; err != nil {
-		log.Printf("failed to create referalcode: %v", err)
-		return err
-	}
-
-	return nil
 }
 
 func (r *RWProfileRegisterRepository) FetchRWProfile(id string, rwProfile *model.RWProfile) (*model.RWProfile, error) {
@@ -102,7 +85,7 @@ func (r *RWProfileRegisterRepository) ApproveRegistrant(rwProfileId string) erro
 		}
 
 		// Generate referral code
-		if err := r.GenerateReferalCode(tx, rwProfile.ID); err != nil {
+		if err := r.referalCode.GenerateReferalCode(tx, rwProfile.ID); err != nil {
 			log.Printf("Failed to generate referral code: %v", err)
 			return err // Trigger rollback
 		}

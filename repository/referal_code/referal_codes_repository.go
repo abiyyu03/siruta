@@ -2,16 +2,16 @@ package referal_code
 
 import (
 	"errors"
+	"log"
 	"time"
 
 	"github.com/abiyyu03/siruta/config"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/repository/rw_profile"
+	"github.com/abiyyu03/siruta/helper"
+	"gorm.io/gorm"
 )
 
-type ReferalCodeRepository struct {
-	rwProfileRepository *rw_profile.RWProfileRepository
-}
+type ReferalCodeRepository struct{}
 
 func (r *ReferalCodeRepository) Fetch() ([]*model.ReferalCode, error) {
 	var referalCodes []*model.ReferalCode
@@ -33,6 +33,23 @@ func (r *ReferalCodeRepository) FetchById(id string) (*model.ReferalCode, error)
 	return referalCode, nil
 }
 
+func (r *ReferalCodeRepository) GenerateReferalCode(tx *gorm.DB, profileId string) error {
+	code := helper.RandomString(6)
+
+	referal := &model.ReferalCode{
+		Code:      code,
+		ExpiredAt: time.Now().AddDate(1, 0, 0),
+		ProfileId: profileId,
+	}
+
+	if err := tx.Create(&referal).Error; err != nil {
+		log.Printf("failed to create referalcode: %v", err)
+		return err
+	}
+
+	return nil
+}
+
 func (r *ReferalCodeRepository) GetAndVerifyRWReferalCode(inputedReferalCode string) (bool, string, error) {
 	var referalCode *model.ReferalCode
 
@@ -44,25 +61,22 @@ func (r *ReferalCodeRepository) GetAndVerifyRWReferalCode(inputedReferalCode str
 		return false, "", errors.New("kode referal tidak valid")
 	}
 
-	return true, referalCode.RWProfileId, nil
+	return true, referalCode.ProfileId, nil
 }
 
-func (r *ReferalCodeRepository) Validate(code string) (*model.RWProfile, bool, error) {
+func (r *ReferalCodeRepository) Validate(code string) (string, bool, error) { //profileType like rw, rt
 	var referalCode *model.ReferalCode
 
 	if err := config.DB.Where("code = ? AND expired_at > ?", code, time.Now()).First(&referalCode).Error; err != nil {
-		return nil, false, err
+		log.Print("Error referal code : ", err.Error())
+		return "", false, err
 	}
+
+	log.Print("profile id : ", referalCode.ProfileId)
 
 	if referalCode == nil {
-		return nil, false, nil
+		return "", false, nil
 	}
 
-	rwProfile, err := r.rwProfileRepository.FetchById(referalCode.RWProfileId)
-
-	if err != nil {
-		return nil, false, err
-	}
-
-	return rwProfile, true, nil
+	return referalCode.ProfileId, true, nil
 }
