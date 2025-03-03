@@ -10,7 +10,7 @@ import (
 
 type IncomingLetterUsecase struct{}
 
-var IncomingLetterRepository = new(letter.IncomingLetterRepository)
+var IncomingLetterRepository *letter.IncomingLetterRepository
 
 func (i *IncomingLetterUsecase) Fetch(ctx *fiber.Ctx) error {
 	incomingLetters, err := IncomingLetterRepository.Fetch()

@@ -11,9 +11,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type MemberRegisterUsecase struct {
-	memberRegisterRepository *register.MemberRegisterRepository
-}
+type MemberRegisterUsecase struct{}
+
+var memberRegisterRepository *register.MemberRegisterRepository
 
 func (m *MemberRegisterUsecase) RegisterMember(ctx *fiber.Ctx, userMember *request.RegisterRequest) error {
 	userId, _ := uuid.NewV7()
@@ -52,7 +52,7 @@ func (m *MemberRegisterUsecase) RegisterMember(ctx *fiber.Ctx, userMember *reque
 		Status:         userMember.Status,
 	}
 
-	err = m.memberRegisterRepository.RegisterMember(newMember, newUser)
+	err = memberRegisterRepository.RegisterMember(newMember, newUser)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

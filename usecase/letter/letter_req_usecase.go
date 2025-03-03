@@ -9,9 +9,9 @@ import (
 	"github.com/google/uuid"
 )
 
-type LetterReqUsecase struct {
-	letterReqRepository *letter.LetterReqRepository
-}
+type LetterReqUsecase struct{}
+
+var letterReqRepository *letter.LetterReqRepository
 
 func (l *LetterReqUsecase) StoreOutcomingLetter(ctx *fiber.Ctx, memberData *model.Member, outcommingLetter *model.OutcomingLetter, memberStatus string, birthDate string, nik string) error {
 	letterId, _ := uuid.NewV7()
@@ -46,16 +46,16 @@ func (l *LetterReqUsecase) StoreOutcomingLetter(ctx *fiber.Ctx, memberData *mode
 			MaritalStatus: memberData.MaritalStatus,
 		}
 
-		_, err = l.letterReqRepository.StoreOutcomingLetterWithGuest(newOutcomingLetter, createdGuestMember)
+		_, err = letterReqRepository.StoreOutcomingLetterWithGuest(newOutcomingLetter, createdGuestMember)
 
 	} else {
-		isMemberExist, _ := l.letterReqRepository.CheckMemberResidentExist(birthDate, nik)
+		isMemberExist, _ := letterReqRepository.CheckMemberResidentExist(birthDate, nik)
 
 		if !isMemberExist {
 			return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
 		}
 
-		_, err = l.letterReqRepository.StoreOutcomingLetter(newOutcomingLetter)
+		_, err = letterReqRepository.StoreOutcomingLetter(newOutcomingLetter)
 
 	}
 
@@ -67,7 +67,7 @@ func (l *LetterReqUsecase) StoreOutcomingLetter(ctx *fiber.Ctx, memberData *mode
 }
 
 func (l *LetterReqUsecase) UpdateApprovalStatusByRT(outcomingLetter *model.OutcomingLetter, id string, ctx *fiber.Ctx) error {
-	err := l.letterReqRepository.UpdateApprovalStatusByRT(outcomingLetter, id)
+	err := letterReqRepository.UpdateApprovalStatusByRT(outcomingLetter, id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

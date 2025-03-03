@@ -15,7 +15,7 @@ import (
 
 type AuthUsecase struct{}
 
-var authRepository = new(auth.AuthRepository)
+var authRepository *auth.AuthRepository
 
 var privateKey *rsa.PrivateKey
 

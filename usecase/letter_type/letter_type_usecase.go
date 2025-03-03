@@ -8,12 +8,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type LetterTypeUsecase struct {
-	letterTypeRepository *letter_type.LetterTypeRepository
-}
+type LetterTypeUsecase struct{}
+
+var letterTypeRepository *letter_type.LetterTypeRepository
 
 func (l *LetterTypeUsecase) Fetch(ctx *fiber.Ctx) error {
-	letterTypes, err := l.letterTypeRepository.Fetch()
+	letterTypes, err := letterTypeRepository.Fetch()
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -23,7 +23,7 @@ func (l *LetterTypeUsecase) Fetch(ctx *fiber.Ctx) error {
 }
 
 func (l *LetterTypeUsecase) FetchById(ctx *fiber.Ctx, id string) error {
-	letterType, err := l.letterTypeRepository.FetchById(id)
+	letterType, err := letterTypeRepository.FetchById(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -42,7 +42,7 @@ func (l *LetterTypeUsecase) Store(letterType *model.LetterType, ctx *fiber.Ctx) 
 		Code:     letterType.Code,
 	}
 
-	storedLetterType, err := l.letterTypeRepository.Store(createdLetterType)
+	storedLetterType, err := letterTypeRepository.Store(createdLetterType)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -58,7 +58,7 @@ func (l *LetterTypeUsecase) Update(letterType *model.LetterType, ctx *fiber.Ctx,
 		Code:     letterType.Code,
 	}
 
-	updatedLetterType, err := l.letterTypeRepository.Update(updateLetterType, id)
+	updatedLetterType, err := letterTypeRepository.Update(updateLetterType, id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -68,7 +68,7 @@ func (l *LetterTypeUsecase) Update(letterType *model.LetterType, ctx *fiber.Ctx,
 }
 
 func (l *LetterTypeUsecase) Delete(ctx *fiber.Ctx, id int) error {
-	village, err := l.letterTypeRepository.Delete(id)
+	village, err := letterTypeRepository.Delete(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

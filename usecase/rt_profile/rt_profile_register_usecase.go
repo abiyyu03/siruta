@@ -13,9 +13,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type RTProfileRegisterUsecase struct {
-	rtProfileRegisterRepository *rt_profile.RTProfileRegisterRepository
-}
+type RTProfileRegisterUsecase struct{}
+
+var rtProfileRegisterRepository *rt_profile.RTProfileRegisterRepository
 
 func (r *RTProfileRegisterUsecase) RegisterRTProfile(rtProfile *request.RTProfileRegisterRequest, ctx *fiber.Ctx) error {
 	id, _ := uuid.NewV7()
@@ -30,7 +30,7 @@ func (r *RTProfileRegisterUsecase) RegisterRTProfile(rtProfile *request.RTProfil
 		FullAddress: rtProfile.FullAddress,
 	}
 
-	registeredUser, err := r.rtProfileRegisterRepository.Register(newRTProfile, rtProfile.ReferalCode)
+	registeredUser, err := rtProfileRegisterRepository.Register(newRTProfile, rtProfile.ReferalCode)
 
 	log.Print(registeredUser)
 
@@ -42,7 +42,7 @@ func (r *RTProfileRegisterUsecase) RegisterRTProfile(rtProfile *request.RTProfil
 }
 
 func (r *RTProfileRegisterUsecase) Approve(emailDestination string, rtProfileId string, ctx *fiber.Ctx) error {
-	err := r.rtProfileRegisterRepository.ApproveRegistrant(rtProfileId)
+	err := rtProfileRegisterRepository.ApproveRegistrant(rtProfileId)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -89,7 +89,7 @@ func (r *RTProfileRegisterUsecase) RegisterUserRt(userRt *request.RegisterReques
 		Status:         userRt.Status,
 	}
 
-	err = r.rtProfileRegisterRepository.RegisterUserRt(newMember, newUser, constant.ROLE_RT, token)
+	err = rtProfileRegisterRepository.RegisterUserRt(newMember, newUser, constant.ROLE_RT, token)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

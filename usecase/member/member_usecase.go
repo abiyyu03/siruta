@@ -11,12 +11,13 @@ import (
 )
 
 type MemberUsecase struct {
-	db               *gorm.DB
-	memberRepository *member.MemberRepository
+	db *gorm.DB
 }
 
+var memberRepository *member.MemberRepository
+
 func (m *MemberUsecase) Fetch(ctx *fiber.Ctx) error {
-	members, err := m.memberRepository.Fetch()
+	members, err := memberRepository.Fetch()
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -30,7 +31,7 @@ func (m *MemberUsecase) Fetch(ctx *fiber.Ctx) error {
 }
 
 func (m *MemberUsecase) FetchById(ctx *fiber.Ctx, id string) error {
-	members, err := m.memberRepository.FetchById(id)
+	members, err := memberRepository.FetchById(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -62,7 +63,7 @@ func (m *MemberUsecase) Store(ctx *fiber.Ctx, memberData *model.Member) error {
 		MemberStatusId: memberData.MemberStatusId,
 	}
 
-	create, err := m.memberRepository.Store(m.db, createdMember)
+	create, err := memberRepository.Store(m.db, createdMember)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -86,7 +87,7 @@ func (m *MemberUsecase) Update(ctx *fiber.Ctx, id string, memberData *model.Memb
 		MaritalStatus: memberData.MaritalStatus,
 	}
 
-	update, err := m.memberRepository.Update(updatedMember, id)
+	update, err := memberRepository.Update(updatedMember, id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

@@ -8,12 +8,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type MemberStatusUsecase struct {
-	memberStatusRepository *member_status.MemberStatusRepository
-}
+type MemberStatusUsecase struct{}
+
+var memberStatusRepository *member_status.MemberStatusRepository
 
 func (m *MemberStatusUsecase) Fetch(ctx *fiber.Ctx) error {
-	memberStatus, err := m.memberStatusRepository.Fetch()
+	memberStatus, err := memberStatusRepository.Fetch()
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -23,7 +23,7 @@ func (m *MemberStatusUsecase) Fetch(ctx *fiber.Ctx) error {
 }
 
 func (m *MemberStatusUsecase) FetchById(ctx *fiber.Ctx, id int) error {
-	memberStatus, err := m.memberStatusRepository.FetchById(id)
+	memberStatus, err := memberStatusRepository.FetchById(id)
 
 	if memberStatus == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
@@ -41,7 +41,7 @@ func (m *MemberStatusUsecase) Store(memberStatus *model.MemberStatus, ctx *fiber
 		Status: memberStatus.Status,
 	}
 
-	storedMemberStatus, err := m.memberStatusRepository.Store(createdStatus)
+	storedMemberStatus, err := memberStatusRepository.Store(createdStatus)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -56,7 +56,7 @@ func (m *MemberStatusUsecase) Update(memberStatus *model.MemberStatus, ctx *fibe
 		Status: memberStatus.Status,
 	}
 
-	updatedMemberStatus, err := m.memberStatusRepository.Update(updateMemberStatus, id)
+	updatedMemberStatus, err := memberStatusRepository.Update(updateMemberStatus, id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -66,7 +66,7 @@ func (m *MemberStatusUsecase) Update(memberStatus *model.MemberStatus, ctx *fibe
 }
 
 func (m *MemberStatusUsecase) Delete(ctx *fiber.Ctx, id int) error {
-	village, err := m.memberStatusRepository.Delete(id)
+	village, err := memberStatusRepository.Delete(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
