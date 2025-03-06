@@ -7,18 +7,16 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type ReferalCodeUsecase struct {
-	referalCodeRepository *referal_code.ReferalCodeRepository
-}
+type ReferalCodeUsecase struct{}
 
-type RWProfileResponse struct {
-	ID        string `json:"id"`
-	RWNumber  string `json:"rw_number"`
-	VillageID uint   `json:"village_id"`
+var referalCodeRepository *referal_code.ReferalCodeRepository
+
+type IdProfileResponse struct {
+	ID string `json:"id"`
 }
 
 func (r *ReferalCodeUsecase) Fetch(ctx *fiber.Ctx) error {
-	referals, err := r.referalCodeRepository.Fetch()
+	referals, err := referalCodeRepository.Fetch()
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -28,7 +26,7 @@ func (r *ReferalCodeUsecase) Fetch(ctx *fiber.Ctx) error {
 }
 
 func (r *ReferalCodeUsecase) FetchById(ctx *fiber.Ctx, id string) error {
-	referal, err := r.referalCodeRepository.FetchById(id)
+	referal, err := referalCodeRepository.FetchById(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -42,7 +40,7 @@ func (r *ReferalCodeUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 }
 
 func (r *ReferalCodeUsecase) Validate(ctx *fiber.Ctx, code string) error {
-	rwProfile, isValid, err := r.referalCodeRepository.Validate(code)
+	rwProfileId, isValid, err := referalCodeRepository.Validate(code)
 
 	if !isValid {
 		return entity.Error(ctx, fiber.StatusBadRequest, constant.Errors["InvalidReferalCode"].Message, constant.Errors["InvalidReferalCode"].Clue)
@@ -52,10 +50,8 @@ func (r *ReferalCodeUsecase) Validate(ctx *fiber.Ctx, code string) error {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	restructureRwProfile := &RWProfileResponse{
-		ID:        rwProfile.ID,
-		RWNumber:  rwProfile.RWNumber,
-		VillageID: rwProfile.VillageID,
+	restructureRwProfile := &IdProfileResponse{
+		ID: rwProfileId,
 	}
 
 	return entity.Success(ctx, &restructureRwProfile, "Referal code is valid")

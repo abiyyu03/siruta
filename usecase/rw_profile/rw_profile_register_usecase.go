@@ -11,9 +11,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type RWProfileRegisterUsecase struct {
-	rwProfileRegisterRepository *rw_profile.RWProfileRegisterRepository
-}
+type RWProfileRegisterUsecase struct{}
+
+var rwProfileRegisterRepository *rw_profile.RWProfileRegisterRepository
 
 func (r *RWProfileRegisterUsecase) RegisterProfileRW(rwProfile *model.RWProfile, ctx *fiber.Ctx) error {
 	id, _ := uuid.NewV7()
@@ -29,7 +29,7 @@ func (r *RWProfileRegisterUsecase) RegisterProfileRW(rwProfile *model.RWProfile,
 		RegencyLogo: rwProfile.RegencyLogo,
 	}
 
-	rwProfileRegistration, err := r.rwProfileRegisterRepository.RegisterRWProfile(newRWProfile)
+	rwProfileRegistration, err := rwProfileRegisterRepository.RegisterRWProfile(newRWProfile)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -73,7 +73,7 @@ func (r *RWProfileRegisterUsecase) RegisterUserRw(register *request.RegisterRequ
 		Occupation:     &register.Occupation,
 		Status:         register.Status,
 	}
-	err = r.rwProfileRegisterRepository.RegisterUserRW(member, user, 3, token)
+	err = rwProfileRegisterRepository.RegisterUserRW(member, user, 3, token)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -83,7 +83,7 @@ func (r *RWProfileRegisterUsecase) RegisterUserRw(register *request.RegisterRequ
 }
 
 func (r *RWProfileRegisterUsecase) Approve(emailDestination string, rwProfileId string, ctx *fiber.Ctx) error {
-	err := r.rwProfileRegisterRepository.ApproveRegistrant(rwProfileId)
+	err := rwProfileRegisterRepository.ApproveRegistrant(rwProfileId)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

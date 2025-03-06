@@ -14,7 +14,7 @@ type UserUsecase struct {
 	db *gorm.DB
 }
 
-var userRepository = new(user.UserRepository)
+var userRepository *user.UserRepository
 
 func (u *UserUsecase) Fetch(ctx *fiber.Ctx) error {
 	users, err := userRepository.Fetch()

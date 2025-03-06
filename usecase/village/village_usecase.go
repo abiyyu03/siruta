@@ -10,7 +10,7 @@ import (
 
 type VillageUsecase struct{}
 
-var villageRepository = new(village.VillageRepository)
+var villageRepository *village.VillageRepository
 
 func (v *VillageUsecase) Fetch(ctx *fiber.Ctx) error {
 	villages, err := villageRepository.Fetch()

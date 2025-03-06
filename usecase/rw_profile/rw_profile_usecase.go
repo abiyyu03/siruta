@@ -7,12 +7,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type RWProfileUsecase struct {
-	rwProfileRepository *rw_profile.RWProfileRepository
-}
+type RWProfileUsecase struct{}
+
+var rwProfileRepository *rw_profile.RWProfileRepository
 
 func (r *RWProfileUsecase) Fetch(ctx *fiber.Ctx) error {
-	rwProfiles, err := r.rwProfileRepository.Fetch()
+	rwProfiles, err := rwProfileRepository.Fetch()
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -22,7 +22,7 @@ func (r *RWProfileUsecase) Fetch(ctx *fiber.Ctx) error {
 }
 
 func (r *RWProfileUsecase) FetchById(ctx *fiber.Ctx, id string) error {
-	rwProfile, err := r.rwProfileRepository.FetchById(id)
+	rwProfile, err := rwProfileRepository.FetchById(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)

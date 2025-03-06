@@ -9,6 +9,7 @@ import (
 	"github.com/abiyyu03/siruta/entity/model"
 	"github.com/abiyyu03/siruta/repository/email"
 	"github.com/abiyyu03/siruta/repository/member"
+	"github.com/abiyyu03/siruta/repository/referal_code"
 	"github.com/abiyyu03/siruta/repository/register"
 	"github.com/abiyyu03/siruta/repository/user"
 	"gorm.io/gorm"
@@ -20,6 +21,7 @@ type RTProfileRegisterRepository struct {
 	tokenRegisterRepository *register.RegTokenRepository
 	userRepository          *user.UserRepository
 	memberRepository        *member.MemberRepository
+	referalCodeRepository   *referal_code.ReferalCodeRepository
 }
 
 func (r *RTProfileRegisterRepository) Register(rtProfile *model.RTProfile, referalCode string) (*model.RTProfile, error) {
@@ -74,10 +76,10 @@ func (r *RTProfileRegisterRepository) GetAndVerifyRWReferalCode(inputedReferalCo
 	}
 
 	if referalCode == nil {
-		return false, "", errors.New("Kode referal tidak valid")
+		return false, "", errors.New("kode referal tidak valid")
 	}
 
-	return true, referalCode.RWProfileId, nil
+	return true, referalCode.ProfileId, nil
 }
 
 func (r *RTProfileRegisterRepository) CheckRTNumberAvailability(rtProfile *model.RTProfile, rtNumber string) (bool, error) {
@@ -101,6 +103,14 @@ func (r *RTProfileRegisterRepository) ApproveRegistrant(rtProfileId string) erro
 		err = r.rtNotification.RtNotification(rt.RTEmail)
 
 		if err != nil {
+			return err
+		}
+
+		// Generate referral code
+		err = r.referalCodeRepository.GenerateReferalCode(tx, rtProfileId)
+
+		if err != nil {
+			log.Printf("Failed to generate referral code: %v", err)
 			return err
 		}
 

@@ -8,12 +8,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type ReligionUsecase struct {
-	religionRepository *religion.ReligionRepository
-}
+type ReligionUsecase struct{}
+
+var religionRepository *religion.ReligionRepository
 
 func (r *ReligionUsecase) Fetch(ctx *fiber.Ctx) error {
-	religions, err := r.religionRepository.Fetch()
+	religions, err := religionRepository.Fetch()
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -23,7 +23,7 @@ func (r *ReligionUsecase) Fetch(ctx *fiber.Ctx) error {
 }
 
 func (r *ReligionUsecase) FetchById(ctx *fiber.Ctx, id int) error {
-	religion, err := r.religionRepository.FetchById(id)
+	religion, err := religionRepository.FetchById(id)
 
 	if religion == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
@@ -41,7 +41,7 @@ func (r *ReligionUsecase) Store(religion *model.Religion, ctx *fiber.Ctx) error 
 		ReligionName: religion.ReligionName,
 	}
 
-	storedReligion, err := r.religionRepository.Store(createdReligion)
+	storedReligion, err := religionRepository.Store(createdReligion)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -55,7 +55,7 @@ func (r *ReligionUsecase) Update(religion *model.Religion, ctx *fiber.Ctx, id in
 		ReligionName: religion.ReligionName,
 	}
 
-	updatedReligion, err := r.religionRepository.Update(updateReligion, id)
+	updatedReligion, err := religionRepository.Update(updateReligion, id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -65,7 +65,7 @@ func (r *ReligionUsecase) Update(religion *model.Religion, ctx *fiber.Ctx, id in
 }
 
 func (r *ReligionUsecase) Delete(ctx *fiber.Ctx, id int) error {
-	_, err := r.religionRepository.Delete(id)
+	_, err := religionRepository.Delete(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
