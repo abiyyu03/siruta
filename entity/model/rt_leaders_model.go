@@ -8,14 +8,15 @@ import (
 
 type RTLeader struct {
 	*gorm.Model
-	ID          int       `json:"id" gorm:"column:id;primaryKey;autoIncrement"`
-	MemberId    uint      `json:"member_id" gorm:"column:member_id;not null"`
-	Member      Member    `gorm:"foreignKey:MemberId;not null"`
-	RTProfileId uint      `json:"rt_profile_id" gorm:"column:rt_profile_id;not null"`
+	ID          string    `json:"id" gorm:"column:id;primaryKey;not null"`
+	Fullname    string    `json:"fullname" gorm:"column:fullname"`
+	NikNumber   string    `json:"nik_number" gorm:"column:nik_number;uniqueIndex" validate:"required,unique"`
+	KKNumber    string    `json:"kk_number" gorm:"column:kk_number"`
+	RTProfileId string    `json:"rt_profile_id" gorm:"column:rt_profile_id;not null"`
 	RTProfile   RTProfile `gorm:"foreignKey:RTProfileId;not null"`
-	IsActive    bool      `json:"is_active" gorm:"column:is_active;not null"`
-	StartPeriod int       `json:"start_period" gorm:"column:start_period;not null"`
-	EndPeriod   int       `json:"end_period" gorm:"column:end_period;not null"`
+	UserId      string    `json:"user_id" gorm:"column:user_id"`
+	User        User      `json:"-" gorm:"foreignKey:UserId;not null"`
+	FullAddress string    `json:"full_address" gorm:"column:full_address;type:text"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`

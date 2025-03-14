@@ -5,22 +5,17 @@ import (
 	"net/smtp"
 
 	"github.com/abiyyu03/siruta/helper"
-	"github.com/abiyyu03/siruta/repository/register"
 	"github.com/gofiber/fiber/v2/log"
 )
 
 // func SendNotificationAfterRWProfileRegistration(ctx fiber.Ctx) error {}
-type EmailRegistrationRepository struct {
-	regToken *register.RegTokenRepository
-}
+type EmailRegistrationUsecase struct{}
 
-func (e *EmailRegistrationRepository) RtNotification(emailDestination string) error {
+func (e *EmailRegistrationUsecase) RtNotification(emailDestination string, token string) error {
 	from := helper.GoDotEnv("EMAIL_FROM")
 	password := helper.GoDotEnv("EMAIL_PASSWORD")
 	smtpHost := helper.GoDotEnv("EMAIL_PROT_HOST")
 	smtpPort := helper.GoDotEnv("EMAIL_PROT_PORT")
-
-	token, _ := e.regToken.CreateToken()
 
 	url := "https://satuwarga.id/register/rt?token=" + token
 
@@ -39,13 +34,11 @@ func (e *EmailRegistrationRepository) RtNotification(emailDestination string) er
 	return nil
 }
 
-func (e *EmailRegistrationRepository) RwNotification(emailDestination string) error {
+func (e *EmailRegistrationUsecase) RwNotification(emailDestination string, token string) error {
 	from := helper.GoDotEnv("EMAIL_FROM")
 	password := helper.GoDotEnv("EMAIL_PASSWORD")
 	smtpHost := helper.GoDotEnv("EMAIL_PROT_HOST")
 	smtpPort := helper.GoDotEnv("EMAIL_PROT_PORT")
-
-	token, _ := e.regToken.CreateToken()
 
 	url := "https://satuwarga.id/register/rw?token=" + token
 
@@ -63,5 +56,3 @@ func (e *EmailRegistrationRepository) RwNotification(emailDestination string) er
 	fmt.Println("Email sent successfully!")
 	return nil
 }
-
-// func (e *EmailRegistrationRepository) RejectNotification(emailDestination string) {}

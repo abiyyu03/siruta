@@ -1,13 +1,13 @@
 package rt_profile
 
 import (
-	"log"
-
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
 	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/abiyyu03/siruta/repository/rt_profile"
+	"github.com/abiyyu03/siruta/usecase/email"
+	"github.com/abiyyu03/siruta/usecase/referal_code"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -16,6 +16,8 @@ import (
 type RTProfileRegisterUsecase struct{}
 
 var rtProfileRegisterRepository *rt_profile.RTProfileRegisterRepository
+var rtNotification *email.EmailRegistrationUsecase
+var regTokenUsecase *referal_code.RegistrationTokenUsecase
 
 func (r *RTProfileRegisterUsecase) RegisterRTProfile(rtProfile *request.RTProfileRegisterRequest, ctx *fiber.Ctx) error {
 	id, _ := uuid.NewV7()
@@ -32,8 +34,6 @@ func (r *RTProfileRegisterUsecase) RegisterRTProfile(rtProfile *request.RTProfil
 
 	registeredUser, err := rtProfileRegisterRepository.Register(newRTProfile, rtProfile.ReferalCode)
 
-	log.Print(registeredUser)
-
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
@@ -42,24 +42,42 @@ func (r *RTProfileRegisterUsecase) RegisterRTProfile(rtProfile *request.RTProfil
 }
 
 func (r *RTProfileRegisterUsecase) Approve(emailDestination string, rtProfileId string, ctx *fiber.Ctx) error {
-	err := rtProfileRegisterRepository.ApproveRegistrant(rtProfileId)
+	token, err := regTokenUsecase.CreateToken(rtProfileId)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
+	err = rtProfileRegisterRepository.ApproveRegistrant(rtProfileId)
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	}
+
+	err = rtNotification.RtNotification(emailDestination, token)
+
+	if err != nil {
+		return err
+	}
+
 	return entity.Success(ctx, nil, "RT Profile approved successfully")
 }
 
-func (r *RTProfileRegisterUsecase) RegisterUserRt(userRt *request.RegisterRequest, ctx *fiber.Ctx, token string) error {
+func (r *RTProfileRegisterUsecase) RegisterUserRt(userRt *request.LeaderRegisterRequest, ctx *fiber.Ctx, token string) error {
 	//token verif
 	userId, _ := uuid.NewV7()
-	memberId, _ := uuid.NewV7()
+	leaderId, _ := uuid.NewV7()
 
 	hashedPassword, err := bcrypt.GenerateFromPassword(
 		[]byte(userRt.Password),
 		14,
 	)
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	}
+
+	rtProfileId, err := regTokenUsecase.DecodeToken(token)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -72,24 +90,17 @@ func (r *RTProfileRegisterUsecase) RegisterUserRt(userRt *request.RegisterReques
 		Password: string(hashedPassword),
 	}
 
-	newMember := &model.Member{
-		ID:             memberId.String(),
-		Fullname:       userRt.Fullname,
-		NikNumber:      &userRt.NikNumber,
-		KKNumber:       &userRt.KKNumber,
-		BornPlace:      userRt.BornPlace,
-		BirthDate:      userRt.BirthDate,
-		Gender:         userRt.Gender,
-		HomeAddress:    &userRt.HomeAddress,
-		MaritalStatus:  &userRt.MaritalStatus,
-		ReligionId:     userRt.ReligionId,
-		MemberStatusId: userRt.MemberStatusId,
-		UserId:         &newUser.ID,
-		Occupation:     &userRt.Occupation,
-		Status:         userRt.Status,
+	newLead := &model.RTLeader{
+		ID:          leaderId.String(),
+		Fullname:    userRt.Fullname,
+		NikNumber:   userRt.NikNumber,
+		KKNumber:    userRt.KKNumber,
+		FullAddress: userRt.FullAddress,
+		UserId:      newUser.ID,
+		RTProfileId: rtProfileId,
 	}
 
-	err = rtProfileRegisterRepository.RegisterUserRt(newMember, newUser, constant.ROLE_RT, token)
+	err = rtProfileRegisterRepository.RegisterUserRt(newLead, newUser, constant.ROLE_RT, token)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

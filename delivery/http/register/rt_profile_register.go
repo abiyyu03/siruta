@@ -43,7 +43,7 @@ func (r *RTProfileRegisterHttp) RegisterUserRt(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusForbidden, constant.Errors["InvalidToken"].Message, constant.Errors["InvalidToken"].Clue)
 	}
 
-	var userRt *request.RegisterRequest
+	var userRt *request.LeaderRegisterRequest
 
 	if err := ctx.BodyParser(&userRt); err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

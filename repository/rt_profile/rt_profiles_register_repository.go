@@ -7,8 +7,6 @@ import (
 
 	"github.com/abiyyu03/siruta/config"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/repository/email"
-	"github.com/abiyyu03/siruta/repository/member"
 	"github.com/abiyyu03/siruta/repository/referal_code"
 	"github.com/abiyyu03/siruta/repository/register"
 	"github.com/abiyyu03/siruta/repository/user"
@@ -17,11 +15,10 @@ import (
 
 type RTProfileRegisterRepository struct {
 	rtProfileRepository     *RTProfileRepository
-	rtNotification          *email.EmailRegistrationRepository
 	tokenRegisterRepository *register.RegTokenRepository
 	userRepository          *user.UserRepository
-	memberRepository        *member.MemberRepository
 	referalCodeRepository   *referal_code.ReferalCodeRepository
+	leaderRepository        *RTLeaderRepository
 }
 
 func (r *RTProfileRegisterRepository) Register(rtProfile *model.RTProfile, referalCode string) (*model.RTProfile, error) {
@@ -94,13 +91,7 @@ func (r *RTProfileRegisterRepository) ApproveRegistrant(rtProfileId string) erro
 	err := config.DB.Transaction(func(tx *gorm.DB) error {
 		var rtProfile *model.RTProfile
 
-		rt, err := r.rtProfileRepository.FetchById(rtProfileId)
-
-		if err != nil {
-			return err
-		}
-
-		err = r.rtNotification.RtNotification(rt.RTEmail)
+		_, err := r.rtProfileRepository.FetchById(rtProfileId)
 
 		if err != nil {
 			return err
@@ -142,7 +133,7 @@ func (r *RTProfileRegisterRepository) UpdateRTAuthorization(tx *gorm.DB, id stri
 	return nil
 }
 
-func (r *RTProfileRegisterRepository) RegisterUserRt(memberData *model.Member, user *model.User, roleId uint, token string) error {
+func (r *RTProfileRegisterRepository) RegisterUserRt(leader *model.RTLeader, user *model.User, roleId uint, token string) error {
 	err := config.DB.Transaction(func(tx *gorm.DB) error {
 
 		_, err := r.userRepository.RegisterUser(tx, user, roleId)
@@ -157,7 +148,7 @@ func (r *RTProfileRegisterRepository) RegisterUserRt(memberData *model.Member, u
 			return err
 		}
 
-		_, err = r.memberRepository.Store(tx, memberData)
+		err = r.leaderRepository.Store(tx, leader)
 
 		if err != nil {
 			return err
