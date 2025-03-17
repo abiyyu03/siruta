@@ -45,7 +45,6 @@ func HttpRoutes(app *fiber.App) {
 	v1.Get("/members", adminOnly, member.GetData)
 	v1.Get("/members/:id", adminOnly, member.GetDataById)
 	v1.Put("/members/:id", adminOnly, member.UpdateData)
-	v1.Post("/members", adminOnly, member.StoreData)
 
 	// register
 	v1.Post("/registers/rw", middleware.ValidateField[model.RWProfile](), rwProfileRegister.RegisterRWProfile)
@@ -54,7 +53,7 @@ func HttpRoutes(app *fiber.App) {
 	v1.Post("/registers/rt", middleware.ValidateField[request.RTProfileRegisterRequest](), rtProfileRegister.RegisterRTProfile)
 	v1.Put("/registers/rt/:rtProfileId/approve", rtProfileRegister.ApproveRegistration)
 	v1.Post("/registers/rt/user-account", rtProfileRegister.RegisterUserRt)
-	v1.Post("/registers/member", memberRegister.Register)
+	v1.Post("/registers/member", middleware.ValidateField[request.MemberRegisterRequest](), memberRegister.Register)
 
 	//register tokens
 	// v1.Get("/token-registrations", adminOnly, rwProfile.GetData)
