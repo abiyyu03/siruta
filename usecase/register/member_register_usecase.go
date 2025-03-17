@@ -15,7 +15,7 @@ type MemberRegisterUsecase struct{}
 
 var memberRegisterRepository *register.MemberRegisterRepository
 
-func (m *MemberRegisterUsecase) RegisterMember(ctx *fiber.Ctx, userMember *request.RegisterRequest) error {
+func (m *MemberRegisterUsecase) RegisterMember(ctx *fiber.Ctx, userMember *request.MemberRegisterRequest) error {
 	userId, _ := uuid.NewV7()
 	memberId, _ := uuid.NewV7()
 
