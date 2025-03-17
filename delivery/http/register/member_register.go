@@ -22,7 +22,7 @@ func (m *MemberRegisterHttp) Register(ctx *fiber.Ctx) error {
 	if isReferalCodeValid == nil {
 		return entity.Error(ctx, fiber.StatusForbidden, constant.Errors["InvalidReferalCode"].Message, constant.Errors["InvalidReferalCode"].Clue)
 	}
-	var userMember *request.RegisterRequest
+	var userMember *request.MemberRegisterRequest
 
 	if err := ctx.BodyParser(&userMember); err != nil {
 		return err

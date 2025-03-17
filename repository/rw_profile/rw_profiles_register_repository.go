@@ -5,7 +5,6 @@ import (
 
 	"github.com/abiyyu03/siruta/config"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/repository/email"
 	"github.com/abiyyu03/siruta/repository/member"
 	"github.com/abiyyu03/siruta/repository/referal_code"
 	"github.com/abiyyu03/siruta/repository/register"
@@ -18,8 +17,8 @@ type RWProfileRegisterRepository struct {
 	userRepository          *user.UserRepository
 	memberRepository        *member.MemberRepository
 	tokenRegisterRepository *register.RegTokenRepository
-	rwNotification          *email.EmailRegistrationRepository
 	referalCode             *referal_code.ReferalCodeRepository
+	leaderRepository        *RWLeaderRepository
 }
 
 func (r *RWProfileRegisterRepository) RegisterRWProfile(rwProfileRequest *model.RWProfile) (*model.RWProfile, error) {
@@ -65,7 +64,7 @@ func (r *RWProfileRegisterRepository) ApproveRegistrant(rwProfileId string) erro
 		var rwProfile model.RWProfile
 
 		// Fetch the RW profile data
-		fetchedRwProfile, err := r.FetchRWProfile(rwProfileId, &rwProfile)
+		_, err := r.FetchRWProfile(rwProfileId, &rwProfile)
 
 		if err != nil {
 			log.Printf("Failed to fetch RWProfile: %v", err.Error())
@@ -90,10 +89,6 @@ func (r *RWProfileRegisterRepository) ApproveRegistrant(rwProfileId string) erro
 			return err // Trigger rollback
 		}
 
-		if err := r.rwNotification.RwNotification(fetchedRwProfile.RwEmail); err != nil {
-			return err
-		}
-
 		return nil // Commit transaction if no errors
 	})
 
@@ -107,7 +102,7 @@ func (r *RWProfileRegisterRepository) ApproveRegistrant(rwProfileId string) erro
 	return nil
 }
 
-func (r *RWProfileRegisterRepository) RegisterUserRW(memberData *model.Member, user *model.User, roleId uint, token string) error {
+func (r *RWProfileRegisterRepository) RegisterUserRW(leader *model.RWLeader, user *model.User, roleId uint, token string) error {
 	err := config.DB.Transaction(func(tx *gorm.DB) error {
 		_, err := r.userRepository.RegisterUser(tx, user, roleId)
 
@@ -115,7 +110,7 @@ func (r *RWProfileRegisterRepository) RegisterUserRW(memberData *model.Member, u
 			return err
 		}
 
-		_, err = r.memberRepository.Store(tx, memberData)
+		err = r.leaderRepository.Store(tx, leader)
 
 		if err != nil {
 			return err

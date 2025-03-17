@@ -6,6 +6,7 @@ import (
 	"github.com/abiyyu03/siruta/entity/model"
 	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/abiyyu03/siruta/repository/rw_profile"
+	"github.com/abiyyu03/siruta/usecase/referal_code"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -14,6 +15,7 @@ import (
 type RWProfileRegisterUsecase struct{}
 
 var rwProfileRegisterRepository *rw_profile.RWProfileRegisterRepository
+var regTokenUsecase *referal_code.RegistrationTokenUsecase
 
 func (r *RWProfileRegisterUsecase) RegisterProfileRW(rwProfile *model.RWProfile, ctx *fiber.Ctx) error {
 	id, _ := uuid.NewV7()
@@ -37,15 +39,21 @@ func (r *RWProfileRegisterUsecase) RegisterProfileRW(rwProfile *model.RWProfile,
 
 	return entity.Success(ctx, &rwProfileRegistration, "RW Profile Registered successfully")
 }
-func (r *RWProfileRegisterUsecase) RegisterUserRw(register *request.RegisterRequest, ctx *fiber.Ctx, token string) error {
+func (r *RWProfileRegisterUsecase) RegisterUserRw(register *request.LeaderRegisterRequest, ctx *fiber.Ctx, token string) error {
 	//token verif
 	userId, _ := uuid.NewV7()
-	memberId, _ := uuid.NewV7()
+	leaderId, _ := uuid.NewV7()
 
 	hashedPassword, err := bcrypt.GenerateFromPassword(
 		[]byte(register.Password),
 		14,
 	)
+	if err != nil {
+		return err
+	}
+
+	rwProfileId, err := regTokenUsecase.DecodeToken(token)
+
 	if err != nil {
 		return err
 	}
@@ -57,23 +65,16 @@ func (r *RWProfileRegisterUsecase) RegisterUserRw(register *request.RegisterRequ
 		Password: string(hashedPassword),
 	}
 
-	member := &model.Member{
-		ID:             memberId.String(),
-		Fullname:       register.Fullname,
-		NikNumber:      &register.NikNumber,
-		KKNumber:       &register.KKNumber,
-		BornPlace:      register.BornPlace,
-		BirthDate:      register.BirthDate,
-		Gender:         register.Gender,
-		HomeAddress:    &register.HomeAddress,
-		MaritalStatus:  &register.MaritalStatus,
-		ReligionId:     register.ReligionId,
-		MemberStatusId: register.MemberStatusId,
-		UserId:         &user.ID,
-		Occupation:     &register.Occupation,
-		Status:         register.Status,
+	newLeader := &model.RWLeader{
+		ID:          leaderId.String(),
+		Fullname:    register.Fullname,
+		NikNumber:   register.NikNumber,
+		KKNumber:    register.KKNumber,
+		FullAddress: register.FullAddress,
+		UserId:      user.ID,
+		RWProfileId: rwProfileId,
 	}
-	err = rwProfileRegisterRepository.RegisterUserRW(member, user, 3, token)
+	err = rwProfileRegisterRepository.RegisterUserRW(newLeader, user, 3, token)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

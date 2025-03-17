@@ -38,7 +38,7 @@ func (r *RTProfileRegisterUsecase) RegisterRTProfile(rtProfile *request.RTProfil
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, newRTProfile, "RT Profile Registered successfully")
+	return entity.Success(ctx, registeredUser, "RT Profile Registered successfully")
 }
 
 func (r *RTProfileRegisterUsecase) Approve(emailDestination string, rtProfileId string, ctx *fiber.Ctx) error {

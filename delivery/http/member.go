@@ -22,16 +22,6 @@ func (m *MemberHttp) GetDataById(ctx *fiber.Ctx) error {
 	return m.memberUsecase.FetchById(ctx, id)
 }
 
-func (m *MemberHttp) StoreData(ctx *fiber.Ctx) error {
-	var member *model.Member
-
-	if err := ctx.BodyParser(&member); err != nil {
-		return entity.Error(ctx, fiber.StatusUnprocessableEntity, constant.Errors["UnprocessableEntity"].Message, constant.Errors["UnprocessableEntity"].Clue)
-	}
-
-	return m.memberUsecase.Store(ctx, member)
-}
-
 func (m *MemberHttp) UpdateData(ctx *fiber.Ctx) error {
 	var member *model.Member
 	id := string(ctx.Params("id"))
