@@ -30,6 +30,8 @@ func HttpRoutes(app *fiber.App) {
 	user := new(http.UserHttp)
 	religion := new(http.ReligionHttp)
 	referalCode := new(http.ReferalCodeHttp)
+	rtLeader := new(http.RTLeaderHttp)
+	rwLeader := new(http.RWLeaderHttp)
 
 	adminOnly := middleware.JWTMiddleware([]int{1})
 	// rwLeaderOnly := middleware.JWTMiddleware([]int{2})
@@ -81,6 +83,14 @@ func HttpRoutes(app *fiber.App) {
 	//users
 	v1.Get("/users", adminOnly, user.GetData)
 	v1.Get("/users/:id", adminOnly, user.GetDataById)
+
+	//leaders
+	v1.Get("/rt-leaders", adminOnly, rtLeader.GetData)
+	v1.Get("/rt-leaders/:id", adminOnly, rtLeader.GetDataById)
+	v1.Put("/rt-leaders/:id", adminOnly, rtLeader.UpdateData)
+	v1.Get("/rw-leaders", adminOnly, rwLeader.GetData)
+	v1.Get("/rw-leaders/:id", adminOnly, rwLeader.GetDataById)
+	v1.Put("/rw-leaders/:id", adminOnly, rwLeader.UpdateData)
 
 	//roles
 	v1.Get("/roles", adminOnly, role.GetData)

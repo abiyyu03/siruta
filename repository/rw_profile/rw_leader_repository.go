@@ -11,17 +11,17 @@ type RWLeaderRepository struct{}
 func (r *RWLeaderRepository) Fetch() ([]*model.RWLeader, error) {
 	var rwLeaders []*model.RWLeader
 
-	if err := config.DB.Find(&rwLeaders).Error; err != nil {
+	if err := config.DB.Preload("RWProfile").Find(&rwLeaders).Error; err != nil {
 		return nil, err
 	}
 
 	return rwLeaders, nil
 }
 
-func (r *RWLeaderRepository) FetchByRWProfileId(rwProfileId uint) ([]*model.RWLeader, error) {
+func (r *RWLeaderRepository) FetchByRWProfileId(rwProfileId string) ([]*model.RWLeader, error) {
 	var rwLeader []*model.RWLeader
 
-	if err := config.DB.Where("rw_profile_id =?", rwProfileId).Find(&rwLeader).Error; err != nil {
+	if err := config.DB.Preload("RWProfile").Where("rw_profile_id =?", rwProfileId).Find(&rwLeader).Error; err != nil {
 		return nil, err
 	}
 
@@ -43,5 +43,12 @@ func (r *RWLeaderRepository) Store(tx *gorm.DB, rwLeader *model.RWLeader) error 
 		return err
 	}
 
+	return nil
+}
+
+func (r *RWLeaderRepository) Update(tx *gorm.DB, rwLeader *model.RWLeader, id string) error {
+	if err := tx.Where("id =?", id).Updates(&rwLeader).Error; err != nil {
+		return err
+	}
 	return nil
 }
