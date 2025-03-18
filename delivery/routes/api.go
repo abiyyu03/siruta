@@ -32,10 +32,11 @@ func HttpRoutes(app *fiber.App) {
 	referalCode := new(http.ReferalCodeHttp)
 	rtLeader := new(http.RTLeaderHttp)
 	rwLeader := new(http.RWLeaderHttp)
+	inventory := new(http.InventoryHttp)
 
 	adminOnly := middleware.JWTMiddleware([]int{1})
+	// rtOnly := middleware.JWTMiddleware([]int{3})
 	// rwLeaderOnly := middleware.JWTMiddleware([]int{2})
-	// rwAdministratorOnly := middleware.JWTMiddleware([]int{3})
 	// validator := middleware.ValidateField()
 
 	//authentication
@@ -65,6 +66,18 @@ func HttpRoutes(app *fiber.App) {
 	v1.Get("/referal-codes", adminOnly, referalCode.GetData)
 	v1.Get("/referal-codes/:id", adminOnly, referalCode.GetDataById)
 	v1.Post("/referal-codes/validate", referalCode.ValidateReferalCode)
+	//----------------------------------------------------------------
+	//
+	// RT Authority
+	//
+	//----------------------------------------------------------------
+
+	//inventory
+	v1.Get("/inventories", inventory.GetData)
+	v1.Get("/inventories/:id", inventory.GetDataById)
+	v1.Post("/inventories", inventory.StoreData)
+	v1.Put("/inventories/:id", inventory.UpdateData)
+	v1.Delete("/inventories/:id", inventory.DeleteData)
 
 	//----------------------------------------------------------------
 	//
