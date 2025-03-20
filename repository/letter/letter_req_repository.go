@@ -65,7 +65,11 @@ func (o *LetterReqRepository) UpdateApprovalStatusByRT(outcomingLetter *model.Ou
 		return err
 	}
 
-	o.incrementingNumberLetter(outcomingLetter, number, outcomingLetter.ID)
+	err = o.incrementingNumberLetter(outcomingLetter, number, outcomingLetter.ID)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

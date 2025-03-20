@@ -39,20 +39,20 @@ func (r *ReferalCodeUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 	return entity.Success(ctx, &referal, "Data fetched successfully")
 }
 
-func (r *ReferalCodeUsecase) Validate(ctx *fiber.Ctx, code string) error {
-	rwProfileId, isValid, err := referalCodeRepository.Validate(code)
+func (r *ReferalCodeUsecase) Validate(ctx *fiber.Ctx, code string) (error, string) {
+	profileId, isValid, err := referalCodeRepository.Validate(code)
 
 	if !isValid {
-		return entity.Error(ctx, fiber.StatusBadRequest, constant.Errors["InvalidReferalCode"].Message, constant.Errors["InvalidReferalCode"].Clue)
+		return entity.Error(ctx, fiber.StatusBadRequest, constant.Errors["InvalidReferalCode"].Message, constant.Errors["InvalidReferalCode"].Clue), ""
 	}
 
 	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue), ""
 	}
 
 	restructureRwProfile := &IdProfileResponse{
-		ID: rwProfileId,
+		ID: profileId,
 	}
 
-	return entity.Success(ctx, &restructureRwProfile, "Referal code is valid")
+	return entity.Success(ctx, &restructureRwProfile, "Referal code is valid"), profileId
 }

@@ -15,7 +15,7 @@ type MemberRegisterUsecase struct{}
 
 var memberRegisterRepository *register.MemberRegisterRepository
 
-func (m *MemberRegisterUsecase) RegisterMember(ctx *fiber.Ctx, userMember *request.MemberRegisterRequest) error {
+func (m *MemberRegisterUsecase) RegisterMember(ctx *fiber.Ctx, userMember *request.MemberRegisterRequest, profileId string) error {
 	userId, _ := uuid.NewV7()
 	memberId, _ := uuid.NewV7()
 
@@ -50,6 +50,7 @@ func (m *MemberRegisterUsecase) RegisterMember(ctx *fiber.Ctx, userMember *reque
 		UserId:         &newUser.ID,
 		Occupation:     &userMember.Occupation,
 		Status:         userMember.Status,
+		RTProfileId:    profileId,
 	}
 
 	err = memberRegisterRepository.RegisterMember(newMember, newUser)

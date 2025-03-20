@@ -22,5 +22,7 @@ func (r *ReferalCodeHttp) GetDataById(ctx *fiber.Ctx) error {
 func (r *ReferalCodeHttp) ValidateReferalCode(ctx *fiber.Ctx) error {
 	queryParam := ctx.Queries()
 
-	return r.referalCodeUsecase.Validate(ctx, queryParam["code"])
+	response, _ := r.referalCodeUsecase.Validate(ctx, queryParam["code"])
+
+	return response
 }

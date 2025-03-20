@@ -44,6 +44,7 @@ func (l *LetterReqUsecase) StoreOutcomingLetter(ctx *fiber.Ctx, memberData *mode
 			Gender:        memberData.Gender,
 			HomeAddress:   memberData.HomeAddress,
 			MaritalStatus: memberData.MaritalStatus,
+			RTProfileId:   memberData.RTProfileId,
 		}
 
 		_, err = letterReqRepository.StoreOutcomingLetterWithGuest(newOutcomingLetter, createdGuestMember)
@@ -56,7 +57,6 @@ func (l *LetterReqUsecase) StoreOutcomingLetter(ctx *fiber.Ctx, memberData *mode
 		}
 
 		_, err = letterReqRepository.StoreOutcomingLetter(newOutcomingLetter)
-
 	}
 
 	if err != nil {
