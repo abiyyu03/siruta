@@ -40,6 +40,20 @@ func (i *IncomingLetterUsecase) FetchById(ctx *fiber.Ctx, id int) error {
 	return entity.Success(ctx, &incomingLetter, "Data fetched successfully")
 }
 
+func (i *IncomingLetterUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error {
+	incomingLetters, err := IncomingLetterRepository.FetchByRTProfileId(rtProfileId)
+
+	if incomingLetters == nil {
+		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
+	}
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	}
+
+	return entity.Success(ctx, &incomingLetters, "Data fetched successfully")
+}
+
 func (i *IncomingLetterUsecase) Delete(ctx *fiber.Ctx, id int) error {
 	var incomingLetter *model.IncomingLetter
 	incomingLetter, err := IncomingLetterRepository.Delete(incomingLetter, id)
