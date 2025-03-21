@@ -29,12 +29,26 @@ func (m *MemberUsecase) Fetch(ctx *fiber.Ctx) error {
 func (m *MemberUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 	members, err := memberRepository.FetchById(id)
 
+	if members == nil {
+		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
+	}
+
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
+	return entity.Success(ctx, &members, "Data fetched successfully")
+}
+
+func (m *MemberUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error {
+	members, err := memberRepository.FetchByRTProfileId(rtProfileId)
+
 	if members == nil {
-		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
+		return nil
+	}
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	return entity.Success(ctx, &members, "Data fetched successfully")

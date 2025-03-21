@@ -22,6 +22,12 @@ func (m *MemberHttp) GetDataById(ctx *fiber.Ctx) error {
 	return m.memberUsecase.FetchById(ctx, id)
 }
 
+func (m *MemberHttp) GetDataByRTProfileId(ctx *fiber.Ctx) error {
+	rtProfileId := ctx.Params("rt_profile_id")
+
+	return m.memberUsecase.FetchByRTProfileId(ctx, rtProfileId)
+}
+
 func (m *MemberHttp) UpdateData(ctx *fiber.Ctx) error {
 	var member *model.Member
 	id := string(ctx.Params("id"))
