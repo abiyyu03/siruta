@@ -47,6 +47,7 @@ func HttpRoutes(app *fiber.App) {
 	v1.Get("/members", adminOnly, member.GetData)
 	v1.Get("/members/:id", adminOnly, member.GetDataById)
 	v1.Put("/members/:id", adminOnly, member.UpdateData)
+	v1.Get("/members/:rt_profile_id/rt", adminOnly, rtLeaderOnly, member.GetDataByRTProfileId)
 
 	// register
 	v1.Post("/registers/rw", middleware.ValidateField[model.RWProfile](), rwProfileRegister.RegisterRWProfile)
@@ -151,8 +152,8 @@ func HttpRoutes(app *fiber.App) {
 
 	//outcoming letter
 	v1.Get("/outcoming-letters", adminOnly, OutcomingLetter.GetData)
-	v1.Get("/outcoming-letters/:rt_profile_id", adminOnly, rtLeaderOnly, OutcomingLetter.GetData)
-	// v1.Get("/outcoming-letters/:id", adminOnly, OutcomingLetter.GetDataById)
+	v1.Get("/outcoming-letters/:id", adminOnly, rtLeaderOnly, OutcomingLetter.GetDataById)
+	v1.Get("/outcoming-letters/:rt_profile_id/rt", adminOnly, rtLeaderOnly, OutcomingLetter.GetDataByRTProfileId)
 
 	//letter req
 	v1.Post("/request-letters", adminOnly, memberOnly, letterReq.CreateData)
