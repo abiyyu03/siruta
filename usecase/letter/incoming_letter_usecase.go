@@ -29,12 +29,12 @@ func (i *IncomingLetterUsecase) Fetch(ctx *fiber.Ctx) error {
 func (i *IncomingLetterUsecase) FetchById(ctx *fiber.Ctx, id int) error {
 	incomingLetter, err := IncomingLetterRepository.FetchById(id)
 
-	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	if incomingLetter == nil {
+		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
 	}
 
-	if incomingLetter == nil {
-		return nil
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	return entity.Success(ctx, &incomingLetter, "Data fetched successfully")
