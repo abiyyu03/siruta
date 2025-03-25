@@ -19,6 +19,19 @@ func (r *ReferalCodeHttp) GetDataById(ctx *fiber.Ctx) error {
 	return r.referalCodeUsecase.FetchById(ctx, id)
 }
 
+func (r *ReferalCodeHttp) GetDataByRTProfileId(ctx *fiber.Ctx) error {
+	profileId := ctx.Params("profile_id")
+
+	return r.referalCodeUsecase.FetchByRTProfileId(ctx, profileId)
+}
+
+func (r *ReferalCodeHttp) RegenerateCode(ctx *fiber.Ctx) error {
+	profileId := ctx.Params("profile_id")
+	code := ctx.Params("code")
+
+	return r.referalCodeUsecase.RegenerateReferalCode(ctx, profileId, code)
+}
+
 func (r *ReferalCodeHttp) ValidateReferalCode(ctx *fiber.Ctx) error {
 	queryParam := ctx.Queries()
 

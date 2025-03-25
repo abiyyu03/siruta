@@ -77,6 +77,13 @@ func HttpRoutes(app *fiber.App) {
 	v1.Put("/inventories/:id", rtLeaderOnly, inventory.UpdateData)
 	v1.Delete("/inventories/:id", rtLeaderOnly, inventory.DeleteData)
 
+	//referal codes
+	v1.Get("/referal-codes/:profile_id/rt", rtLeaderOnly, referalCode.GetDataByRTProfileId)
+	v1.Put("/referal-codes/:profile_id/rt/regenerate/:code", rtLeaderOnly, referalCode.RegenerateCode)
+
+	// incoming letter
+	v1.Get("/incoming-letters/:rt_profile_id/rt", rtLeaderOnly, incomingLetter.GetDataByRTProfileId)
+
 	//----------------------------------------------------------------
 	//
 	// Admin Authority
@@ -85,11 +92,11 @@ func HttpRoutes(app *fiber.App) {
 
 	//rw profiles
 	v1.Get("/rw-profiles", adminOnly, rwProfile.GetData)
-	v1.Get("/rw-profiles/:id", adminOnly, rwProfile.GetDataById)
+	v1.Get("/rw-profiles/:id", adminOnly, rtLeaderOnly, rwProfile.GetDataById)
 
 	//rt profiles
 	v1.Get("/rt-profiles", adminOnly, rtProfile.GetData)
-	v1.Get("/rt-profiles/:id", adminOnly, rtProfile.GetDataById)
+	v1.Get("/rt-profiles/:id", adminOnly, rtLeaderOnly, rtProfile.GetDataById)
 
 	//referal code
 	v1.Get("/referal-codes", adminOnly, referalCode.GetData)

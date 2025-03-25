@@ -33,6 +33,16 @@ func (r *ReferalCodeRepository) FetchById(id string) (*model.ReferalCode, error)
 	return referalCode, nil
 }
 
+func (r *ReferalCodeRepository) FetchByRTProfileId(rtProfileId string) ([]*model.ReferalCode, error) {
+	var referalCodes []*model.ReferalCode
+
+	if err := config.DB.Where("profile_id =?", rtProfileId).Find(&referalCodes).Error; err != nil {
+		return nil, err
+	}
+
+	return referalCodes, nil
+}
+
 func (r *ReferalCodeRepository) GenerateReferalCode(tx *gorm.DB, profileId string) error {
 	code := helper.RandomString(6)
 
@@ -48,6 +58,23 @@ func (r *ReferalCodeRepository) GenerateReferalCode(tx *gorm.DB, profileId strin
 	}
 
 	return nil
+}
+
+func (r *ReferalCodeRepository) RegenerateReferalCode(code string, profileId string) (string, error) {
+	var referalCode *model.ReferalCode
+	regeneratedCode := helper.RandomString(6)
+
+	if err := config.DB.Where("code = ? AND profile_id = ?", code, profileId).First(&referalCode).Error; err != nil {
+		log.Printf("Gagal mengambil referal code: %v", err)
+		return "", err
+	}
+
+	if err := config.DB.Model(&referalCode).Update("code", regeneratedCode).Error; err != nil {
+		log.Printf("failed to create referalcode: %v", err)
+		return "", err
+	}
+
+	return regeneratedCode, nil
 }
 
 func (r *ReferalCodeRepository) GetAndVerifyRWReferalCode(inputedReferalCode string) (bool, string, error) {
@@ -71,8 +98,6 @@ func (r *ReferalCodeRepository) Validate(code string) (string, bool, error) { //
 		log.Print("Error referal code : ", err.Error())
 		return "", false, err
 	}
-
-	log.Print("profile id : ", referalCode.ProfileId)
 
 	if referalCode == nil {
 		return "", false, nil
