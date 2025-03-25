@@ -33,6 +33,7 @@ func HttpRoutes(app *fiber.App) {
 	rtLeader := new(http.RTLeaderHttp)
 	rwLeader := new(http.RWLeaderHttp)
 	inventory := new(http.InventoryHttp)
+	guestList := new(http.GuestListHttp)
 
 	adminOnly := middleware.JWTMiddleware([]int{1})
 	// rwLeaderOnly := middleware.JWTMiddleware([]int{2})
@@ -77,6 +78,20 @@ func HttpRoutes(app *fiber.App) {
 	v1.Put("/inventories/:id", rtLeaderOnly, inventory.UpdateData)
 	v1.Delete("/inventories/:id", rtLeaderOnly, inventory.DeleteData)
 
+	//referal codes
+	v1.Get("/referal-codes/:profile_id/rt", rtLeaderOnly, referalCode.GetDataByRTProfileId)
+	v1.Put("/referal-codes/:profile_id/rt/regenerate/:code", rtLeaderOnly, referalCode.RegenerateCode)
+
+	// incoming letter
+	v1.Get("/incoming-letters/:rt_profile_id/rt", rtLeaderOnly, incomingLetter.GetDataByRTProfileId)
+
+	// guest list
+	v1.Get("/guest-lists", adminOnly, guestList.GetData)
+	v1.Get("/guest-lists/:rt_profile_id/rt", adminOnly, rtLeaderOnly, guestList.GetDataByRTProfileId)
+	v1.Get("/guest-lists/:id", adminOnly, rtLeaderOnly, guestList.GetDataById)
+	v1.Put("/guest-lists/:id", adminOnly, rtLeaderOnly, guestList.UpdateData)
+	v1.Delete("/guest-lists/:id", adminOnly, rtLeaderOnly, guestList.DeleteData)
+
 	//----------------------------------------------------------------
 	//
 	// Admin Authority
@@ -85,11 +100,11 @@ func HttpRoutes(app *fiber.App) {
 
 	//rw profiles
 	v1.Get("/rw-profiles", adminOnly, rwProfile.GetData)
-	v1.Get("/rw-profiles/:id", adminOnly, rwProfile.GetDataById)
+	v1.Get("/rw-profiles/:id", adminOnly, rtLeaderOnly, rwProfile.GetDataById)
 
 	//rt profiles
 	v1.Get("/rt-profiles", adminOnly, rtProfile.GetData)
-	v1.Get("/rt-profiles/:id", adminOnly, rtProfile.GetDataById)
+	v1.Get("/rt-profiles/:id", adminOnly, rtLeaderOnly, rtProfile.GetDataById)
 
 	//referal code
 	v1.Get("/referal-codes", adminOnly, referalCode.GetData)
@@ -158,5 +173,4 @@ func HttpRoutes(app *fiber.App) {
 	//letter req
 	v1.Post("/request-letters", adminOnly, memberOnly, letterReq.CreateData)
 	v1.Put("/request-letters/approve/:letter_req_id", adminOnly, memberOnly, letterReq.UpdateApprovalStatus)
-
 }

@@ -28,15 +28,43 @@ func (r *ReferalCodeUsecase) Fetch(ctx *fiber.Ctx) error {
 func (r *ReferalCodeUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 	referal, err := referalCodeRepository.FetchById(id)
 
-	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
-	}
-
 	if referal == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
 	}
 
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	}
+
 	return entity.Success(ctx, &referal, "Data fetched successfully")
+}
+
+func (r *ReferalCodeUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error {
+	referals, err := referalCodeRepository.FetchByRTProfileId(rtProfileId)
+
+	if referals == nil {
+		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
+	}
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	}
+
+	return entity.Success(ctx, &referals, "Data fetched successfully")
+}
+
+func (r *ReferalCodeUsecase) RegenerateReferalCode(ctx *fiber.Ctx, profileId string, code string) error {
+	regeneratedCode, err := referalCodeRepository.RegenerateReferalCode(profileId, code)
+
+	if regeneratedCode == "" {
+		return entity.Error(ctx, fiber.StatusBadRequest, constant.Errors["InvalidReferalCode"].Message, constant.Errors["InvalidReferalCode"].Clue)
+	}
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	}
+
+	return entity.Success(ctx, map[string]string{"code": regeneratedCode}, "Referal code has been regenerated successfully")
 }
 
 func (r *ReferalCodeUsecase) Validate(ctx *fiber.Ctx, code string) (error, string) {

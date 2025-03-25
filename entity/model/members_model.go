@@ -26,7 +26,7 @@ type Member struct {
 	Occupation      *string           `json:"occupation" gorm:"column:occupation"`
 	Status          string            `json:"status" gorm:"column:status;default:resident"` //resident or guest
 	RTProfileId     string            `json:"rt_profile_id" gorm:"column:rt_profile_id;not null"`
-	RTProfile       RTProfile         `gorm:"foreignKey:RTProfileId;not null"`
+	RTProfile       RTProfile         `json:"-" gorm:"foreignKey:RTProfileId;not null"`
 	OutcomingLetter []OutcomingLetter `gorm:"foreignKey:MemberId"`
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
