@@ -42,9 +42,8 @@ func (m *MemberUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 
 func (m *MemberUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error {
 	members, err := memberRepository.FetchByRTProfileId(rtProfileId)
-
 	if members == nil {
-		return nil
+		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
 	}
 
 	if err != nil {
