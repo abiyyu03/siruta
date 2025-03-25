@@ -33,6 +33,7 @@ func HttpRoutes(app *fiber.App) {
 	rtLeader := new(http.RTLeaderHttp)
 	rwLeader := new(http.RWLeaderHttp)
 	inventory := new(http.InventoryHttp)
+	guestList := new(http.GuestListHttp)
 
 	adminOnly := middleware.JWTMiddleware([]int{1})
 	// rwLeaderOnly := middleware.JWTMiddleware([]int{2})
@@ -83,6 +84,13 @@ func HttpRoutes(app *fiber.App) {
 
 	// incoming letter
 	v1.Get("/incoming-letters/:rt_profile_id/rt", rtLeaderOnly, incomingLetter.GetDataByRTProfileId)
+
+	// guest list
+	v1.Get("/guest-lists", adminOnly, guestList.GetData)
+	v1.Get("/guest-lists/:rt_profile_id/rt", adminOnly, rtLeaderOnly, guestList.GetDataByRTProfileId)
+	v1.Get("/guest-lists/:id", adminOnly, rtLeaderOnly, guestList.GetDataById)
+	v1.Put("/guest-lists/:id", adminOnly, rtLeaderOnly, guestList.UpdateData)
+	v1.Delete("/guest-lists/:id", adminOnly, rtLeaderOnly, guestList.DeleteData)
 
 	//----------------------------------------------------------------
 	//
@@ -165,5 +173,4 @@ func HttpRoutes(app *fiber.App) {
 	//letter req
 	v1.Post("/request-letters", adminOnly, memberOnly, letterReq.CreateData)
 	v1.Put("/request-letters/approve/:letter_req_id", adminOnly, memberOnly, letterReq.UpdateApprovalStatus)
-
 }
