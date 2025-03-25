@@ -19,10 +19,6 @@ func (i *IncomingLetterUsecase) Fetch(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	if incomingLetters == nil {
-		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
-	}
-
 	return entity.Success(ctx, &incomingLetters, "Data fetched successfully")
 }
 
