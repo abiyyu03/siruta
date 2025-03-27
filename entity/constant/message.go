@@ -28,6 +28,7 @@ var Errors = map[string]ErrorMessage{
 	"Success":               {Message: "Berhasil", Clue: "Operasi berhasil dilakukan."},
 	"Error":                 {Message: "Gagal", Clue: "Terjadi kesalahan, coba lagi nanti."},
 	"NotFound":              {Message: "Data tidak ditemukan", Clue: "Pastikan data yang dicari sudah benar atau tersedia."},
+	"LetterRejected":        {Message: "Surat ditolak", Clue: "Pastikan pengajuan anda memiliki data yang akurat atau komunikasikan dengan pengurus RT."},
 	"Unauthorized":          {Message: "Akses ditolak", Clue: "Pastikan Anda memiliki izin yang sesuai."},
 	"AccountInputError":     {Message: "Email atau Password anda salah", Clue: "Pastikan Anda memasukannya dengan benar"},
 	"InvalidData":           {Message: "Data yang dimasukkan salah", Clue: "Periksa kembali format dan isi data yang dikirim."},

@@ -92,6 +92,9 @@ func HttpRoutes(app *fiber.App) {
 	v1.Put("/guest-lists/:id", adminOnly, rtLeaderOnly, guestList.UpdateData)
 	v1.Delete("/guest-lists/:id", adminOnly, rtLeaderOnly, guestList.DeleteData)
 
+	// Request letter
+	v1.Put("/request-letters/approve/:letter_req_id", adminOnly, rtLeaderOnly, letterReq.UpdateApprovalStatus)
+
 	//----------------------------------------------------------------
 	//
 	// Admin Authority
@@ -172,5 +175,4 @@ func HttpRoutes(app *fiber.App) {
 
 	//letter req
 	v1.Post("/request-letters", adminOnly, memberOnly, letterReq.CreateData)
-	v1.Put("/request-letters/approve/:letter_req_id", adminOnly, memberOnly, letterReq.UpdateApprovalStatus)
 }

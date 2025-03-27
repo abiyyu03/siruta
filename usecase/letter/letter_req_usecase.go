@@ -67,7 +67,11 @@ func (l *LetterReqUsecase) StoreOutcomingLetter(ctx *fiber.Ctx, memberData *mode
 }
 
 func (l *LetterReqUsecase) UpdateApprovalStatusByRT(outcomingLetter *model.OutcomingLetter, id string, ctx *fiber.Ctx) error {
-	err := letterReqRepository.UpdateApprovalStatusByRT(outcomingLetter, id)
+	approvalStatus, err := letterReqRepository.UpdateApprovalStatusByRT(outcomingLetter, id)
+
+	if !approvalStatus {
+		return entity.Error(ctx, fiber.StatusBadRequest, constant.Errors["LetterRejected"].Message, constant.Errors["LetterRejected"].Clue)
+	}
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
