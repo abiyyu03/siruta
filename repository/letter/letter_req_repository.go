@@ -52,26 +52,26 @@ func (o *LetterReqRepository) StoreOutcomingLetterWithGuest(outcomingLetter *mod
 	return outcomingLetter, nil
 }
 
-func (o *LetterReqRepository) UpdateApprovalStatusByRT(outcomingLetter *model.OutcomingLetter, id string) error {
+func (o *LetterReqRepository) UpdateApprovalStatusByRT(outcomingLetter *model.OutcomingLetter, id string) (bool, error) {
 	outcoming := config.DB.Model(&outcomingLetter).Where("id = ?", id)
 
 	if err := outcoming.Update("is_rt_approved", true).Error; err != nil {
-		return err
+		return false, err
 	}
 
 	number, err := o.checkNumberAvailability(outcomingLetter)
 
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	err = o.incrementingNumberLetter(outcomingLetter, number, outcomingLetter.ID)
 
 	if err != nil {
-		return err
+		return false, err
 	}
 
-	return nil
+	return true, nil
 }
 
 func (o *LetterReqRepository) checkNumberAvailability(outcomingLetter *model.OutcomingLetter) (int64, error) {
