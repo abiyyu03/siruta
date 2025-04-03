@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/abiyyu03/siruta/delivery/http"
 	"github.com/abiyyu03/siruta/delivery/http/auth"
+	"github.com/abiyyu03/siruta/delivery/http/finance"
 	"github.com/abiyyu03/siruta/delivery/http/middleware"
 	"github.com/abiyyu03/siruta/delivery/http/register"
 	"github.com/abiyyu03/siruta/entity/model"
@@ -34,6 +35,9 @@ func HttpRoutes(app *fiber.App) {
 	rwLeader := new(http.RWLeaderHttp)
 	inventory := new(http.InventoryHttp)
 	guestList := new(http.GuestListHttp)
+	incomePlan := new(finance.IncomePlanHttp)
+	incomeLog := new(finance.IncomeHttp)
+	expenseLog := new(finance.ExpenseHttp)
 
 	adminOnly := middleware.JWTMiddleware([]int{1})
 	// rwLeaderOnly := middleware.JWTMiddleware([]int{2})
@@ -94,6 +98,30 @@ func HttpRoutes(app *fiber.App) {
 
 	// Request letter
 	v1.Put("/request-letters/approve/:letter_req_id", adminOnly, rtLeaderOnly, letterReq.UpdateApprovalStatus)
+
+	// income finance plan
+	v1.Get("/finances/income-plan", adminOnly, incomePlan.GetData)
+	v1.Get("/finances/income-plan/:rt_profile_id/rt", adminOnly, rtLeaderOnly, incomePlan.GetDataByRTProfileId)
+	v1.Get("/finances/income-plan/:id", adminOnly, rtLeaderOnly, incomePlan.GetDataById)
+	v1.Post("/finances/income-plan", incomePlan.StoreData)
+	v1.Put("/finances/income-plan/:id", adminOnly, rtLeaderOnly, incomePlan.UpdateData)
+	v1.Delete("/finances/income-plan/:id", adminOnly, rtLeaderOnly, incomePlan.DeleteData)
+
+	// income finance logs
+	v1.Get("/finances/income-log", adminOnly, incomeLog.GetData)
+	v1.Get("/finances/income-log/:rt_profile_id/rt", adminOnly, rtLeaderOnly, incomeLog.GetDataByRTProfileId)
+	v1.Get("/finances/income-log/:id", adminOnly, rtLeaderOnly, incomeLog.GetDataById)
+	v1.Put("/finances/income-log/:id", adminOnly, rtLeaderOnly, incomeLog.UpdateData)
+	v1.Post("/finances/income-log", incomeLog.StoreData)
+	v1.Delete("/finances/income-log/:id", adminOnly, rtLeaderOnly, incomeLog.DeleteData)
+
+	// income expense logs
+	v1.Get("/finances/expense-log", adminOnly, expenseLog.GetData)
+	v1.Get("/finances/expense-log/:rt_profile_id/rt", adminOnly, rtLeaderOnly, expenseLog.GetDataByRTProfileId)
+	v1.Get("/finances/expense-log/:id", adminOnly, rtLeaderOnly, expenseLog.GetDataById)
+	v1.Put("/finances/expense-log/:id", adminOnly, rtLeaderOnly, expenseLog.UpdateData)
+	v1.Post("/finances/expense-log", expenseLog.StoreData)
+	v1.Delete("/finances/expense-log/:id", adminOnly, rtLeaderOnly, expenseLog.DeleteData)
 
 	//----------------------------------------------------------------
 	//

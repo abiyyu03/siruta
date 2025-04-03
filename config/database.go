@@ -56,6 +56,9 @@ func InitDB() error {
 		&model.RegistrationToken{},
 		&model.LetterType{},
 		&model.Inventory{},
+		&model.Income{},
+		&model.IncomePlan{},
+		&model.Expense{},
 	)
 
 	return nil

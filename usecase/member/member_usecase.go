@@ -26,6 +26,10 @@ func (m *MemberUsecase) Fetch(ctx *fiber.Ctx) error {
 	return entity.Success(ctx, &members, "Data fetched successfully")
 }
 
+// func (m *MemberUsecase) BatchStore(ctx fiber.Ctx) error {
+
+// }
+
 func (m *MemberUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 	members, err := memberRepository.FetchById(id)
 
