@@ -38,6 +38,7 @@ func HttpRoutes(app *fiber.App) {
 	incomePlan := new(finance.IncomePlanHttp)
 	incomeLog := new(finance.IncomeHttp)
 	expenseLog := new(finance.ExpenseHttp)
+	resetPassword := new(auth.ResetPasswordHttp)
 
 	adminOnly := middleware.JWTMiddleware([]int{1})
 	// rwLeaderOnly := middleware.JWTMiddleware([]int{2})
@@ -47,6 +48,8 @@ func HttpRoutes(app *fiber.App) {
 
 	//authentication
 	v1.Post("/login", middleware.ValidateField[request.LoginRequest](), auth.Login)
+	v1.Post("/forgot-password", resetPassword.SendForgotPasswordLink)
+	v1.Put("/reset-password", middleware.ValidateField[request.ResetPassword](), resetPassword.ResetPassword)
 
 	// members
 	v1.Get("/members", adminOnly, member.GetData)
