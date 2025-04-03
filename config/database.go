@@ -59,6 +59,7 @@ func InitDB() error {
 		&model.Income{},
 		&model.IncomePlan{},
 		&model.Expense{},
+		&model.ResetPassword{},
 	)
 
 	return nil

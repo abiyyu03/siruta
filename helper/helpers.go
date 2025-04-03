@@ -1,6 +1,9 @@
 package helper
 
 import (
+	cryptoRand "crypto/rand"
+	"encoding/hex"
+	"io"
 	"math/rand"
 	"regexp"
 	"strings"
@@ -28,4 +31,13 @@ func ConvertPascalCaseToSnakeCase(input string) string {
 
 	// Convert to lowercase
 	return strings.ToLower(snake)
+}
+
+func GenerateSecureToken(length int) (string, error) {
+	bytes := make([]byte, length)
+	_, err := io.ReadFull(cryptoRand.Reader, bytes)
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(bytes), nil
 }
