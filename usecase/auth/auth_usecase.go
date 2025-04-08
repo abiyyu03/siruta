@@ -11,6 +11,7 @@ import (
 	"github.com/abiyyu03/siruta/repository/auth"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthUsecase struct{}
@@ -33,7 +34,17 @@ func init() {
 }
 
 func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, email string, password string) error {
-	user, member, err := authRepository.FetchLogin(email, password)
+	user, member, err := authRepository.FetchUserByEmail(email)
+
+	if err != nil {
+		return entity.Error(ctx,
+			fiber.StatusUnauthorized,
+			constant.Errors["AccountInputError"].Message,
+			constant.Errors["AccountInputError"].Clue,
+		)
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 
 	if err != nil {
 		return entity.Error(ctx,
