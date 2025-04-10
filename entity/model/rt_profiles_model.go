@@ -21,8 +21,7 @@ type RTProfile struct {
 	RWProfile      RWProfile        `json:"-" gorm:"foreignKey:RWProfileId;not null"`
 	IncomingLetter []IncomingLetter `json:"-" gorm:"foreignKey:RTProfileId"`
 	Member         []Member         `json:"-" gorm:"foreignKey:RTProfileId"`
-	IncomePlan     []IncomePlan     `json:"-" gorm:"foreignKey:RTProfileId"`
-	Expense        []Expense        `json:"-" gorm:"foreignKey:RTProfileId"`
+	Cashflow       []Cashflow       `json:"-" gorm:"foreignKey:RTProfileId"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	DeletedAt      gorm.DeletedAt `gorm:"index"`
