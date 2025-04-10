@@ -8,24 +8,24 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type ExpenseUsecase struct{}
+type CashflowUsecase struct{}
 
-var expenseRepository *finance.ExpenseRepository
+var cashflowRepository *finance.CashflowRepository
 
-func (e *ExpenseUsecase) Fetch(ctx *fiber.Ctx) error {
-	expenses, err := expenseRepository.Fetch()
+func (c *CashflowUsecase) Fetch(ctx *fiber.Ctx, logType string) error {
+	cashlog, err := cashflowRepository.Fetch(logType)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, &expenses, "Data fetched successfully")
+	return entity.Success(ctx, &cashlog, "Data fetched successfully")
 }
 
-func (e *ExpenseUsecase) FetchById(ctx *fiber.Ctx, id int) error {
-	expense, err := expenseRepository.FetchById(id)
+func (c *CashflowUsecase) FetchById(ctx *fiber.Ctx, id int, logType string) error {
+	cashlog, err := cashflowRepository.FetchById(id, logType)
 
-	if expense == nil {
+	if cashlog == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
 	}
 
@@ -33,12 +33,12 @@ func (e *ExpenseUsecase) FetchById(ctx *fiber.Ctx, id int) error {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, &expense, "Data fetched successfully")
+	return entity.Success(ctx, &cashlog, "Data fetched successfully")
 }
-func (e *ExpenseUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error {
-	expenses, err := expenseRepository.FetchByRTProfileId(rtProfileId)
+func (c *CashflowUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string, logType string) error {
+	cashlog, err := cashflowRepository.FetchByRTProfileId(rtProfileId, logType)
 
-	if expenses == nil {
+	if cashlog == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
 	}
 
@@ -46,23 +46,23 @@ func (e *ExpenseUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) 
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, &expenses, "Data fetched successfully")
+	return entity.Success(ctx, &cashlog, "Data fetched successfully")
 }
 
-func (e *ExpenseUsecase) Store(ctx *fiber.Ctx, expenseData *model.Expense) error {
-	expense, err := expenseRepository.Store(expenseData)
+func (c *CashflowUsecase) Store(ctx *fiber.Ctx, cashlogData *model.Cashflow) error {
+	cashlog, err := cashflowRepository.Store(cashlogData)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, expense, "Data stored successfully")
+	return entity.Success(ctx, cashlog, "Data stored successfully")
 }
 
-func (e *ExpenseUsecase) Update(ctx *fiber.Ctx, expenseData *model.Expense, id int) error {
-	expense, err := expenseRepository.Update(expenseData, id)
+func (c *CashflowUsecase) Update(ctx *fiber.Ctx, cashlogData *model.Cashflow, id int) error {
+	cashlog, err := cashflowRepository.Update(cashlogData, id)
 
-	if expense == nil {
+	if cashlog == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
 	}
 
@@ -70,11 +70,11 @@ func (e *ExpenseUsecase) Update(ctx *fiber.Ctx, expenseData *model.Expense, id i
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, expense, "Data updated successfully")
+	return entity.Success(ctx, cashlog, "Data updated successfully")
 }
 
-func (e *ExpenseUsecase) Delete(ctx *fiber.Ctx, id int) error {
-	_, err := expenseRepository.Delete(id)
+func (c *CashflowUsecase) Delete(ctx *fiber.Ctx, id int) error {
+	_, err := cashflowRepository.Delete(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
