@@ -47,7 +47,7 @@ func (m *MemberRegisterUsecase) RegisterMember(ctx *fiber.Ctx, userMember *reque
 		MaritalStatus:  &userMember.MaritalStatus,
 		ReligionId:     userMember.ReligionId,
 		MemberStatusId: userMember.MemberStatusId,
-		UserId:         &newUser.ID,
+		UserId:         newUser.ID,
 		Occupation:     &userMember.Occupation,
 		Status:         userMember.Status,
 		RTProfileId:    profileId,

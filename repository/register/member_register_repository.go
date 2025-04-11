@@ -11,24 +11,25 @@ import (
 )
 
 type MemberRegisterRepository struct {
-	userRepository   *user.UserRepository
-	memberRepository *member.MemberRepository
 }
+
+var userRepository *user.UserRepository
+var memberRepository *member.MemberRepository
 
 func (m *MemberRegisterRepository) RegisterMember(memberData *model.Member, user *model.User) error {
 	err := config.DB.Transaction(func(tx *gorm.DB) error {
-		_, err := m.memberRepository.Store(tx, memberData)
+
+		_, err := userRepository.RegisterUser(tx, user, user.RoleID)
 
 		if err != nil {
 			return err
 		}
 
-		_, err = m.userRepository.RegisterUser(tx, user, user.RoleID)
+		_, err = memberRepository.Store(tx, memberData)
 
 		if err != nil {
 			return err
 		}
-
 		return nil
 	})
 
