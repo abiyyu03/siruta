@@ -1,6 +1,8 @@
 package member
 
 import (
+	"log"
+
 	"github.com/abiyyu03/siruta/config"
 	"github.com/abiyyu03/siruta/entity/model"
 	"gorm.io/gorm"
@@ -16,6 +18,17 @@ func (m *MemberRepository) Fetch() ([]*model.Member, error) {
 	}
 
 	return members, nil
+}
+
+func (m *MemberRepository) FetchByNikAndBirtDate(nik string, birthDate string) (*model.Member, error) {
+	var member *model.Member
+
+	if err := config.DB.Where("nik_number = ?", nik).Where("birth_date = ?", birthDate).First(&member).Error; err != nil {
+		log.Print(err.Error())
+		return nil, err
+	}
+
+	return member, nil
 }
 
 func (m *MemberRepository) FetchById(id string) (*model.Member, error) {

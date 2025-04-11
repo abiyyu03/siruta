@@ -17,9 +17,9 @@ type MemberRegisterHttp struct {
 func (m *MemberRegisterHttp) Register(ctx *fiber.Ctx) error {
 	params := ctx.Queries()
 	//token verif
-	isReferalCodeValid, profileId := m.referalCodeUsecase.Validate(ctx, params["referal_code"])
+	_, profileId := m.referalCodeUsecase.Validate(ctx, params["referal_code"])
 
-	if isReferalCodeValid == nil {
+	if profileId == "" {
 		return entity.Error(ctx, fiber.StatusForbidden, constant.Errors["InvalidReferalCode"].Message, constant.Errors["InvalidReferalCode"].Clue)
 	}
 	var userMember *request.MemberRegisterRequest

@@ -183,6 +183,7 @@ func HttpRoutes(app *fiber.App) {
 	//outcoming letter
 	v1.Get("/outcoming-letters", adminOnly, OutcomingLetter.GetData)
 	v1.Get("/outcoming-letters/:id", adminOnly, rtLeaderOnly, OutcomingLetter.GetDataById)
+	v1.Get("/outcoming-letters/:id/preview", OutcomingLetter.GetPreview)
 	v1.Get("/outcoming-letters/:rt_profile_id/rt", adminOnly, rtLeaderOnly, OutcomingLetter.GetDataByRTProfileId)
 
 	//letter req

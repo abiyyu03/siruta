@@ -5,6 +5,7 @@ import (
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
 	"github.com/abiyyu03/siruta/repository/letter"
+	"github.com/abiyyu03/siruta/repository/member"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
@@ -12,17 +13,20 @@ import (
 type LetterReqUsecase struct{}
 
 var letterReqRepository *letter.LetterReqRepository
+var memberRepository *member.MemberRepository
 
 func (l *LetterReqUsecase) StoreOutcomingLetter(ctx *fiber.Ctx, memberData *model.Member, outcommingLetter *model.OutcomingLetter, memberStatus string, birthDate string, nik string) error {
 	letterId, _ := uuid.NewV7()
 	var err error
+
+	memberResult, _ := memberRepository.FetchByNikAndBirtDate(nik, birthDate)
 
 	newOutcomingLetter := &model.OutcomingLetter{
 		ID: letterId.String(),
 		// LetterNumber: outcommingLetter.LetterNumber,
 		Date:         outcommingLetter.Date,
 		LetterTypeId: outcommingLetter.LetterTypeId,
-		RTProfileId:  outcommingLetter.RTProfileId,
+		RTProfileId:  memberResult.RTProfileId,
 		MemberId:     outcommingLetter.MemberId,
 		IsRTApproved: outcommingLetter.IsRTApproved,
 		Description:  outcommingLetter.Description,
@@ -48,12 +52,11 @@ func (l *LetterReqUsecase) StoreOutcomingLetter(ctx *fiber.Ctx, memberData *mode
 		}
 
 		_, err = letterReqRepository.StoreOutcomingLetterWithGuest(newOutcomingLetter, createdGuestMember)
-
 	} else {
 		isMemberExist, _ := letterReqRepository.CheckMemberResidentExist(birthDate, nik)
 
 		if !isMemberExist {
-			return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
+			return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["UserNotFound"].Message, constant.Errors["UserNotFound"].Clue)
 		}
 
 		_, err = letterReqRepository.StoreOutcomingLetter(newOutcomingLetter)
@@ -63,11 +66,11 @@ func (l *LetterReqUsecase) StoreOutcomingLetter(ctx *fiber.Ctx, memberData *mode
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, newOutcomingLetter, "Data created successfully")
+	return entity.Success(ctx, nil, "Request letter created successfully")
 }
 
-func (l *LetterReqUsecase) UpdateApprovalStatusByRT(outcomingLetter *model.OutcomingLetter, id string, ctx *fiber.Ctx) error {
-	approvalStatus, err := letterReqRepository.UpdateApprovalStatusByRT(outcomingLetter, id)
+func (l *LetterReqUsecase) UpdateApprovalStatusByRT(ctx *fiber.Ctx, id string) error {
+	approvalStatus, err := letterReqRepository.UpdateApprovalStatusByRT(id)
 
 	if !approvalStatus {
 		return entity.Error(ctx, fiber.StatusBadRequest, constant.Errors["LetterRejected"].Message, constant.Errors["LetterRejected"].Clue)

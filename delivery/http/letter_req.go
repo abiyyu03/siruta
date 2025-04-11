@@ -38,11 +38,6 @@ func (l *LetterReqHttp) CreateData(ctx *fiber.Ctx) error {
 
 func (l *LetterReqHttp) UpdateApprovalStatus(ctx *fiber.Ctx) error {
 	id := ctx.Params("letter_req_id")
-	var request *model.OutcomingLetter
 
-	if err := ctx.BodyParser(&request); err != nil {
-		return entity.Error(ctx, fiber.StatusUnprocessableEntity, constant.Errors["UnprocessableEntity"].Message, constant.Errors["UnprocessableEntity"].Clue)
-	}
-
-	return l.letterReqUsecase.UpdateApprovalStatusByRT(request, id, ctx)
+	return l.letterReqUsecase.UpdateApprovalStatusByRT(ctx, id)
 }

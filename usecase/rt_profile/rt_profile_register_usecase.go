@@ -57,7 +57,7 @@ func (r *RTProfileRegisterUsecase) Approve(emailDestination string, rtProfileId 
 	err = rtNotification.RtNotification(emailDestination, token)
 
 	if err != nil {
-		return err
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	return entity.Success(ctx, nil, "RT Profile approved successfully")
