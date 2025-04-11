@@ -13,6 +13,12 @@ func (o *OutcomingLetterHttp) GetData(ctx *fiber.Ctx) error {
 	return o.outcomingLetterUsecase.Fetch(ctx)
 }
 
+func (o *OutcomingLetterHttp) GetPreview(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+
+	return o.outcomingLetterUsecase.FetchPreview(ctx, id)
+}
+
 func (o *OutcomingLetterHttp) GetDataById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
