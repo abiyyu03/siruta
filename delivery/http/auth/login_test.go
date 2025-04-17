@@ -53,7 +53,24 @@ func TestLoginHandler(t *testing.T) {
 		expectedCode    int
 		expectedMessage string
 	}{
-		// Test cases ...
+		{
+			name:      "Successful login",
+			inputBody: `{"email": "test@example.com", "password": "password123"}`,
+			mockSetup: func(mockAuth *MockAuthUsecase) {
+				mockAuth.On("IssueAuthToken", mock.Anything, "test@example.com", "password123").Return("mocked_token", nil)
+			},
+			expectedCode:    http.StatusOK,
+			expectedMessage: "login successfully",
+		},
+		{
+			name:      "Invalid credentials",
+			inputBody: `{"email": "test@example.com", "password": "wrongpassword"}`,
+			mockSetup: func(mockAuth *MockAuthUsecase) {
+				mockAuth.On("IssueAuthToken", mock.Anything, "test@example.com", "wrongpassword").Return("", assert.AnError)
+			},
+			expectedCode:    http.StatusBadRequest,
+			expectedMessage: "Bad Request",
+		},
 	}
 
 	for _, tt := range tests {
@@ -61,14 +78,16 @@ func TestLoginHandler(t *testing.T) {
 			app := fiber.New()
 			mockAuth := new(MockAuthUsecase)
 
+			// Set up the mock behavior
 			if tt.mockSetup != nil {
 				tt.mockSetup(mockAuth)
 			}
 
+			// Register the login handler
 			app.Post("/login", func(ctx *fiber.Ctx) error {
 				var request struct {
-					email    string `json:"email"`
-					Password string `json:"password"`
+					Email    string `json:"email"`    // Corrected field name to start with uppercase
+					Password string `json:"password"` // Corrected field name to start with uppercase
 				}
 				if err := ctx.BodyParser(&request); err != nil {
 					return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -79,7 +98,7 @@ func TestLoginHandler(t *testing.T) {
 				// Use private key for signing (log for debugging)
 				log.Printf("Using private key for signing: %s", privateKey)
 
-				generatedToken, err := mockAuth.IssueAuthToken(ctx, request.email, request.Password)
+				generatedToken, err := mockAuth.IssueAuthToken(ctx, request.Email, request.Password) // Use correct field names
 				if err != nil {
 					return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 						"message": fiber.ErrBadRequest.Message,

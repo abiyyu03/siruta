@@ -124,9 +124,9 @@ func (handler *HandlerDefinition) HttpRoutes(app *fiber.App) {
 	v1.Get("/rw-profiles/:id", adminOnly, rtLeaderOnly, handler.rwProfile.GetDataById)
 
 	//rt profiles
-	v1.Get("/rt-profiles", adminOnly, rwLeaderOnly, handler.rtProfile.GetData)
+	v1.Get("/rt-profiles", adminOnly, handler.rtProfile.GetData)
 	v1.Get("/rt-profiles/:id", adminOnly, rwLeaderOnly, handler.rtProfile.GetDataById)
-	v1.Get("/rt-profiles/:rt_profile_id", adminOnly, rwLeaderOnly, handler.rtProfile.GetDataByRtProfileId)
+	v1.Get("/rt-profiles/:rw_profile_id", adminOnly, rwLeaderOnly, handler.rtProfile.GetDataByRWProfileId)
 
 	//referal code
 	v1.Get("/referal-codes", adminOnly, handler.referalCode.GetData)

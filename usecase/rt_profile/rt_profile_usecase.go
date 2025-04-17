@@ -31,8 +31,8 @@ func (r *RTProfileUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 	return entity.Success(ctx, &rtProfile, "Data fetched successfully")
 }
 
-func (r *RTProfileUsecase) FetchByRtProfileId(ctx *fiber.Ctx, rtProfileId string) error {
-	rtProfiles, err := rtProfileRepository.FetchByRtProfileId(rtProfileId)
+func (r *RTProfileUsecase) FetchByRWProfileId(ctx *fiber.Ctx, rwProfileId string) error {
+	rtProfiles, err := rtProfileRepository.FetchByRWProfileId(rwProfileId)
 
 	if rtProfiles == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
