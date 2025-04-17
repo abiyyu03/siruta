@@ -12,3 +12,9 @@ type OutcomingLetterHttp struct {
 func (o *OutcomingLetterHttp) GetData(ctx *fiber.Ctx) error {
 	return o.outcomingLetterUsecase.Fetch(ctx)
 }
+
+func (o *OutcomingLetterHttp) GetDataByRtProfileId(ctx *fiber.Ctx) error {
+	rtProfileId := ctx.Params("rt_profile_id")
+
+	return o.outcomingLetterUsecase.FetchByRtProfileId(ctx, rtProfileId)
+}

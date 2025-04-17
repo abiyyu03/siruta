@@ -16,3 +16,13 @@ func (o *OutcomingLetterRepository) Fetch() ([]*model.OutcomingLetter, error) {
 
 	return outcomingLetters, nil
 }
+
+func (o *OutcomingLetterRepository) FetchByRtProfileId(rtProfileId string) ([]*model.OutcomingLetter, error) {
+	var outcomingLetters []*model.OutcomingLetter
+
+	if err := config.DB.Preload("Member").Preload("LetterType").Where("rt_profile_id =?", rtProfileId).Find(&outcomingLetters).Error; err != nil {
+		return nil, err
+	}
+
+	return outcomingLetters, nil
+}

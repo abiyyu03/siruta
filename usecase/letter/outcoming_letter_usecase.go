@@ -18,8 +18,18 @@ func (u *OutcomingLetterUsecase) Fetch(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
+	return entity.Success(ctx, &members, "Data fetched successfully")
+}
+
+func (u *OutcomingLetterUsecase) FetchByRtProfileId(ctx *fiber.Ctx, rtProfileId string) error {
+	members, err := outcomingLetterRepository.FetchByRtProfileId(rtProfileId)
+
 	if members == nil {
 		return nil
+	}
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	return entity.Success(ctx, &members, "Data fetched successfully")
