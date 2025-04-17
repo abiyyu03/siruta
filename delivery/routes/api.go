@@ -87,6 +87,7 @@ func HttpRoutes(app *fiber.App) {
 	//rt profiles
 	v1.Get("/rt-profiles", adminOnly, rwLeaderOnly, rtProfile.GetData)
 	v1.Get("/rt-profiles/:id", adminOnly, rwLeaderOnly, rtProfile.GetDataById)
+	v1.Get("/rt-profiles/:rt_profile_id", adminOnly, rwLeaderOnly, rtProfile.GetDataByRtProfileId)
 
 	//referal code
 	v1.Get("/referal-codes", adminOnly, referalCode.GetData)
@@ -149,7 +150,7 @@ func HttpRoutes(app *fiber.App) {
 
 	//outcoming letter
 	v1.Get("/outcoming-letters", adminOnly, OutcomingLetter.GetData)
-	v1.Get("/outcoming-letters/:rt_profile_id", adminOnly, rtLeaderOnly, OutcomingLetter.GetData)
+	v1.Get("/outcoming-letters/:rt_profile_id", adminOnly, rtLeaderOnly, OutcomingLetter.GetDataByRtProfileId)
 	// v1.Get("/outcoming-letters/:id", adminOnly, OutcomingLetter.GetDataById)
 
 	//letter req
