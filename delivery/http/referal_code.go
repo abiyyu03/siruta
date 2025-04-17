@@ -1,6 +1,8 @@
 package http
 
 import (
+	"strconv"
+
 	"github.com/abiyyu03/siruta/usecase/referal_code"
 	"github.com/gofiber/fiber/v2"
 )
@@ -38,4 +40,10 @@ func (r *ReferalCodeHttp) ValidateReferalCode(ctx *fiber.Ctx) error {
 	response, _ := r.referalCodeUsecase.Validate(ctx, queryParam["code"])
 
 	return response
+}
+
+func (r *ReferalCodeHttp) DeleteData(ctx *fiber.Ctx) error {
+	id, _ := strconv.Atoi(ctx.Params("id"))
+
+	return r.referalCodeUsecase.Delete(ctx, id)
 }

@@ -105,3 +105,13 @@ func (r *ReferalCodeRepository) Validate(code string) (string, bool, error) { //
 
 	return referalCode.ProfileId, true, nil
 }
+
+func (r *ReferalCodeRepository) Delete(id int) error {
+	var referalCode *model.ReferalCode
+
+	if err := config.DB.Where("id =?", id).Delete(&referalCode).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -84,3 +84,13 @@ func (r *ReferalCodeUsecase) Validate(ctx *fiber.Ctx, code string) (error, strin
 
 	return entity.Success(ctx, &restructureRwProfile, "Referal code is valid"), profileId
 }
+
+func (r *ReferalCodeUsecase) Delete(ctx *fiber.Ctx, id int) error {
+	err := referalCodeRepository.Delete(id)
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	}
+
+	return entity.Success(ctx, nil, "Referal data deleted successfully")
+}
