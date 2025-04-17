@@ -16,7 +16,8 @@ func main() {
 
 	app := fiber.New()
 
-	routes.HttpRoutes(app)
+	handler := new(routes.HandlerDefinition)
+	handler.HttpRoutes(app)
 
 	app.Listen(":8080")
 }
