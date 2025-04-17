@@ -7,8 +7,8 @@ RUN apk add --no-cache git
 # Set working directory
 WORKDIR /app
 
-# Copy source code
-COPY ../satuwarga-backend /app
+# # Copy source code
+# COPY ../satuwarga-backend /app
 
 # Build Go binary
 RUN go build -o satuwarga-prod
