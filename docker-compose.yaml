@@ -16,6 +16,8 @@ services:
       - DB_USER=satuwarga
       - DB_PASSWORD=onewarga!
       - DB_NAME=satuwarga
+    volumes:
+      - ./keys:/app/keys
 
   db:
     image: postgres:latest

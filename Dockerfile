@@ -10,6 +10,9 @@ WORKDIR /app
 # Copy source code
 COPY . .
 
+# Setelah WORKDIR /app
+COPY keys ./keys
+
 # Download dependencies (opsional, tapi disarankan)
 RUN go mod tidy
 
