@@ -28,5 +28,5 @@ func (o *OutcomingLetterHttp) GetDataById(ctx *fiber.Ctx) error {
 func (o *OutcomingLetterHttp) GetDataByRTProfileId(ctx *fiber.Ctx) error {
 	rtProfileId := ctx.Params("rt_profile_id")
 
-	return o.outcomingLetterUsecase.FetchByRTProfileId(ctx, rtProfileId)
+	return o.outcomingLetterUsecase.FetchByRTProfileId(ctx, rtProfileId) 
 }

@@ -26,3 +26,13 @@ func (r *RTProfileRepository) FetchById(id string) (*model.RTProfile, error) {
 
 	return rtProfile, nil
 }
+
+func (r *RTProfileRepository) FetchByRtProfileId(rtProfileId string) ([]*model.RTProfile, error) {
+	var rtProfile []*model.RTProfile
+
+	if err := config.DB.Where("rt_profile_id = ?", rtProfileId).Find(&rtProfile).Error; err != nil {
+		return nil, err
+	}
+
+	return rtProfile, nil
+}

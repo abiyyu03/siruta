@@ -13,6 +13,12 @@ func (r *RTProfileHttp) GetData(ctx *fiber.Ctx) error {
 	return r.rtProfileUsecase.Fetch(ctx)
 }
 
+func (r *RTProfileHttp) GetDataByRtProfileId(ctx *fiber.Ctx) error {
+	rtProfileId := ctx.Params("rt_profile_id")
+
+	return r.rtProfileUsecase.FetchByRtProfileId(ctx, rtProfileId)
+}
+
 func (r *RTProfileHttp) GetDataById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
