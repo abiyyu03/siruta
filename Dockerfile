@@ -7,11 +7,14 @@ RUN apk add --no-cache git
 # Set working directory
 WORKDIR /app
 
-# # Copy source code
-# COPY ../satuwarga-backend /app
+# Copy source code
+COPY . .
+
+# Download dependencies (opsional, tapi disarankan)
+RUN go mod tidy
 
 # Build Go binary
-RUN go build -o satuwarga-prod
+RUN go build -o satuwarga-prod main.go
 
 # Run stage (smaller image)
 FROM alpine:latest
