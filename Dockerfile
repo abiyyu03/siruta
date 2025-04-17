@@ -17,7 +17,7 @@ COPY keys ./keys
 RUN go mod tidy
 
 # Build Go binary
-RUN go build -o satuwarga-prod main.go
+RUN go build -o satuwarga-prod .
 
 # Run stage (smaller image)
 FROM alpine:latest
@@ -27,6 +27,8 @@ WORKDIR /app
 
 # Copy the binary from builder
 COPY --from=builder /app/satuwarga-prod .
+
+RUN mkdir keys
 
 # Expose port (ubah sesuai port aplikasi Go-mu)
 EXPOSE 8080
