@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/abiyyu03/siruta/delivery/http"
 	"github.com/abiyyu03/siruta/delivery/http/auth"
+	"github.com/abiyyu03/siruta/delivery/http/finance"
 	"github.com/abiyyu03/siruta/delivery/http/middleware"
 	"github.com/abiyyu03/siruta/delivery/http/register"
 	"github.com/abiyyu03/siruta/entity/model"
@@ -33,6 +34,9 @@ func HttpRoutes(app *fiber.App) {
 	rtLeader := new(http.RTLeaderHttp)
 	rwLeader := new(http.RWLeaderHttp)
 	inventory := new(http.InventoryHttp)
+	guestList := new(http.GuestListHttp)
+	cashflow := new(finance.CashflowHttp)
+	resetPassword := new(auth.ResetPasswordHttp)
 
 	adminOnly := middleware.JWTMiddleware([]int{1})
 	rwLeaderOnly := middleware.JWTMiddleware([]int{2})
@@ -42,6 +46,15 @@ func HttpRoutes(app *fiber.App) {
 
 	//authentication
 	v1.Post("/login", middleware.ValidateField[request.LoginRequest](), auth.Login)
+	v1.Post("/forgot-password", resetPassword.SendForgotPasswordLink)
+	v1.Put("/reset-password", middleware.ValidateField[request.ResetPassword](), resetPassword.ResetPassword)
+
+	// members
+	v1.Get("/members", adminOnly, member.GetData)
+	v1.Get("/members/:id", adminOnly, member.GetDataById)
+	v1.Put("/members/:id", adminOnly, member.UpdateData)
+	v1.Get("/members/:rt_profile_id/rt", adminOnly, rtLeaderOnly, member.GetDataByRTProfileId)
+  
 	// register
 	v1.Post("/registers/rw", middleware.ValidateField[model.RWProfile](), rwProfileRegister.RegisterRWProfile)
 	v1.Put("/registers/rw/:rwProfileId/approve", rwProfileRegister.ApproveRegistration)
@@ -70,6 +83,30 @@ func HttpRoutes(app *fiber.App) {
 	v1.Put("/inventories/:id", rtLeaderOnly, inventory.UpdateData)
 	v1.Delete("/inventories/:id", rtLeaderOnly, inventory.DeleteData)
 
+	//referal codes
+	v1.Get("/referal-codes/:profile_id/rt", rtLeaderOnly, referalCode.GetDataByRTProfileId)
+	v1.Put("/referal-codes/:profile_id/rt/regenerate/:code", rtLeaderOnly, referalCode.RegenerateCode)
+
+	// incoming letter
+	v1.Get("/incoming-letters/:rt_profile_id/rt", rtLeaderOnly, incomingLetter.GetDataByRTProfileId)
+
+	// guest list
+	v1.Get("/guest-lists", adminOnly, guestList.GetData)
+	v1.Get("/guest-lists/:rt_profile_id/rt", adminOnly, rtLeaderOnly, guestList.GetDataByRTProfileId)
+	v1.Get("/guest-lists/:id", adminOnly, rtLeaderOnly, guestList.GetDataById)
+	v1.Put("/guest-lists/:id", adminOnly, rtLeaderOnly, guestList.UpdateData)
+	v1.Delete("/guest-lists/:id", adminOnly, rtLeaderOnly, guestList.DeleteData)
+
+	// Request letter
+	v1.Put("/request-letters/approve/:letter_req_id", adminOnly, rtLeaderOnly, letterReq.UpdateApprovalStatus)
+
+	// cashflow
+	v1.Get("/finances/cashflow", adminOnly, cashflow.GetData)
+	v1.Get("/finances/cashflow/:rt_profile_id/rt", adminOnly, rtLeaderOnly, cashflow.GetDataByRTProfileId)
+	v1.Get("/finances/cashflow/:id", adminOnly, rtLeaderOnly, cashflow.GetDataById)
+	v1.Put("/finances/cashflow/:id", adminOnly, rtLeaderOnly, cashflow.UpdateData)
+	v1.Post("/finances/cashflow", cashflow.StoreData)
+	v1.Delete("/finances/cashflow/:id", adminOnly, rtLeaderOnly, cashflow.DeleteData)
 	//----------------------------------------------------------------
 	//
 	// Admin Authority
@@ -82,7 +119,7 @@ func HttpRoutes(app *fiber.App) {
 
 	//rw profiles
 	v1.Get("/rw-profiles", adminOnly, rwProfile.GetData)
-	v1.Get("/rw-profiles/:id", adminOnly, rwProfile.GetDataById)
+	v1.Get("/rw-profiles/:id", adminOnly, rtLeaderOnly, rwProfile.GetDataById)
 
 	//rt profiles
 	v1.Get("/rt-profiles", adminOnly, rwLeaderOnly, rtProfile.GetData)
@@ -149,12 +186,18 @@ func HttpRoutes(app *fiber.App) {
 	v1.Delete("/letter-types/:id", adminOnly, letterType.DeleteData)
 
 	//outcoming letter
-	v1.Get("/outcoming-letters", adminOnly, OutcomingLetter.GetData)
-	v1.Get("/outcoming-letters/:rt_profile_id", adminOnly, rtLeaderOnly, OutcomingLetter.GetDataByRtProfileId)
-	// v1.Get("/outcoming-letters/:id", adminOnly, OutcomingLetter.GetDataById)
+	v1.Get("/outcoming-letters", adminOnly, OutcomingLetter.GetData) 
+	v1.Get("/outcoming-letters/:rt_profile_id", adminOnly, rtLeaderOnly, OutcomingLetter.GetDataByRTProfileId)
+// 	v1.Get("/outcoming-letters/:id", adminOnly, OutcomingLetter.GetDataById)
 
 	//letter req
 	v1.Post("/request-letters", rtLeaderOnly, memberOnly, letterReq.CreateData)
 	v1.Put("/request-letters/approve/:letter_req_id", rtLeaderOnly, letterReq.UpdateApprovalStatus)
+  
+	v1.Get("/outcoming-letters/:id", adminOnly, rtLeaderOnly, OutcomingLetter.GetDataById)
+	v1.Get("/outcoming-letters/:id/preview", OutcomingLetter.GetPreview)
+	v1.Get("/outcoming-letters/:rt_profile_id/rt", adminOnly, rtLeaderOnly, OutcomingLetter.GetDataByRTProfileId)
 
+	//letter req
+	v1.Post("/request-letters", adminOnly, memberOnly, letterReq.CreateData)\
 }

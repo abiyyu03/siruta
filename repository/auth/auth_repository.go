@@ -28,5 +28,4 @@ func (u *AuthRepository) FetchLogin(email, password string) (*model.User, *model
 	}
 
 	return user, member, nil
-
 }

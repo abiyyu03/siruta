@@ -24,6 +24,12 @@ func (i *IncomingLetterHttp) GetDataById(ctx *fiber.Ctx) error {
 	return i.incomingLetterUsecase.FetchById(ctx, id)
 }
 
+func (i *IncomingLetterHttp) GetDataByRTProfileId(ctx *fiber.Ctx) error {
+	rtProfileId := ctx.Params("rt_profile_id")
+
+	return i.incomingLetterUsecase.FetchByRTProfileId(ctx, rtProfileId)
+}
+
 func (i *IncomingLetterHttp) UpdateData(ctx *fiber.Ctx) error {
 	var incomingLetter *model.IncomingLetter
 	id, _ := strconv.Atoi(ctx.Params("id"))

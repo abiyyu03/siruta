@@ -27,6 +27,16 @@ func (i *IncomingLetterRepository) FetchById(id int) (*model.IncomingLetter, err
 	return incomingLetter, nil
 }
 
+func (i *IncomingLetterRepository) FetchByRTProfileId(rwProfileId string) ([]*model.IncomingLetter, error) {
+	var incomingLetters []*model.IncomingLetter
+
+	if err := config.DB.Where("rt_profile_id =?", rwProfileId).Find(&incomingLetters).Error; err != nil {
+		return nil, err
+	}
+
+	return incomingLetters, nil
+}
+
 func (i *IncomingLetterRepository) Store(incomingLetter *model.IncomingLetter) (*model.IncomingLetter, error) {
 	if err := config.DB.Create(&incomingLetter).Error; err != nil {
 		return nil, err

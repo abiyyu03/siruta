@@ -14,12 +14,13 @@ import (
 )
 
 type RTProfileRegisterRepository struct {
-	rtProfileRepository     *RTProfileRepository
-	tokenRegisterRepository *register.RegTokenRepository
-	userRepository          *user.UserRepository
-	referalCodeRepository   *referal_code.ReferalCodeRepository
-	leaderRepository        *RTLeaderRepository
 }
+
+var tokenRegisterRepository *register.RegTokenRepository
+var userRepository *user.UserRepository
+var leaderRepository *RTLeaderRepository
+var referalCodeRepository *referal_code.ReferalCodeRepository
+var rtProfileRepository *RTProfileRepository
 
 func (r *RTProfileRegisterRepository) Register(rtProfile *model.RTProfile, referalCode string) (*model.RTProfile, error) {
 	tx := config.DB.Begin()
@@ -89,16 +90,14 @@ func (r *RTProfileRegisterRepository) CheckRTNumberAvailability(rtProfile *model
 
 func (r *RTProfileRegisterRepository) ApproveRegistrant(rtProfileId string) error {
 	err := config.DB.Transaction(func(tx *gorm.DB) error {
-		var rtProfile *model.RTProfile
-
-		_, err := r.rtProfileRepository.FetchById(rtProfileId)
+		rtProfile, err := rtProfileRepository.FetchById(rtProfileId)
 
 		if err != nil {
 			return err
 		}
 
 		// Generate referral code
-		err = r.referalCodeRepository.GenerateReferalCode(tx, rtProfileId)
+		err = referalCodeRepository.GenerateReferalCode(tx, rtProfileId)
 
 		if err != nil {
 			log.Printf("Failed to generate referral code: %v", err)
@@ -136,19 +135,19 @@ func (r *RTProfileRegisterRepository) UpdateRTAuthorization(tx *gorm.DB, id stri
 func (r *RTProfileRegisterRepository) RegisterUserRt(leader *model.RTLeader, user *model.User, roleId uint, token string) error {
 	err := config.DB.Transaction(func(tx *gorm.DB) error {
 
-		_, err := r.userRepository.RegisterUser(tx, user, roleId)
+		_, err := userRepository.RegisterUser(tx, user, roleId)
 
 		if err != nil {
 			return err
 		}
 
-		_, err = r.tokenRegisterRepository.RemoveToken(tx, token)
+		_, err = tokenRegisterRepository.RemoveToken(tx, token)
 
 		if err != nil {
 			return err
 		}
 
-		err = r.leaderRepository.Store(tx, leader)
+		err = leaderRepository.Store(tx, leader)
 
 		if err != nil {
 			return err

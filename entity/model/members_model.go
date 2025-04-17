@@ -21,10 +21,12 @@ type Member struct {
 	Religion        Religion          `json:"-" gorm:"foreignKey:ReligionId;not null"`
 	MemberStatusId  uint              `json:"member_status_id" gorm:"column:member_status_id;not null" validate:"required"`
 	MemberStatus    MemberStatus      `json:"-" gorm:"foreignKey:MemberStatusId;not null"`
-	UserId          *string           `json:"user_id" gorm:"column:user_id"`
+	UserId          string            `json:"user_id" gorm:"column:user_id"`
 	User            User              `json:"-" gorm:"foreignKey:UserId;not null"`
 	Occupation      *string           `json:"occupation" gorm:"column:occupation"`
 	Status          string            `json:"status" gorm:"column:status;default:resident"` //resident or guest
+	RTProfileId     string            `json:"rt_profile_id" gorm:"column:rt_profile_id;not null"`
+	RTProfile       RTProfile         `json:"-" gorm:"foreignKey:RTProfileId;not null"`
 	OutcomingLetter []OutcomingLetter `gorm:"foreignKey:MemberId"`
 	CreatedAt       time.Time
 	UpdatedAt       time.Time

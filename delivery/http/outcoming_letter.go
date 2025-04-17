@@ -13,8 +13,20 @@ func (o *OutcomingLetterHttp) GetData(ctx *fiber.Ctx) error {
 	return o.outcomingLetterUsecase.Fetch(ctx)
 }
 
-func (o *OutcomingLetterHttp) GetDataByRtProfileId(ctx *fiber.Ctx) error {
+func (o *OutcomingLetterHttp) GetPreview(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+
+	return o.outcomingLetterUsecase.FetchPreview(ctx, id)
+}
+
+func (o *OutcomingLetterHttp) GetDataById(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+
+	return o.outcomingLetterUsecase.FetchById(ctx, id)
+}
+
+func (o *OutcomingLetterHttp) GetDataByRTProfileId(ctx *fiber.Ctx) error {
 	rtProfileId := ctx.Params("rt_profile_id")
 
-	return o.outcomingLetterUsecase.FetchByRtProfileId(ctx, rtProfileId)
+	return o.outcomingLetterUsecase.FetchByRTProfileId(ctx, rtProfileId) 
 }
