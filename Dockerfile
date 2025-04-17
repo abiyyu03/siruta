@@ -27,6 +27,7 @@ WORKDIR /app
 
 # Copy the binary from builder
 COPY --from=builder /app/satuwarga-prod .
+COPY --from=builder /app/.env .
 
 RUN mkdir keys
 
