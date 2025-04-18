@@ -3,8 +3,8 @@ package routes
 import (
 	"github.com/abiyyu03/siruta/delivery/http"
 	"github.com/abiyyu03/siruta/delivery/http/auth"
-	"github.com/abiyyu03/siruta/delivery/http/middleware"
 	"github.com/abiyyu03/siruta/delivery/http/register"
+	"github.com/abiyyu03/siruta/delivery/middleware"
 	"github.com/abiyyu03/siruta/entity/model"
 	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/gofiber/fiber/v2"
@@ -64,18 +64,6 @@ func (handler *HandlerDefinition) HttpRoutes(app *fiber.App) {
 	v1.Put("/registers/rt/:rtProfileId/approve", handler.rtProfileRegister.ApproveRegistration)
 	v1.Post("/registers/rt/user-account", handler.rtProfileRegister.RegisterUserRt)
 	v1.Post("/registers/member", middleware.ValidateField[request.MemberRegisterRequest](), handler.memberRegister.Register)
-
-	//----------------------------------------------------------------
-	//
-	// RW Authority
-	//
-	//----------------------------------------------------------------
-
-	//----------------------------------------------------------------
-	//
-	// RT Authority
-	//
-	//----------------------------------------------------------------
 
 	//inventory
 	v1.Get("/inventories", rtLeaderOnly, handler.inventory.GetData)
