@@ -36,7 +36,7 @@ func JWTMiddleware(allowedRoles []int) fiber.Handler {
 	if err != nil {
 		log.Fatalf("Failed to load public key: %v", err)
 	}
-	log.Println("JWT Middleware initialized with public key")
+
 	return jwtware.New(jwtware.Config{
 		SigningMethod: "RS256",
 		SigningKey:    publicKey,

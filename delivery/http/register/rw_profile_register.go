@@ -1,7 +1,7 @@
 package register
 
 import (
-	"github.com/abiyyu03/siruta/delivery/http/middleware"
+	"github.com/abiyyu03/siruta/delivery/middleware"
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"

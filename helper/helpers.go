@@ -4,10 +4,14 @@ import (
 	cryptoRand "crypto/rand"
 	"encoding/hex"
 	"io"
+	"log"
 	"math/rand"
+	"os"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 const letterBytes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -40,4 +44,12 @@ func GenerateSecureToken(length int) (string, error) {
 		return "", err
 	}
 	return hex.EncodeToString(bytes), nil
+}
+
+func GoDotEnv(key string) string {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal(err)
+	}
+	return os.Getenv(key)
 }
