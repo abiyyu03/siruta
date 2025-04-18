@@ -3,7 +3,6 @@ package routes
 import (
 	"github.com/abiyyu03/siruta/delivery/http"
 	"github.com/abiyyu03/siruta/delivery/http/auth"
-	"github.com/abiyyu03/siruta/delivery/http/finance"
 	"github.com/abiyyu03/siruta/delivery/http/middleware"
 	"github.com/abiyyu03/siruta/delivery/http/register"
 	"github.com/abiyyu03/siruta/entity/model"
@@ -32,7 +31,7 @@ type HandlerDefinition struct {
 	rwLeader          *http.RWLeaderHttp
 	inventory         *http.InventoryHttp
 	guestList         *http.GuestListHttp
-	cashflow          *finance.CashflowHttp
+	cashflow          *http.CashflowHttp
 	resetPassword     *auth.ResetPasswordHttp
 }
 
