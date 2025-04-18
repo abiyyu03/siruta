@@ -22,6 +22,7 @@ type Member struct {
 	MemberStatusId  uint              `json:"member_status_id" gorm:"column:member_status_id;not null" validate:"required"`
 	MemberStatus    MemberStatus      `json:"-" gorm:"foreignKey:MemberStatusId;not null"`
 	UserId          string            `json:"user_id" gorm:"column:user_id"`
+	Photo           *string           `json:"photo" gorm:"column:photo"`
 	User            User              `json:"-" gorm:"foreignKey:UserId;not null"`
 	Occupation      *string           `json:"occupation" gorm:"column:occupation"`
 	Status          string            `json:"status" gorm:"column:status;default:resident"` //resident or guest

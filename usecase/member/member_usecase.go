@@ -68,6 +68,7 @@ func (m *MemberUsecase) Update(ctx *fiber.Ctx, id string, memberData *model.Memb
 		BornPlace:     memberData.BornPlace,
 		BirthDate:     memberData.BirthDate,
 		Gender:        memberData.Gender,
+		Photo:         memberData.Photo,
 		HomeAddress:   memberData.HomeAddress,
 		MaritalStatus: memberData.MaritalStatus,
 	}

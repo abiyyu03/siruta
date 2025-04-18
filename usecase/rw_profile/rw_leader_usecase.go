@@ -52,6 +52,7 @@ func (r *RWLeaderUsecase) Update(ctx *fiber.Ctx, id string, rwLeaderData *model.
 		Fullname:    rwLeaderData.Fullname,
 		NikNumber:   rwLeaderData.NikNumber,
 		KKNumber:    rwLeaderData.KKNumber,
+		Photo:       rwLeaderData.Photo,
 		FullAddress: rwLeaderData.FullAddress,
 	}
 

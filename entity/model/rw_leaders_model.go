@@ -12,6 +12,7 @@ type RWLeader struct {
 	Fullname    string    `json:"fullname" gorm:"column:fullname"`
 	NikNumber   string    `json:"nik_number" gorm:"column:nik_number;uniqueIndex" validate:"required,unique"`
 	KKNumber    string    `json:"kk_number" gorm:"column:kk_number"`
+	Photo       *string   `json:"photo" gorm:"column:photo"`
 	RWProfileId string    `json:"rw_profile_id" gorm:"not null"`
 	RWProfile   RWProfile `json:"-" gorm:"foreignKey:RWProfileId;not null"`
 	UserId      string    `json:"user_id" gorm:"column:user_id"`
