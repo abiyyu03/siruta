@@ -125,6 +125,7 @@ func (handler *HandlerDefinition) HttpRoutes(app *fiber.App) {
 	//users
 	v1.Get("/users", adminOnly, handler.user.GetData)
 	v1.Get("/users/:id", adminOnly, handler.user.GetDataById)
+	v1.Put("/users/revoke/:id", adminOnly, handler.user.RevokeUser)
 
 	//leaders
 	v1.Get("/rt-leaders", adminOnly, handler.rtLeader.GetData)

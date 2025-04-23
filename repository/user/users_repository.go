@@ -55,3 +55,13 @@ func (u *UserRepository) UpdatePassword(tx *gorm.DB, userId string, hashedPasswo
 
 	return nil
 }
+
+func (u *UserRepository) RevokeUserAccess(userId string) error {
+	var user *model.User
+
+	if err := config.DB.Model(&user).Where("id =?", userId).Update("is_authorized", false).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -12,7 +12,7 @@ func (u *AuthRepository) FetchLogin(email, password string) (*model.User, *model
 	var user *model.User
 	var member *model.Member
 
-	if err := config.DB.Preload("Role").Where("email = ? ", email).First(&user).Error; err != nil {
+	if err := config.DB.Preload("Role").Where("is_authorized", true).Where("email = ? ", email).First(&user).Error; err != nil {
 		return nil, nil, err
 	}
 
@@ -21,11 +21,8 @@ func (u *AuthRepository) FetchLogin(email, password string) (*model.User, *model
 		return nil, nil, err
 	}
 
-	fetchedMember := config.DB.Where("user_id = ?", user.ID).First(&member)
-
-	if fetchedMember == nil {
+	if err := config.DB.Where("user_id = ?", user.ID).First(&member).Error; err != nil {
 		return user, nil, nil
 	}
-
 	return user, member, nil
 }
