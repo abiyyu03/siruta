@@ -23,16 +23,6 @@ func (r *RWLeaderUsecase) Fetch(ctx *fiber.Ctx) error {
 	return entity.Success(ctx, rwLeaders, "Data fetched successfully")
 }
 
-func (r *RWLeaderUsecase) FetchByRWProfileId(ctx *fiber.Ctx, rwProfileId string) error {
-	rwLeaders, err := rwLeaderRepository.FetchByRWProfileId(rwProfileId)
-
-	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
-	}
-
-	return entity.Success(ctx, rwLeaders, "Data fetched successfully")
-}
-
 func (r *RWLeaderUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 	rwLeader, err := rwLeaderRepository.FetchById(id)
 

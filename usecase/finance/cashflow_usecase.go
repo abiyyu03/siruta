@@ -74,7 +74,7 @@ func (c *CashflowUsecase) Update(ctx *fiber.Ctx, cashlogData *model.Cashflow, id
 }
 
 func (c *CashflowUsecase) Delete(ctx *fiber.Ctx, id int) error {
-	_, err := cashflowRepository.Delete(id)
+	err := cashflowRepository.Delete(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

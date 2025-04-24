@@ -41,15 +41,14 @@ func (r *ResetPasswordRepository) VerifyAndGetResetToken(token string) (*model.R
 	return reset, nil
 }
 func (r *ResetPasswordRepository) DeleteResetToken(tx *gorm.DB, token string) error {
-	var reset *model.ResetPassword
+	var reset model.ResetPassword
 
-	tokenData := tx.Where("token = ? OR expired_at > ?", token, time.Now()).First(&reset)
-
-	if tokenData.Error != nil {
-		return tokenData.Error
+	err := tx.Where("token = ?", token).First(&reset).Error
+	if err != nil {
+		return err
 	}
 
-	if err := tokenData.Delete(&reset).Error; err != nil {
+	if err := tx.Delete(&reset).Error; err != nil {
 		return err
 	}
 
@@ -67,17 +66,19 @@ func (r *ResetPasswordRepository) ResetPassword(hashedPassword string, token str
 
 	tokenData, err := r.VerifyAndGetResetToken(token)
 
-	if err != nil {
+	if err != nil || tokenData == nil {
 		return err
 	}
 
-	if tokenData != nil {
-		if err := r.userRepository.UpdatePassword(tx, tokenData.UserID, hashedPassword); err != nil {
-			return err
-		}
-		if err := r.DeleteResetToken(tx, token); err != nil {
-			return err
-		}
+	if err := r.userRepository.UpdatePassword(tx, tokenData.UserID, hashedPassword); err != nil {
+		return err
+	}
+	if err := r.DeleteResetToken(tx, token); err != nil {
+		return err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return err
 	}
 
 	return nil

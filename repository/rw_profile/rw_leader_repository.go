@@ -18,16 +18,6 @@ func (r *RWLeaderRepository) Fetch() ([]*model.RWLeader, error) {
 	return rwLeaders, nil
 }
 
-func (r *RWLeaderRepository) FetchByRWProfileId(rwProfileId string) ([]*model.RWLeader, error) {
-	var rwLeader []*model.RWLeader
-
-	if err := config.DB.Preload("RWProfile").Where("rw_profile_id =?", rwProfileId).Find(&rwLeader).Error; err != nil {
-		return nil, err
-	}
-
-	return rwLeader, nil
-}
-
 func (r *RWLeaderRepository) FetchById(id string) (*model.RWLeader, error) {
 	var rwLeader *model.RWLeader
 

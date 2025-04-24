@@ -39,7 +39,7 @@ func loadPrivateKey(relativePath string) ([]byte, error) {
 
 func TestLoginHandler(t *testing.T) {
 	// Load private key (Adjust the path if necessary)
-	privateKeyPath := "./keys/private.pem"
+	privateKeyPath := "../../../keys/private.pem"
 	privateKey, err := loadPrivateKey(privateKeyPath)
 	if err != nil {
 		t.Fatalf("Failed to load private key: %v", err)

@@ -118,3 +118,13 @@ func (u *UserUsecase) registerUserWithTokenVerification(user *model.User, roleId
 	return registerUser, "valid", nil
 
 }
+
+func (u *UserUsecase) RevokeUserAccess(ctx *fiber.Ctx, userId string) error {
+	err := userRepository.RevokeUserAccess(userId)
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	}
+
+	return entity.Success(ctx, nil, "User Revoked Successfuly")
+}

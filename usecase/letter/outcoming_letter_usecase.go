@@ -91,3 +91,13 @@ func (u *OutcomingLetterUsecase) FetchPreview(ctx *fiber.Ctx, id string) error {
 
 	return entity.Success(ctx, &previewLetter, "Data fetched successfully")
 }
+
+func (u *OutcomingLetterUsecase) Delete(ctx *fiber.Ctx, id string) error {
+	err := outcomingLetterRepository.Delete(id)
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	}
+
+	return entity.Success(ctx, nil, "Data deleted successfully")
+}

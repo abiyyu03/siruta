@@ -8,6 +8,9 @@ import (
 	"github.com/abiyyu03/siruta/entity/model"
 	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/gofiber/fiber/v2"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
+
+	_ "github.com/swaggo/fiber-swagger/example/docs"
 )
 
 type HandlerDefinition struct {
@@ -44,6 +47,8 @@ func (handler *HandlerDefinition) HttpRoutes(app *fiber.App) {
 	rtLeaderOnly := middleware.JWTMiddleware([]int{3})
 	memberOnly := middleware.JWTMiddleware([]int{4})
 	// validator := middleware.ValidateField()
+
+	api.Get("/swagger/*", fiberSwagger.WrapHandler)
 
 	//authentication
 	v1.Post("/login", middleware.ValidateField[request.LoginRequest](), auth.Login)
@@ -125,6 +130,7 @@ func (handler *HandlerDefinition) HttpRoutes(app *fiber.App) {
 	//users
 	v1.Get("/users", adminOnly, handler.user.GetData)
 	v1.Get("/users/:id", adminOnly, handler.user.GetDataById)
+	v1.Put("/users/revoke/:id", adminOnly, handler.user.RevokeUser)
 
 	//leaders
 	v1.Get("/rt-leaders", adminOnly, handler.rtLeader.GetData)
@@ -188,6 +194,7 @@ func (handler *HandlerDefinition) HttpRoutes(app *fiber.App) {
 	v1.Get("/outcoming-letters/:id", adminOnly, rtLeaderOnly, handler.OutcomingLetter.GetDataById)
 	v1.Get("/outcoming-letters/:id/preview", handler.OutcomingLetter.GetPreview)
 	v1.Get("/outcoming-letters/:rt_profile_id/rt", adminOnly, rtLeaderOnly, handler.OutcomingLetter.GetDataByRTProfileId)
+	v1.Delete("/outcoming-letters/:id", adminOnly, rtLeaderOnly, handler.OutcomingLetter.DeleteData)
 
 	//letter req
 	v1.Post("/request-letters", adminOnly, memberOnly, handler.letterReq.CreateData)

@@ -18,3 +18,9 @@ func (u *UserHttp) GetDataById(ctx *fiber.Ctx) error {
 
 	return u.userUsecase.FetchById(ctx, id)
 }
+
+func (u *UserHttp) RevokeUser(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+
+	return u.userUsecase.RevokeUserAccess(ctx, id)
+}

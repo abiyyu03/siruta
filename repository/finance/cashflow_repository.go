@@ -53,12 +53,12 @@ func (c *CashflowRepository) Update(incomeData *model.Cashflow, id int) (*model.
 	return incomeData, nil
 }
 
-func (c *CashflowRepository) Delete(id int) (*model.Cashflow, error) {
+func (c *CashflowRepository) Delete(id int) error {
 	var income *model.Cashflow
 
 	if err := config.DB.Where("id =?", id).Delete(&income).Error; err != nil {
-		return nil, err
+		return err
 	}
 
-	return income, nil
+	return nil
 }
