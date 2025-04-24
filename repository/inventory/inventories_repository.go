@@ -43,12 +43,12 @@ func (v *InventoryRepository) Update(inventory *model.Inventory, id int) (*model
 	return inventory, nil
 }
 
-func (v *InventoryRepository) Delete(id int) (*model.Inventory, error) {
+func (v *InventoryRepository) Delete(id int) error {
 	var inventory model.Inventory
 
 	if err := config.DB.Where("id = ?", id).Delete(&inventory).Error; err != nil {
-		return nil, err
+		return err
 	}
 
-	return nil, nil
+	return nil
 }

@@ -72,11 +72,11 @@ func (i *InventoryUsecase) Update(inventory *model.Inventory, ctx *fiber.Ctx, id
 }
 
 func (i *InventoryUsecase) Delete(ctx *fiber.Ctx, id int) error {
-	inventory, err := inventoryRepository.Delete(id)
+	err := inventoryRepository.Delete(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, &inventory, "Data deleted successfully")
+	return entity.Success(ctx, nil, "Data deleted successfully")
 }

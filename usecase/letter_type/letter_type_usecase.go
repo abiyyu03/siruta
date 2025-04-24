@@ -22,7 +22,7 @@ func (l *LetterTypeUsecase) Fetch(ctx *fiber.Ctx) error {
 	return entity.Success(ctx, &letterTypes, "Data fetched successfully")
 }
 
-func (l *LetterTypeUsecase) FetchById(ctx *fiber.Ctx, id string) error {
+func (l *LetterTypeUsecase) FetchById(ctx *fiber.Ctx, id int) error {
 	letterType, err := letterTypeRepository.FetchById(id)
 
 	if err != nil {

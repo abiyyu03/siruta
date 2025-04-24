@@ -17,7 +17,7 @@ func (l *LetterTypeHttp) GetData(ctx *fiber.Ctx) error {
 }
 
 func (l *LetterTypeHttp) GetDataById(ctx *fiber.Ctx) error {
-	id := ctx.Params("id")
+	id, _ := strconv.Atoi(ctx.Params("id"))
 
 	return l.letterTypeUsecase.FetchById(ctx, id)
 }

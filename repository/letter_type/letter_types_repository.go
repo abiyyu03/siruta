@@ -17,7 +17,7 @@ func (l *LetterTypeRepository) Fetch() ([]*model.LetterType, error) {
 	return letterTypes, nil
 }
 
-func (l *LetterTypeRepository) FetchById(id string) (*model.LetterType, error) {
+func (l *LetterTypeRepository) FetchById(id int) (*model.LetterType, error) {
 	var letterType *model.LetterType
 
 	if err := config.DB.Where("id = ?", id).First(&letterType).Error; err != nil {
