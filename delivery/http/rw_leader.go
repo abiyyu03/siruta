@@ -13,13 +13,7 @@ type RWLeaderHttp struct{}
 var rwLeaderUsecase *rw_profile.RWLeaderUsecase
 
 func (r *RWLeaderHttp) GetData(ctx *fiber.Ctx) error {
-	query := ctx.Queries()
-
-	if query["rw_profile_id"] == "" {
-		return rwLeaderUsecase.Fetch(ctx)
-	}
-
-	return rwLeaderUsecase.FetchByRWProfileId(ctx, query["rw_profile_id"])
+	return rwLeaderUsecase.Fetch(ctx)
 }
 
 func (r *RWLeaderHttp) GetDataById(ctx *fiber.Ctx) error {
