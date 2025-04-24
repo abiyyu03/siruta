@@ -8,18 +8,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type ReligionHttp struct {
-	religionUsecase *religion.ReligionUsecase
-}
+type ReligionHttp struct{}
+
+var religionUsecase *religion.ReligionUsecase
 
 func (r *ReligionHttp) GetData(ctx *fiber.Ctx) error {
-	return r.religionUsecase.Fetch(ctx)
+	return religionUsecase.Fetch(ctx)
 }
 
 func (r *ReligionHttp) GetDataById(ctx *fiber.Ctx) error {
 	id, _ := strconv.Atoi(ctx.Params("id"))
 
-	return r.religionUsecase.FetchById(ctx, id)
+	return religionUsecase.FetchById(ctx, id)
 }
 
 func (r *ReligionHttp) StoreData(ctx *fiber.Ctx) error {
@@ -29,7 +29,7 @@ func (r *ReligionHttp) StoreData(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return r.religionUsecase.Store(religion, ctx)
+	return religionUsecase.Store(religion, ctx)
 }
 
 func (r *ReligionHttp) UpdateData(ctx *fiber.Ctx) error {
@@ -40,11 +40,11 @@ func (r *ReligionHttp) UpdateData(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return r.religionUsecase.Update(religion, ctx, id)
+	return religionUsecase.Update(religion, ctx, id)
 }
 
 func (r *ReligionHttp) DeleteData(ctx *fiber.Ctx) error {
 	id, _ := strconv.Atoi(ctx.Params("id"))
 
-	return r.religionUsecase.Delete(ctx, id)
+	return religionUsecase.Delete(ctx, id)
 }

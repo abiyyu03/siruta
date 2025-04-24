@@ -8,18 +8,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type MemberStatusHttp struct {
-	memberStatusUsecase *member_status.MemberStatusUsecase
-}
+type MemberStatusHttp struct{}
+
+var memberStatusUsecase *member_status.MemberStatusUsecase
 
 func (m *MemberStatusHttp) GetData(ctx *fiber.Ctx) error {
-	return m.memberStatusUsecase.Fetch(ctx)
+	return memberStatusUsecase.Fetch(ctx)
 }
 
 func (m *MemberStatusHttp) GetDataById(ctx *fiber.Ctx) error {
 	id, _ := strconv.Atoi(ctx.Params("id"))
 
-	return m.memberStatusUsecase.FetchById(ctx, id)
+	return memberStatusUsecase.FetchById(ctx, id)
 }
 
 func (m *MemberStatusHttp) StoreData(ctx *fiber.Ctx) error {
@@ -29,7 +29,7 @@ func (m *MemberStatusHttp) StoreData(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return m.memberStatusUsecase.Store(memberStatus, ctx)
+	return memberStatusUsecase.Store(memberStatus, ctx)
 }
 
 func (m *MemberStatusHttp) UpdateData(ctx *fiber.Ctx) error {
@@ -40,11 +40,11 @@ func (m *MemberStatusHttp) UpdateData(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return m.memberStatusUsecase.Update(memberStatus, ctx, id)
+	return memberStatusUsecase.Update(memberStatus, ctx, id)
 }
 
 func (m *MemberStatusHttp) DeleteData(ctx *fiber.Ctx) error {
 	id, _ := strconv.Atoi(ctx.Params("id"))
 
-	return m.memberStatusUsecase.Delete(ctx, id)
+	return memberStatusUsecase.Delete(ctx, id)
 }

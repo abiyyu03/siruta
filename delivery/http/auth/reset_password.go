@@ -6,9 +6,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type ResetPasswordHttp struct {
-	resetPasswordUsecase *auth.ResetPasswordUsecase
-}
+type ResetPasswordHttp struct{}
+
+var resetPasswordUsecase *auth.ResetPasswordUsecase
 
 type ForgotPasswordLink struct {
 	Email string `json:"email" validate:"required;email"`
@@ -21,7 +21,7 @@ func (r *ResetPasswordHttp) SendForgotPasswordLink(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return r.resetPasswordUsecase.SendForgotPasswordLink(ctx, reset.Email)
+	return resetPasswordUsecase.SendForgotPasswordLink(ctx, reset.Email)
 }
 
 func (r *ResetPasswordHttp) ResetPassword(ctx *fiber.Ctx) error {
@@ -32,5 +32,5 @@ func (r *ResetPasswordHttp) ResetPassword(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return r.resetPasswordUsecase.ResetPassword(ctx, reset, query["token"])
+	return resetPasswordUsecase.ResetPassword(ctx, reset, query["token"])
 }

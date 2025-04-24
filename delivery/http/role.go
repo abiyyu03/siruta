@@ -8,17 +8,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type RoleHttp struct {
-	roleUsecase *role.RoleUsecase
-}
+type RoleHttp struct{}
+
+var roleUsecase *role.RoleUsecase
 
 func (r *RoleHttp) GetData(ctx *fiber.Ctx) error {
-	return r.roleUsecase.Fetch(ctx)
+	return roleUsecase.Fetch(ctx)
 }
 func (r *RoleHttp) GetDataById(ctx *fiber.Ctx) error {
 	id, _ := strconv.Atoi(ctx.Params("id"))
 
-	return r.roleUsecase.FetchById(ctx, id)
+	return roleUsecase.FetchById(ctx, id)
 }
 
 func (r *RoleHttp) StoreData(ctx *fiber.Ctx) error {
@@ -28,7 +28,7 @@ func (r *RoleHttp) StoreData(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return r.roleUsecase.Store(role, ctx)
+	return roleUsecase.Store(role, ctx)
 }
 
 func (r *RoleHttp) UpdateData(ctx *fiber.Ctx) error {
@@ -39,11 +39,11 @@ func (r *RoleHttp) UpdateData(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return r.roleUsecase.Update(role, ctx, id)
+	return roleUsecase.Update(role, ctx, id)
 }
 
 func (r *RoleHttp) DeleteData(ctx *fiber.Ctx) error {
 	id, _ := strconv.Atoi(ctx.Params("id"))
 
-	return r.roleUsecase.Delete(ctx, id)
+	return roleUsecase.Delete(ctx, id)
 }

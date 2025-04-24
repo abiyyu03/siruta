@@ -5,22 +5,22 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type RTProfileHttp struct {
-	rtProfileUsecase *rt_profile.RTProfileUsecase
-}
+type RTProfileHttp struct{}
+
+var rtProfileUsecase *rt_profile.RTProfileUsecase
 
 func (r *RTProfileHttp) GetData(ctx *fiber.Ctx) error {
-	return r.rtProfileUsecase.Fetch(ctx)
+	return rtProfileUsecase.Fetch(ctx)
 }
 
 func (r *RTProfileHttp) GetDataByRWProfileId(ctx *fiber.Ctx) error {
 	rwProfileId := ctx.Params("rw_profile_id")
 
-	return r.rtProfileUsecase.FetchByRWProfileId(ctx, rwProfileId)
+	return rtProfileUsecase.FetchByRWProfileId(ctx, rwProfileId)
 }
 
 func (r *RTProfileHttp) GetDataById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
-	return r.rtProfileUsecase.FetchById(ctx, id)
+	return rtProfileUsecase.FetchById(ctx, id)
 }

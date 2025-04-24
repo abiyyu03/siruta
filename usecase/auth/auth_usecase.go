@@ -33,6 +33,7 @@ func init() {
 }
 
 func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, email string, password string) error {
+	var fullname string
 	user, member, err := authRepository.FetchLogin(email, password)
 
 	if err != nil {
@@ -57,8 +58,14 @@ func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, email string, password stri
 		return entity.Error(ctx, fiber.ErrForbidden.Code, constant.Errors["Unauthorized"].Message, constant.Errors["Unauthorized"].Clue)
 	}
 
+	if user.Role.Name == "Super Admin" {
+		fullname = "Super Administrator"
+	} else {
+		fullname = member.Fullname
+	}
+
 	finalResponse := &entity.AuthResponse{
-		FullName:    member.Fullname,
+		FullName:    fullname,
 		Email:       user.Email,
 		RoleName:    user.Role.Name,
 		AccessToken: generatedToken,
@@ -67,7 +74,3 @@ func (l *AuthUsecase) IssueAuthToken(ctx *fiber.Ctx, email string, password stri
 	return entity.Success(ctx, finalResponse, "Login Berhasil")
 
 }
-
-// func (l *AuthUsecase) RevokeToken(ctx *fiber.Ctx) error {
-
-// }

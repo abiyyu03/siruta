@@ -8,7 +8,7 @@ import (
 
 type User struct {
 	*gorm.Model
-	ID           string `json:"id" gorm:"column:id;column:id;primaryKey;not null"`
+	ID           string `json:"id" gorm:"column:id;primaryKey;not null"`
 	RoleID       uint   `json:"role_id" gorm:"column:role_id;not null"`
 	Role         Role   `json:"-" gorm:"foreignKey:RoleID;references:ID"`
 	Email        string `json:"email" gorm:"column:email;uniqueIndex;not null" validate:"required"`

@@ -8,18 +8,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type LetterTypeHttp struct {
-	letterTypeUsecase *letter_type.LetterTypeUsecase
-}
+type LetterTypeHttp struct{}
+
+var letterTypeUsecase *letter_type.LetterTypeUsecase
 
 func (l *LetterTypeHttp) GetData(ctx *fiber.Ctx) error {
-	return l.letterTypeUsecase.Fetch(ctx)
+	return letterTypeUsecase.Fetch(ctx)
 }
 
 func (l *LetterTypeHttp) GetDataById(ctx *fiber.Ctx) error {
 	id, _ := strconv.Atoi(ctx.Params("id"))
 
-	return l.letterTypeUsecase.FetchById(ctx, id)
+	return letterTypeUsecase.FetchById(ctx, id)
 }
 
 func (l *LetterTypeHttp) StoreData(ctx *fiber.Ctx) error {
@@ -29,7 +29,7 @@ func (l *LetterTypeHttp) StoreData(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return l.letterTypeUsecase.Store(letterType, ctx)
+	return letterTypeUsecase.Store(letterType, ctx)
 }
 
 func (l *LetterTypeHttp) UpdateData(ctx *fiber.Ctx) error {
@@ -40,11 +40,11 @@ func (l *LetterTypeHttp) UpdateData(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return l.letterTypeUsecase.Update(letterType, ctx, id)
+	return letterTypeUsecase.Update(letterType, ctx, id)
 }
 
 func (l *LetterTypeHttp) DeleteData(ctx *fiber.Ctx) error {
 	id, _ := strconv.Atoi(ctx.Params("id"))
 
-	return l.letterTypeUsecase.Delete(ctx, id)
+	return letterTypeUsecase.Delete(ctx, id)
 }

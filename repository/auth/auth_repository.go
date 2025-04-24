@@ -8,21 +8,19 @@ import (
 
 type AuthRepository struct{}
 
-func (u *AuthRepository) FetchLogin(email, password string) (*model.User, *model.Member, error) {
-	var user *model.User
-	var member *model.Member
-
-	if err := config.DB.Preload("Role").Where("is_authorized", true).Where("email = ? ", email).First(&user).Error; err != nil {
+func (u *AuthRepository) FetchLogin(email, password string) (user *model.User, member *model.Member, err error) {
+	if err = config.DB.Preload("Role").Where("is_authorized", true).Where("email = ? ", email).First(&user).Error; err != nil {
 		return nil, nil, err
 	}
 
-	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
 		return nil, nil, err
 	}
 
-	if err := config.DB.Where("user_id = ?", user.ID).First(&member).Error; err != nil {
+	if err = config.DB.Where("user_id = ?", user.ID).First(&member).Error; err != nil {
 		return user, nil, nil
 	}
+
 	return user, member, nil
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-var authUsecase = auth.AuthUsecase{}
+var authUsecase *auth.AuthUsecase
 
 func Login(ctx *fiber.Ctx) error {
 	var request request.LoginRequest

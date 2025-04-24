@@ -5,22 +5,22 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type UserHttp struct {
-	userUsecase *user.UserUsecase
-}
+type UserHttp struct{}
+
+var userUsecase *user.UserUsecase
 
 func (u *UserHttp) GetData(ctx *fiber.Ctx) error {
-	return u.userUsecase.Fetch(ctx)
+	return userUsecase.Fetch(ctx)
 }
 
 func (u *UserHttp) GetDataById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
-	return u.userUsecase.FetchById(ctx, id)
+	return userUsecase.FetchById(ctx, id)
 }
 
 func (u *UserHttp) RevokeUser(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
-	return u.userUsecase.RevokeUserAccess(ctx, id)
+	return userUsecase.RevokeUserAccess(ctx, id)
 }

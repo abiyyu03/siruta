@@ -5,34 +5,34 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type OutcomingLetterHttp struct {
-	outcomingLetterUsecase *letter.OutcomingLetterUsecase
-}
+type OutcomingLetterHttp struct{}
+
+var outcomingLetterUsecase *letter.OutcomingLetterUsecase
 
 func (o *OutcomingLetterHttp) GetData(ctx *fiber.Ctx) error {
-	return o.outcomingLetterUsecase.Fetch(ctx)
+	return outcomingLetterUsecase.Fetch(ctx)
 }
 
 func (o *OutcomingLetterHttp) GetPreview(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
-	return o.outcomingLetterUsecase.FetchPreview(ctx, id)
+	return outcomingLetterUsecase.FetchPreview(ctx, id)
 }
 
 func (o *OutcomingLetterHttp) GetDataById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
-	return o.outcomingLetterUsecase.FetchById(ctx, id)
+	return outcomingLetterUsecase.FetchById(ctx, id)
 }
 
 func (o *OutcomingLetterHttp) GetDataByRTProfileId(ctx *fiber.Ctx) error {
 	rtProfileId := ctx.Params("rt_profile_id")
 
-	return o.outcomingLetterUsecase.FetchByRTProfileId(ctx, rtProfileId)
+	return outcomingLetterUsecase.FetchByRTProfileId(ctx, rtProfileId)
 }
 
 func (o *OutcomingLetterHttp) DeleteData(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
-	return o.outcomingLetterUsecase.Delete(ctx, id)
+	return outcomingLetterUsecase.Delete(ctx, id)
 }

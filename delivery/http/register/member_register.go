@@ -9,15 +9,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type MemberRegisterHttp struct {
-	memberRegisterUsecase *register.MemberRegisterUsecase
-	referalCodeUsecase    *referal_code.ReferalCodeUsecase
-}
+type MemberRegisterHttp struct{}
+
+var memberRegisterUsecase *register.MemberRegisterUsecase
+var referalCodeUsecase *referal_code.ReferalCodeUsecase
 
 func (m *MemberRegisterHttp) Register(ctx *fiber.Ctx) error {
 	params := ctx.Queries()
 	//token verif
-	_, profileId := m.referalCodeUsecase.Validate(ctx, params["referal_code"])
+	_, profileId := referalCodeUsecase.Validate(ctx, params["referal_code"])
 
 	if profileId == "" {
 		return entity.Error(ctx, fiber.StatusForbidden, constant.Errors["InvalidReferalCode"].Message, constant.Errors["InvalidReferalCode"].Clue)
@@ -28,5 +28,5 @@ func (m *MemberRegisterHttp) Register(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return m.memberRegisterUsecase.RegisterMember(ctx, userMember, profileId)
+	return memberRegisterUsecase.RegisterMember(ctx, userMember, profileId)
 }

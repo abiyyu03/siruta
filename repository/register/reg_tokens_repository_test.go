@@ -9,21 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 func setupTestDB() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
-	})
-	if err != nil {
-		panic(err)
-	}
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
 
-	err = db.AutoMigrate(&model.RegistrationToken{})
-	if err != nil {
-		panic(err)
-	}
+	err = db.AutoMigrate(&model.Religion{})
 
 	return db
 }
