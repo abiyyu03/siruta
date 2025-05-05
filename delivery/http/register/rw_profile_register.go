@@ -11,7 +11,13 @@ import (
 )
 
 type RWProfileRegisterHttp struct {
-	rwProfileRegisterUsecase *rw_profile.RWProfileRegisterUsecase
+	rwProfileRegisterUsecase rw_profile.RWProfileRegisterUsecaseInterface
+}
+
+func NewRWProfileRegisterHttp(registerUC rw_profile.RWProfileRegisterUsecaseInterface) *RWProfileRegisterHttp {
+	return &RWProfileRegisterHttp{
+		rwProfileRegisterUsecase: registerUC,
+	}
 }
 
 func (r *RWProfileRegisterHttp) RegisterRWProfile(ctx *fiber.Ctx) error {

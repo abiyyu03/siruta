@@ -12,6 +12,15 @@ type CashflowUsecase struct{}
 
 var cashflowRepository *finance.CashflowRepository
 
+type CashflowUsecaseInterface interface {
+	Fetch(ctx *fiber.Ctx, queryType string) error
+	FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string, queryType string) error
+	FetchById(ctx *fiber.Ctx, id int, queryType string) error
+	Store(ctx *fiber.Ctx, cashflow *model.Cashflow) error
+	Update(ctx *fiber.Ctx, cashflow *model.Cashflow, id int) error
+	Delete(ctx *fiber.Ctx, id int) error
+}
+
 func (c *CashflowUsecase) Fetch(ctx *fiber.Ctx, logType string) error {
 	cashlog, err := cashflowRepository.Fetch(logType)
 

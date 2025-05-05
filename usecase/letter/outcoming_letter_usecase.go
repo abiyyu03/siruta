@@ -7,12 +7,20 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type OutcomingLetterUsecase struct{}
+type OutcomingLetterUsecase struct {
+	outcomingLetterRepository letter.OutcomingLetterRepository
+}
 
-var outcomingLetterRepository *letter.OutcomingLetterRepository
+type OutcomingLetterUsecaseInterface interface {
+	Fetch(ctx *fiber.Ctx) error
+	FetchById(ctx *fiber.Ctx, id string) error
+	FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error
+	FetchPreview(ctx *fiber.Ctx, id string) error
+	Delete(ctx *fiber.Ctx, id string) error
+}
 
-func (u *OutcomingLetterUsecase) Fetch(ctx *fiber.Ctx) error {
-	letters, err := outcomingLetterRepository.Fetch()
+func (o *OutcomingLetterUsecase) Fetch(ctx *fiber.Ctx) error {
+	letters, err := o.outcomingLetterRepository.Fetch()
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -21,8 +29,8 @@ func (u *OutcomingLetterUsecase) Fetch(ctx *fiber.Ctx) error {
 	return entity.Success(ctx, &letters, "Data fetched successfully")
 }
 
-func (u *OutcomingLetterUsecase) FetchById(ctx *fiber.Ctx, id string) error {
-	letter, err := outcomingLetterRepository.FetchById(id)
+func (o *OutcomingLetterUsecase) FetchById(ctx *fiber.Ctx, id string) error {
+	letter, err := o.outcomingLetterRepository.FetchById(id)
 
 	if letter == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
@@ -35,8 +43,8 @@ func (u *OutcomingLetterUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 	return entity.Success(ctx, &letter, "Data fetched successfully")
 }
 
-func (u *OutcomingLetterUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error {
-	letters, err := outcomingLetterRepository.FetchByRTProfileId(rtProfileId)
+func (o *OutcomingLetterUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error {
+	letters, err := o.outcomingLetterRepository.FetchByRTProfileId(rtProfileId)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -45,8 +53,8 @@ func (u *OutcomingLetterUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId 
 	return entity.Success(ctx, &letters, "Data fetched successfully")
 }
 
-func (u *OutcomingLetterUsecase) FetchPreview(ctx *fiber.Ctx, id string) error {
-	letter, err := outcomingLetterRepository.FetchPreview(id)
+func (o *OutcomingLetterUsecase) FetchPreview(ctx *fiber.Ctx, id string) error {
+	letter, err := o.outcomingLetterRepository.FetchPreview(id)
 
 	if letter == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
@@ -92,8 +100,8 @@ func (u *OutcomingLetterUsecase) FetchPreview(ctx *fiber.Ctx, id string) error {
 	return entity.Success(ctx, &previewLetter, "Data fetched successfully")
 }
 
-func (u *OutcomingLetterUsecase) Delete(ctx *fiber.Ctx, id string) error {
-	err := outcomingLetterRepository.Delete(id)
+func (o *OutcomingLetterUsecase) Delete(ctx *fiber.Ctx, id string) error {
+	err := o.outcomingLetterRepository.Delete(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

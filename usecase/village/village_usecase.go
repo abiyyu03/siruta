@@ -8,12 +8,20 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type VillageUsecase struct{}
+type VillageUsecase struct {
+	villageRepository village.VillageRepository
+}
 
-var villageRepository *village.VillageRepository
+type VillageUsecaseInterface interface {
+	Fetch(ctx *fiber.Ctx) error
+	FetchById(ctx *fiber.Ctx, id int) error
+	Store(village *model.Village, ctx *fiber.Ctx) error
+	Update(village *model.Village, ctx *fiber.Ctx, id int) error
+	Delete(ctx *fiber.Ctx, id int) error
+}
 
 func (v *VillageUsecase) Fetch(ctx *fiber.Ctx) error {
-	villages, err := villageRepository.Fetch()
+	villages, err := v.villageRepository.Fetch()
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -23,7 +31,7 @@ func (v *VillageUsecase) Fetch(ctx *fiber.Ctx) error {
 }
 
 func (v *VillageUsecase) FetchById(ctx *fiber.Ctx, id int) error {
-	village, err := villageRepository.FetchById(id)
+	village, err := v.villageRepository.FetchById(id)
 
 	if village == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
@@ -45,7 +53,7 @@ func (v *VillageUsecase) Store(village *model.Village, ctx *fiber.Ctx) error {
 		CodePostal: village.CodePostal,
 	}
 
-	storedVillage, err := villageRepository.Store(createdVillage)
+	storedVillage, err := v.villageRepository.Store(createdVillage)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -64,7 +72,7 @@ func (v *VillageUsecase) Update(village *model.Village, ctx *fiber.Ctx, id int) 
 		CodePostal: village.CodePostal,
 	}
 
-	updatedVillage, err := villageRepository.Update(updateVillage, id)
+	updatedVillage, err := v.villageRepository.Update(updateVillage, id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -74,7 +82,7 @@ func (v *VillageUsecase) Update(village *model.Village, ctx *fiber.Ctx, id int) 
 }
 
 func (v *VillageUsecase) Delete(ctx *fiber.Ctx, id int) error {
-	_, err := villageRepository.Delete(id)
+	_, err := v.villageRepository.Delete(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

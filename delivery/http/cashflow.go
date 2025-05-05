@@ -8,28 +8,34 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type CashflowHttp struct{}
+type CashflowHttp struct {
+	cashflowUsecase finance.CashflowUsecaseInterface
+}
 
-var cashflowUsecase *finance.CashflowUsecase
+func NewCashflowHttp(cashflowUC finance.CashflowUsecaseInterface) *CashflowHttp {
+	return &CashflowHttp{
+		cashflowUsecase: cashflowUC,
+	}
+}
 
 func (c *CashflowHttp) GetData(ctx *fiber.Ctx) error {
 	query := ctx.Queries()
 
-	return cashflowUsecase.Fetch(ctx, query["type"])
+	return c.cashflowUsecase.Fetch(ctx, query["type"])
 }
 
 func (c *CashflowHttp) GetDataByRTProfileId(ctx *fiber.Ctx) error {
 	rtProfileId := ctx.Params("rt_profile_id")
 	query := ctx.Queries()
 
-	return cashflowUsecase.FetchByRTProfileId(ctx, rtProfileId, query["type"])
+	return c.cashflowUsecase.FetchByRTProfileId(ctx, rtProfileId, query["type"])
 }
 
 func (c *CashflowHttp) GetDataById(ctx *fiber.Ctx) error {
 	id, _ := strconv.Atoi(ctx.Params("id"))
 	query := ctx.Queries()
 
-	return cashflowUsecase.FetchById(ctx, id, query["type"])
+	return c.cashflowUsecase.FetchById(ctx, id, query["type"])
 }
 
 func (c *CashflowHttp) StoreData(ctx *fiber.Ctx) error {
@@ -39,7 +45,7 @@ func (c *CashflowHttp) StoreData(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return cashflowUsecase.Store(ctx, cashflowExpense)
+	return c.cashflowUsecase.Store(ctx, cashflowExpense)
 }
 
 func (c *CashflowHttp) UpdateData(ctx *fiber.Ctx) error {
@@ -50,11 +56,11 @@ func (c *CashflowHttp) UpdateData(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return cashflowUsecase.Update(ctx, cashflowExpense, id)
+	return c.cashflowUsecase.Update(ctx, cashflowExpense, id)
 }
 
 func (c *CashflowHttp) DeleteData(ctx *fiber.Ctx) error {
 	id, _ := strconv.Atoi(ctx.Params("id"))
 
-	return cashflowUsecase.Delete(ctx, id)
+	return c.cashflowUsecase.Delete(ctx, id)
 }

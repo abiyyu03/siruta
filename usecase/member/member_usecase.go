@@ -12,6 +12,16 @@ type MemberUsecase struct{}
 
 var memberRepository *member.MemberRepository
 
+type MemberUsecaseInterface interface {
+	Fetch(ctx *fiber.Ctx) error
+	FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error
+	FetchById(ctx *fiber.Ctx, id string) error
+	Update(ctx *fiber.Ctx, id string, memberData *model.Member) error
+	// Store(ctx *fiber.Ctx, cashflow *model.Cashflow) error
+	// Delete(ctx *fiber.Ctx, id int) error
+
+}
+
 func (m *MemberUsecase) Fetch(ctx *fiber.Ctx) error {
 	members, err := memberRepository.Fetch()
 

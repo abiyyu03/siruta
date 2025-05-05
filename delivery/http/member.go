@@ -8,24 +8,30 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type MemberHttp struct{}
+type MemberHttp struct {
+	memberUsecase member.MemberUsecaseInterface
+}
 
-var memberUsecase *member.MemberUsecase
+func NewMemberHttp(memberUc member.MemberUsecaseInterface) *MemberHttp {
+	return &MemberHttp{
+		memberUsecase: memberUc,
+	}
+}
 
 func (m *MemberHttp) GetData(ctx *fiber.Ctx) error {
-	return memberUsecase.Fetch(ctx)
+	return m.memberUsecase.Fetch(ctx)
 }
 
 func (m *MemberHttp) GetDataById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
-	return memberUsecase.FetchById(ctx, id)
+	return m.memberUsecase.FetchById(ctx, id)
 }
 
 func (m *MemberHttp) GetDataByRTProfileId(ctx *fiber.Ctx) error {
 	rtProfileId := ctx.Params("rt_profile_id")
 
-	return memberUsecase.FetchByRTProfileId(ctx, rtProfileId)
+	return m.memberUsecase.FetchByRTProfileId(ctx, rtProfileId)
 }
 
 func (m *MemberHttp) UpdateData(ctx *fiber.Ctx) error {
@@ -36,5 +42,5 @@ func (m *MemberHttp) UpdateData(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusUnprocessableEntity, constant.Errors["UnprocessableEntity"].Message, constant.Errors["UnprocessableEntity"].Clue)
 	}
 
-	return memberUsecase.Update(ctx, id, member)
+	return m.memberUsecase.Update(ctx, id, member)
 }

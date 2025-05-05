@@ -12,6 +12,14 @@ type ReligionUsecase struct{}
 
 var religionRepository *religion.ReligionRepository
 
+type ReligionUsecaseInterface interface {
+	Fetch(ctx *fiber.Ctx) error
+	FetchById(ctx *fiber.Ctx, id int) error
+	Store(religion *model.Religion, ctx *fiber.Ctx) error
+	Update(religion *model.Religion, ctx *fiber.Ctx, id int) error
+	Delete(ctx *fiber.Ctx, id int) error
+}
+
 func (r *ReligionUsecase) Fetch(ctx *fiber.Ctx) error {
 	religions, err := religionRepository.Fetch()
 

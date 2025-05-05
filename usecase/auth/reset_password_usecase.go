@@ -15,16 +15,21 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type ResetPasswordUsecase struct{}
+type ResetPasswordUsecase struct {
+	resetPasswordRepository auth.ResetPasswordRepository
+	sendEmail               email.ResetPasswordEmailUsecase
+	userRepository          user.UserRepository
+}
 
-var resetPasswordRepository *auth.ResetPasswordRepository
-var sendEmail *email.ResetPasswordEmailUsecase
-var userRepository *user.UserRepository
+type ResetPasswordUsecaseInterface interface {
+	SendForgotPasswordLink(ctx *fiber.Ctx, email string) error
+	ResetPassword(ctx *fiber.Ctx, reset *request.ResetPassword, token string) error
+}
 
 func (r *ResetPasswordUsecase) SendForgotPasswordLink(ctx *fiber.Ctx, email string) error {
 	randomToken, _ := helper.GenerateSecureToken(48)
 
-	user, err := userRepository.FetchByEmail(email)
+	user, err := r.userRepository.FetchByEmail(email)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.ErrInternalServerError.Code, constant.Errors["internalError"].Message, constant.Errors["internalError"].Clue)
@@ -36,13 +41,13 @@ func (r *ResetPasswordUsecase) SendForgotPasswordLink(ctx *fiber.Ctx, email stri
 		ExpiredAt: time.Now(),
 	}
 
-	_, err = resetPasswordRepository.StoreToken(createdToken)
+	_, err = r.resetPasswordRepository.StoreToken(createdToken)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.ErrInternalServerError.Code, constant.Errors["internalError"].Message, constant.Errors["internalError"].Clue)
 	}
 
-	err = sendEmail.ResetPasswordEmail(email, randomToken)
+	err = r.sendEmail.ResetPasswordEmail(email, randomToken)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.ErrInternalServerError.Code, constant.Errors["internalError"].Message, constant.Errors["internalError"].Clue)
@@ -61,7 +66,7 @@ func (r *ResetPasswordUsecase) ResetPassword(ctx *fiber.Ctx, reset *request.Rese
 		return entity.Error(ctx, fiber.ErrInternalServerError.Code, constant.Errors["internalError"].Message, constant.Errors["internalError"].Clue)
 	}
 
-	err = resetPasswordRepository.ResetPassword(string(hashedPassword), token)
+	err = r.resetPasswordRepository.ResetPassword(string(hashedPassword), token)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.ErrInternalServerError.Code, constant.Errors["internalError"].Message, constant.Errors["internalError"].Clue)

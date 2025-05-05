@@ -13,6 +13,10 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+type AuthUsecaseInterface interface {
+	IssueAuthToken(ctx *fiber.Ctx, email string, password string) error
+}
+
 type AuthUsecase struct{}
 
 var authRepository *auth.AuthRepository

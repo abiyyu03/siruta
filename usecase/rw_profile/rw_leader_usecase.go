@@ -9,12 +9,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type RWLeaderUsecase struct{}
-
-var rwLeaderRepository *rw_profile.RWLeaderRepository
+type RWLeaderUsecase struct {
+	rwLeaderRepository rw_profile.RWLeaderRepository
+}
+type RWLeaderUsecaseInterface interface {
+	Fetch(ctx *fiber.Ctx) error
+	FetchById(ctx *fiber.Ctx, id string) error
+	Update(ctx *fiber.Ctx, id string, rwLeaderData *model.RWLeader) error
+}
 
 func (r *RWLeaderUsecase) Fetch(ctx *fiber.Ctx) error {
-	rwLeaders, err := rwLeaderRepository.Fetch()
+	rwLeaders, err := r.rwLeaderRepository.Fetch()
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -24,7 +29,7 @@ func (r *RWLeaderUsecase) Fetch(ctx *fiber.Ctx) error {
 }
 
 func (r *RWLeaderUsecase) FetchById(ctx *fiber.Ctx, id string) error {
-	rwLeader, err := rwLeaderRepository.FetchById(id)
+	rwLeader, err := r.rwLeaderRepository.FetchById(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -46,7 +51,7 @@ func (r *RWLeaderUsecase) Update(ctx *fiber.Ctx, id string, rwLeaderData *model.
 		FullAddress: rwLeaderData.FullAddress,
 	}
 
-	updatedRwLeader := rwLeaderRepository.Update(config.DB, rwLeader, id)
+	updatedRwLeader := r.rwLeaderRepository.Update(config.DB, rwLeader, id)
 
 	if updatedRwLeader == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)

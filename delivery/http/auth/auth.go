@@ -10,6 +10,16 @@ import (
 
 var authUsecase *auth.AuthUsecase
 
+type AuthHttp struct {
+	authUsecase auth.AuthUsecaseInterface
+}
+
+func NewAuthHttp(authUC auth.AuthUsecaseInterface) *AuthHttp {
+	return &AuthHttp{
+		authUsecase: authUC,
+	}
+}
+
 func Login(ctx *fiber.Ctx) error {
 	var request request.LoginRequest
 

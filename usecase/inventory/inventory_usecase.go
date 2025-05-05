@@ -12,6 +12,15 @@ type InventoryUsecase struct{}
 
 var inventoryRepository *inventory.InventoryRepository
 
+type InventoryUsecaseInterface interface {
+	Fetch(ctx *fiber.Ctx) error
+	FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error
+	FetchById(ctx *fiber.Ctx, id int) error
+	Store(inventory *model.Inventory, ctx *fiber.Ctx) error
+	Update(inventory *model.Inventory, ctx *fiber.Ctx, id int) error
+	Delete(ctx *fiber.Ctx, id int) error
+}
+
 func (i *InventoryUsecase) Fetch(ctx *fiber.Ctx) error {
 	inventories, err := inventoryRepository.Fetch()
 
@@ -22,7 +31,7 @@ func (i *InventoryUsecase) Fetch(ctx *fiber.Ctx) error {
 	return entity.Success(ctx, &inventories, "Data fetched successfully")
 }
 
-func (i *InventoryUsecase) FetchById(ctx *fiber.Ctx, id string) error {
+func (i *InventoryUsecase) FetchById(ctx *fiber.Ctx, id int) error {
 	inventory, err := inventoryRepository.FetchById(id)
 
 	if inventory == nil {
@@ -34,6 +43,15 @@ func (i *InventoryUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 	}
 
 	return entity.Success(ctx, &inventory, "Data fetched successfully")
+}
+
+func (i *InventoryUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error {
+	inventories, err := inventoryRepository.FetchByRTProfileId(rtProfileId)
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	}
+
+	return entity.Success(ctx, &inventories, "Data fetched successfully")
 }
 
 func (i *InventoryUsecase) Store(inventory *model.Inventory, ctx *fiber.Ctx) error {

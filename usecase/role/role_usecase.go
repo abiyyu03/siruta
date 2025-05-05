@@ -12,6 +12,14 @@ type RoleUsecase struct {
 	roleRepository *role.RoleRepository
 }
 
+type RoleUsecaseInterface interface {
+	Fetch(ctx *fiber.Ctx) error
+	FetchById(ctx *fiber.Ctx, id int) error
+	Store(role *model.Role, ctx *fiber.Ctx) error
+	Update(role *model.Role, ctx *fiber.Ctx, id int) error
+	Delete(ctx *fiber.Ctx, id int) error
+}
+
 func (r *RoleUsecase) Fetch(ctx *fiber.Ctx) error {
 	roles, err := r.roleRepository.Fetch()
 

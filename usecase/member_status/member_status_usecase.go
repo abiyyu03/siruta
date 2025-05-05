@@ -12,6 +12,14 @@ type MemberStatusUsecase struct{}
 
 var memberStatusRepository *member_status.MemberStatusRepository
 
+type MemberStatusUsecaseInterface interface {
+	Fetch(ctx *fiber.Ctx) error
+	FetchById(ctx *fiber.Ctx, id int) error
+	Store(memberStatus *model.MemberStatus, ctx *fiber.Ctx) error
+	Update(memberStatus *model.MemberStatus, ctx *fiber.Ctx, id int) error
+	Delete(ctx *fiber.Ctx, id int) error
+}
+
 func (m *MemberStatusUsecase) Fetch(ctx *fiber.Ctx) error {
 	memberStatus, err := memberStatusRepository.Fetch()
 

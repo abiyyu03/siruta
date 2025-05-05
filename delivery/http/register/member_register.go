@@ -9,7 +9,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type MemberRegisterHttp struct{}
+type MemberRegisterHttp struct {
+	memberRegisterUsecase register.MemberRegisterUsecaseInterface
+}
+
+func NewMemberRegisterHttp(memberRegisterUC register.MemberRegisterUsecaseInterface) *MemberRegisterHttp {
+	return &MemberRegisterHttp{
+		memberRegisterUsecase: memberRegisterUC,
+	}
+}
 
 var memberRegisterUsecase *register.MemberRegisterUsecase
 var referalCodeUsecase *referal_code.ReferalCodeUsecase

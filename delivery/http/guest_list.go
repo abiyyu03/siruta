@@ -8,25 +8,31 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type GuestListHttp struct{}
+type GuestListHttp struct {
+	guestListUsecase guest_list.GuestListUsecaseInterface
+}
 
-var guestListUsecase *guest_list.GuestListUsecase
+func NewGuestListHttp(guestListUC guest_list.GuestListUsecaseInterface) *GuestListHttp {
+	return &GuestListHttp{
+		guestListUsecase: guestListUC,
+	}
+}
 
 func (g *GuestListHttp) GetData(ctx *fiber.Ctx) error {
-	return guestListUsecase.Fetch(ctx)
+	return g.guestListUsecase.Fetch(ctx)
 }
 
 func (g *GuestListHttp) GetDataById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	convertedId, _ := strconv.Atoi(id)
 
-	return guestListUsecase.FetchById(ctx, convertedId)
+	return g.guestListUsecase.FetchById(ctx, convertedId)
 }
 
 func (g *GuestListHttp) GetDataByRTProfileId(ctx *fiber.Ctx) error {
 	rtProfileId := ctx.Params("rt_profile_id")
 
-	return guestListUsecase.FetchByRTProfileId(ctx, rtProfileId)
+	return g.guestListUsecase.FetchByRTProfileId(ctx, rtProfileId)
 }
 
 func (g *GuestListHttp) CreateData(ctx *fiber.Ctx) error {
@@ -36,7 +42,7 @@ func (g *GuestListHttp) CreateData(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return guestListUsecase.Store(ctx, guestListData)
+	return g.guestListUsecase.Store(ctx, guestListData)
 }
 
 func (g *GuestListHttp) UpdateData(ctx *fiber.Ctx) error {
@@ -48,12 +54,12 @@ func (g *GuestListHttp) UpdateData(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return guestListUsecase.Update(ctx, guestList, convertedId)
+	return g.guestListUsecase.Update(ctx, guestList, convertedId)
 }
 
 func (g *GuestListHttp) DeleteData(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	convertedId, _ := strconv.Atoi(id)
 
-	return guestListUsecase.Delete(ctx, convertedId)
+	return g.guestListUsecase.Delete(ctx, convertedId)
 }

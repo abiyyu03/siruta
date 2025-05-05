@@ -9,14 +9,20 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type LetterReqHttp struct{}
-
-var letterReqUsecase *letter.LetterReqUsecase
+type LetterReqHttp struct {
+	letterReqUsecase letter.LetterReqUsecaseInterface
+}
 
 type CombinedRequest struct {
 	OutcomingLetter *model.OutcomingLetter       `json:"outcoming_letter"`
 	CheckResident   *request.CheckResidentMember `json:"check_resident"`
 	Member          *model.Member                `json:"member"`
+}
+
+func NewLetterReqHttp(letterReqUC letter.LetterReqUsecaseInterface) *LetterReqHttp {
+	return &LetterReqHttp{
+		letterReqUsecase: letterReqUC,
+	}
 }
 
 func (l *LetterReqHttp) CreateData(ctx *fiber.Ctx) error {
@@ -26,7 +32,7 @@ func (l *LetterReqHttp) CreateData(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusUnprocessableEntity, constant.Errors["UnprocessableEntity"].Message, constant.Errors["UnprocessableEntity"].Clue)
 	}
 
-	return letterReqUsecase.StoreOutcomingLetter(
+	return l.letterReqUsecase.StoreOutcomingLetter(
 		ctx,
 		request.Member,
 		request.OutcomingLetter,
@@ -39,5 +45,5 @@ func (l *LetterReqHttp) CreateData(ctx *fiber.Ctx) error {
 func (l *LetterReqHttp) UpdateApprovalStatus(ctx *fiber.Ctx) error {
 	id := ctx.Params("letter_req_id")
 
-	return letterReqUsecase.UpdateApprovalStatusByRT(ctx, id)
+	return l.letterReqUsecase.UpdateApprovalStatusByRT(ctx, id)
 }

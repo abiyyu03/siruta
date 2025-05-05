@@ -10,16 +10,21 @@ import (
 	"github.com/google/uuid"
 )
 
-type LetterReqUsecase struct{}
+type LetterReqUsecase struct {
+	letterReqRepository letter.LetterReqRepository
+	memberRepository    member.MemberRepository
+}
 
-var letterReqRepository *letter.LetterReqRepository
-var memberRepository *member.MemberRepository
+type LetterReqUsecaseInterface interface {
+	StoreOutcomingLetter(ctx *fiber.Ctx, memberData *model.Member, outcommingLetter *model.OutcomingLetter, memberStatus string, birthDate string, nik string) error
+	UpdateApprovalStatusByRT(ctx *fiber.Ctx, id string) error
+}
 
 func (l *LetterReqUsecase) StoreOutcomingLetter(ctx *fiber.Ctx, memberData *model.Member, outcommingLetter *model.OutcomingLetter, memberStatus string, birthDate string, nik string) error {
 	letterId, _ := uuid.NewV7()
 	var err error
 
-	memberResult, _ := memberRepository.FetchByNikAndBirtDate(nik, birthDate)
+	memberResult, _ := l.memberRepository.FetchByNikAndBirtDate(nik, birthDate)
 
 	newOutcomingLetter := &model.OutcomingLetter{
 		ID: letterId.String(),
@@ -51,15 +56,15 @@ func (l *LetterReqUsecase) StoreOutcomingLetter(ctx *fiber.Ctx, memberData *mode
 			RTProfileId:   memberData.RTProfileId,
 		}
 
-		_, err = letterReqRepository.StoreOutcomingLetterWithGuest(newOutcomingLetter, createdGuestMember)
+		_, err = l.letterReqRepository.StoreOutcomingLetterWithGuest(newOutcomingLetter, createdGuestMember)
 	} else {
-		isMemberExist, _ := letterReqRepository.CheckMemberResidentExist(birthDate, nik)
+		isMemberExist, _ := l.letterReqRepository.CheckMemberResidentExist(birthDate, nik)
 
 		if !isMemberExist {
 			return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["UserNotFound"].Message, constant.Errors["UserNotFound"].Clue)
 		}
 
-		_, err = letterReqRepository.StoreOutcomingLetter(newOutcomingLetter)
+		_, err = l.letterReqRepository.StoreOutcomingLetter(newOutcomingLetter)
 	}
 
 	if err != nil {
@@ -70,7 +75,7 @@ func (l *LetterReqUsecase) StoreOutcomingLetter(ctx *fiber.Ctx, memberData *mode
 }
 
 func (l *LetterReqUsecase) UpdateApprovalStatusByRT(ctx *fiber.Ctx, id string) error {
-	approvalStatus, err := letterReqRepository.UpdateApprovalStatusByRT(id)
+	approvalStatus, err := l.letterReqRepository.UpdateApprovalStatusByRT(id)
 
 	if !approvalStatus {
 		return entity.Error(ctx, fiber.StatusBadRequest, constant.Errors["LetterRejected"].Message, constant.Errors["LetterRejected"].Clue)

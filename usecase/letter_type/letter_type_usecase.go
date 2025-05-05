@@ -12,6 +12,14 @@ type LetterTypeUsecase struct{}
 
 var letterTypeRepository *letter_type.LetterTypeRepository
 
+type LetterTypeUsecaseInterface interface {
+	Fetch(ctx *fiber.Ctx) error
+	FetchById(ctx *fiber.Ctx, id int) error
+	Store(letterType *model.LetterType, ctx *fiber.Ctx) error
+	Update(letterType *model.LetterType, ctx *fiber.Ctx, id int) error
+	Delete(ctx *fiber.Ctx, id int) error
+}
+
 func (l *LetterTypeUsecase) Fetch(ctx *fiber.Ctx) error {
 	letterTypes, err := letterTypeRepository.Fetch()
 

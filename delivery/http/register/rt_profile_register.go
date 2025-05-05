@@ -10,7 +10,13 @@ import (
 )
 
 type RTProfileRegisterHttp struct {
-	rtProfileRegisterUsecase *rt_profile.RTProfileRegisterUsecase
+	rtProfileRegisterUsecase rt_profile.RTProfileRegisterUsecaseInterface
+}
+
+func NewRTProfileRegisterHttp(registerUC rt_profile.RTProfileRegisterUsecaseInterface) *RTProfileRegisterHttp {
+	return &RTProfileRegisterHttp{
+		rtProfileRegisterUsecase: registerUC,
+	}
 }
 
 func (r *RTProfileRegisterHttp) RegisterRTProfile(ctx *fiber.Ctx) error {

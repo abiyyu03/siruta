@@ -11,13 +11,21 @@ import (
 )
 
 type UserUsecase struct {
-	db *gorm.DB
+	userRepository user.UserRepository
+	db             *gorm.DB
 }
 
-var userRepository *user.UserRepository
+type UserUsecaseInterface interface {
+	Fetch(ctx *fiber.Ctx) error
+	FetchById(ctx *fiber.Ctx, id string) error
+	Register(ctx *fiber.Ctx) error
+	RegisterUserWithTokenVerification(ctx *fiber.Ctx, user *model.User, token string) error
+	registerUserWithTokenVerification(user *model.User, roleId uint, token string) (*model.User, string, error)
+	RevokeUserAccess(ctx *fiber.Ctx, userId string) error
+}
 
 func (u *UserUsecase) Fetch(ctx *fiber.Ctx) error {
-	users, err := userRepository.Fetch()
+	users, err := u.userRepository.Fetch()
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -36,7 +44,7 @@ func (u *UserUsecase) Fetch(ctx *fiber.Ctx) error {
 }
 
 func (u *UserUsecase) FetchById(ctx *fiber.Ctx, id string) error {
-	user, err := userRepository.FetchById(id)
+	user, err := u.userRepository.FetchById(id)
 
 	if user == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
@@ -66,7 +74,7 @@ func (u *UserUsecase) Register(ctx *fiber.Ctx) error {
 		)
 	}
 
-	_, err := userRepository.RegisterUser(u.db, user, user.RoleID)
+	_, err := u.userRepository.RegisterUser(u.db, user, user.RoleID)
 
 	if err != nil {
 		return entity.Error(
@@ -109,7 +117,7 @@ func (u *UserUsecase) registerUserWithTokenVerification(user *model.User, roleId
 		return nil, "invalid", nil
 	}
 
-	registerUser, err := userRepository.RegisterUser(u.db, user, roleId)
+	registerUser, err := u.userRepository.RegisterUser(u.db, user, roleId)
 
 	if err != nil {
 		return nil, "invalid", err
@@ -120,7 +128,7 @@ func (u *UserUsecase) registerUserWithTokenVerification(user *model.User, roleId
 }
 
 func (u *UserUsecase) RevokeUserAccess(ctx *fiber.Ctx, userId string) error {
-	err := userRepository.RevokeUserAccess(userId)
+	err := u.userRepository.RevokeUserAccess(userId)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

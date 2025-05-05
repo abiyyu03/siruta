@@ -17,7 +17,7 @@ func (l *InventoryRepository) Fetch() ([]*model.Inventory, error) {
 	return inventories, nil
 }
 
-func (l *InventoryRepository) FetchById(id string) (*model.Inventory, error) {
+func (l *InventoryRepository) FetchById(id int) (*model.Inventory, error) {
 	var inventory *model.Inventory
 
 	if err := config.DB.Where("id = ?", id).First(&inventory).Error; err != nil {
@@ -25,6 +25,16 @@ func (l *InventoryRepository) FetchById(id string) (*model.Inventory, error) {
 	}
 
 	return inventory, nil
+}
+
+func (l *InventoryRepository) FetchByRTProfileId(rtProfileId string) ([]*model.Inventory, error) {
+	var inventories []*model.Inventory
+
+	if err := config.DB.Where("rt_profile_id = ?", rtProfileId).Find(&inventories).Error; err != nil {
+		return nil, err
+	}
+
+	return inventories, nil
 }
 
 func (v *InventoryRepository) Store(inventory *model.Inventory) (*model.Inventory, error) {

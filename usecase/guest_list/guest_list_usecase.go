@@ -12,6 +12,15 @@ type GuestListUsecase struct{}
 
 var GuestListRepository *guest_list.GuestListRepository
 
+type GuestListUsecaseInterface interface {
+	Fetch(ctx *fiber.Ctx) error
+	FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error
+	FetchById(ctx *fiber.Ctx, id int) error
+	Store(ctx *fiber.Ctx, guestList *model.GuestList) error
+	Update(ctx *fiber.Ctx, guestList *model.GuestList, id int) error
+	Delete(ctx *fiber.Ctx, id int) error
+}
+
 func (g *GuestListUsecase) Fetch(ctx *fiber.Ctx) error {
 	guestLists, err := GuestListRepository.Fetch()
 

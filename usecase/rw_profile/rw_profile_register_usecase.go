@@ -12,10 +12,19 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type RWProfileRegisterUsecase struct{}
+type RWProfileRegisterUsecase struct {
+	rwProfileRegisterRepository rw_profile.RWProfileRegisterRepository
+	regTokenUsecase             referal_code.RegistrationTokenUsecase
+}
 
 var rwProfileRegisterRepository *rw_profile.RWProfileRegisterRepository
 var regTokenUsecase *referal_code.RegistrationTokenUsecase
+
+type RWProfileRegisterUsecaseInterface interface {
+	RegisterProfileRW(rwProfile *model.RWProfile, ctx *fiber.Ctx) error
+	RegisterUserRw(register *request.LeaderRegisterRequest, ctx *fiber.Ctx, token string) error
+	Approve(emailDestination string, rwProfileId string, ctx *fiber.Ctx) error
+}
 
 func (r *RWProfileRegisterUsecase) RegisterProfileRW(rwProfile *model.RWProfile, ctx *fiber.Ctx) error {
 	id, _ := uuid.NewV7()

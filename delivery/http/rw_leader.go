@@ -8,18 +8,24 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type RWLeaderHttp struct{}
+type RWLeaderHttp struct {
+	rwLeaderUsecase rw_profile.RWLeaderUsecaseInterface
+}
 
-var rwLeaderUsecase *rw_profile.RWLeaderUsecase
+func NewRWLeaderHttp(rwLeaderUC rw_profile.RWLeaderUsecaseInterface) *RWLeaderHttp {
+	return &RWLeaderHttp{
+		rwLeaderUsecase: rwLeaderUC,
+	}
+}
 
 func (r *RWLeaderHttp) GetData(ctx *fiber.Ctx) error {
-	return rwLeaderUsecase.Fetch(ctx)
+	return r.rwLeaderUsecase.Fetch(ctx)
 }
 
 func (r *RWLeaderHttp) GetDataById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
-	return rwLeaderUsecase.FetchById(ctx, id)
+	return r.rwLeaderUsecase.FetchById(ctx, id)
 }
 
 func (r *RWLeaderHttp) UpdateData(ctx *fiber.Ctx) error {
@@ -31,5 +37,5 @@ func (r *RWLeaderHttp) UpdateData(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusUnprocessableEntity, constant.Errors["UnprocessableEntity"].Message, constant.Errors["UnprocessableEntity"].Clue)
 	}
 
-	return rwLeaderUsecase.Update(ctx, id, rwLeaderData)
+	return r.rwLeaderUsecase.Update(ctx, id, rwLeaderData)
 }

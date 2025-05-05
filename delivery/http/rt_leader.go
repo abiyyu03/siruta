@@ -8,24 +8,30 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type RTLeaderHttp struct{}
+type RTLeaderHttp struct {
+	rtLeaderUsecase rt_profile.RTLeaderUsecaseInterface
+}
 
-var rtLeaderUsecase *rt_profile.RTLeaderUsecase
+func NewRTLeaderHttp(rtLeaderUC rt_profile.RTLeaderUsecaseInterface) *RTLeaderHttp {
+	return &RTLeaderHttp{
+		rtLeaderUsecase: rtLeaderUC,
+	}
+}
 
 func (r *RTLeaderHttp) GetData(ctx *fiber.Ctx) error {
 	rtProfileId := ctx.Params("rt_profile_id")
 
 	if rtProfileId == "" {
-		return rtLeaderUsecase.Fetch(ctx)
+		return r.rtLeaderUsecase.Fetch(ctx)
 	}
 
-	return rtLeaderUsecase.FetchByRTProfileId(ctx, rtProfileId)
+	return r.rtLeaderUsecase.FetchByRTProfileId(ctx, rtProfileId)
 }
 
 func (r *RTLeaderHttp) GetDataById(ctx *fiber.Ctx) error {
 	rtProfileId := ctx.Params("id")
 
-	return rtLeaderUsecase.FetchByRTProfileId(ctx, rtProfileId)
+	return r.rtLeaderUsecase.FetchByRTProfileId(ctx, rtProfileId)
 }
 
 func (r *RTLeaderHttp) UpdateData(ctx *fiber.Ctx) error {
@@ -36,5 +42,5 @@ func (r *RTLeaderHttp) UpdateData(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusUnprocessableEntity, constant.Errors["UnprocessableEntity"].Message, constant.Errors["UnprocessableEntity"].Clue)
 	}
 
-	return rtLeaderUsecase.Update(ctx, rtProfileId, rtLeaderData)
+	return r.rtLeaderUsecase.Update(ctx, rtProfileId, rtLeaderData)
 }

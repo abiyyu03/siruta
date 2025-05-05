@@ -12,6 +12,15 @@ type IncomingLetterUsecase struct{}
 
 var IncomingLetterRepository *letter.IncomingLetterRepository
 
+type IncomingLetterUsecaseInterface interface {
+	Fetch(ctx *fiber.Ctx) error
+	FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error
+	FetchById(ctx *fiber.Ctx, id int) error
+	Store(incomingLetter *model.IncomingLetter, ctx *fiber.Ctx) error
+	Update(incomingLetter *model.IncomingLetter, ctx *fiber.Ctx, id int) error
+	Delete(ctx *fiber.Ctx, id int) error
+}
+
 func (i *IncomingLetterUsecase) Fetch(ctx *fiber.Ctx) error {
 	incomingLetters, err := IncomingLetterRepository.Fetch()
 

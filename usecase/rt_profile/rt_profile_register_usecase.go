@@ -19,6 +19,12 @@ var rtProfileRegisterRepository *rt_profile.RTProfileRegisterRepository
 var rtNotification *email.EmailRegistrationUsecase
 var regTokenUsecase *referal_code.RegistrationTokenUsecase
 
+type RTProfileRegisterUsecaseInterface interface {
+	RegisterRTProfile(rtProfile *request.RTProfileRegisterRequest, ctx *fiber.Ctx) error
+	Approve(emailDestination string, rtProfileId string, ctx *fiber.Ctx) error
+	RegisterUserRt(userRt *request.LeaderRegisterRequest, ctx *fiber.Ctx, token string) error
+}
+
 func (r *RTProfileRegisterUsecase) RegisterRTProfile(rtProfile *request.RTProfileRegisterRequest, ctx *fiber.Ctx) error {
 	id, _ := uuid.NewV7()
 

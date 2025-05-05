@@ -58,6 +58,8 @@ func JWTMiddleware(allowedRoles []int) fiber.Handler {
 
 			castedRoleID := int(roleID)
 
+			log.Print("Signed Role :", roleID)
+
 			allowedRoleId, err := new(role.RoleRepository).FetchById(castedRoleID)
 
 			if err != nil {

@@ -11,16 +11,23 @@ import (
 	"gorm.io/gorm"
 )
 
-func setupTestDB() *gorm.DB {
+func SetupTestDB(t *testing.T) *gorm.DB {
 	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
+	if err != nil {
+		t.Fatalf("failed to connect to test database: %v", err)
+	}
 
-	err = db.AutoMigrate(&model.Religion{})
+	// Migrate tabel yang akan dipakai di test
+	err = db.AutoMigrate(&model.RegistrationToken{})
+	if err != nil {
+		t.Fatalf("failed to migrate database: %v", err)
+	}
 
 	return db
 }
 
 func TestCreateToken_Success(t *testing.T) {
-	db := setupTestDB()
+	db := SetupTestDB(t)
 	config.DB = db
 	repo := RegTokenRepository{}
 
@@ -32,7 +39,7 @@ func TestCreateToken_Success(t *testing.T) {
 }
 
 func TestValidateToken_Success(t *testing.T) {
-	db := setupTestDB()
+	db := SetupTestDB(t)
 	config.DB = db
 	repo := RegTokenRepository{}
 	token := "valid-token"
@@ -50,7 +57,7 @@ func TestValidateToken_Success(t *testing.T) {
 }
 
 func TestValidateToken_Expired(t *testing.T) {
-	db := setupTestDB()
+	db := SetupTestDB(t)
 	config.DB = db
 	repo := RegTokenRepository{}
 	token := "expired-token"
@@ -67,7 +74,7 @@ func TestValidateToken_Expired(t *testing.T) {
 }
 
 func TestRemoveToken_Success(t *testing.T) {
-	setupTestDB() // <- langsung panggil ini
+	SetupTestDB(t) // <- langsung panggil ini
 	repo := RegTokenRepository{}
 	token := "remove-me"
 
@@ -87,7 +94,7 @@ func TestRemoveToken_Success(t *testing.T) {
 }
 
 func TestRemoveToken_NotFound(t *testing.T) {
-	db := setupTestDB()
+	db := SetupTestDB(t)
 	config.DB = db
 	repo := RegTokenRepository{}
 	token := "not-exist"
