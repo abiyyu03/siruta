@@ -12,5 +12,5 @@ func RegisterRTProfileRoutes(v1 fiber.Router, handler *http.RTProfileHttp) {
 
 	v1.Get("/rt-profiles", adminOnly, handler.GetData)
 	v1.Get("/rt-profiles/:id", adminOnly, rwLeaderOnly, handler.GetDataById)
-	v1.Get("/rt-profiles/:rw_profile_id", adminOnly, rwLeaderOnly, handler.GetDataByRWProfileId)
+	v1.Get("/rt-profiles/:rw_profile_id/rw", adminOnly, rwLeaderOnly, handler.GetDataByRWProfileId)
 }

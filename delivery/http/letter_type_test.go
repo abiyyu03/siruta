@@ -25,11 +25,11 @@ func (m *MockLetterTypeUsecase) FetchById(ctx *fiber.Ctx, id int) error {
 	return args.Error(0)
 }
 func (m *MockLetterTypeUsecase) Store(letterType *model.LetterType, ctx *fiber.Ctx) error {
-	args := m.Called(ctx, letterType)
+	args := m.Called(letterType, ctx)
 	return args.Error(0)
 }
 func (m *MockLetterTypeUsecase) Update(letterType *model.LetterType, ctx *fiber.Ctx, id int) error {
-	args := m.Called(ctx, letterType, id)
+	args := m.Called(letterType, ctx, id)
 	return args.Error(0)
 }
 func (m *MockLetterTypeUsecase) Delete(ctx *fiber.Ctx, id int) error {
@@ -84,9 +84,9 @@ func TestLetterTypeHttp_StoreData(t *testing.T) {
 	}
 	body, _ := json.Marshal(letterType)
 
-	mockUsecase.On("Store", mock.Anything, mock.MatchedBy(func(cf *model.LetterType) bool {
+	mockUsecase.On("Store", mock.MatchedBy(func(cf *model.LetterType) bool {
 		return cf.Code == "SPN"
-	})).Return(nil)
+	}), mock.Anything).Return(nil)
 
 	req := httptest.NewRequest("POST", "/letter-types", bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
@@ -113,7 +113,7 @@ func TestLetterTypeHttp_UpdateData(t *testing.T) {
 	updatedBody, _ := json.Marshal(body)
 
 	mockUsecase.On("Update", mock.MatchedBy(func(data *model.LetterType) bool {
-		return data.TypeName == "Komputer High End"
+		return data.TypeName == "Surat Pengantar KTP"
 	}), mock.Anything, 1).Return(nil)
 
 	req := httptest.NewRequest("PUT", "/letter-types/1", bytes.NewReader(updatedBody))

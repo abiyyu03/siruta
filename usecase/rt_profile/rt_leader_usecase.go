@@ -10,8 +10,9 @@ import (
 )
 
 type RTLeaderUsecase struct {
-	rtLeaderRepository rt_profile.RTLeaderRepository
 }
+
+var rtLeaderRepository *rt_profile.RTLeaderRepository
 
 type RTLeaderUsecaseInterface interface {
 	Fetch(ctx *fiber.Ctx) error
@@ -21,7 +22,7 @@ type RTLeaderUsecaseInterface interface {
 }
 
 func (r *RTLeaderUsecase) Fetch(ctx *fiber.Ctx) error {
-	rtLeaders, err := r.rtLeaderRepository.Fetch()
+	rtLeaders, err := rtLeaderRepository.Fetch()
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -31,7 +32,7 @@ func (r *RTLeaderUsecase) Fetch(ctx *fiber.Ctx) error {
 }
 
 func (r *RTLeaderUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error {
-	rtLeaders, err := r.rtLeaderRepository.FetchByRTProfileId(rtProfileId)
+	rtLeaders, err := rtLeaderRepository.FetchByRTProfileId(rtProfileId)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -41,7 +42,7 @@ func (r *RTLeaderUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string)
 }
 
 func (r *RTLeaderUsecase) FetchById(ctx *fiber.Ctx, id string) error {
-	rtLeader, err := r.rtLeaderRepository.FetchById(id)
+	rtLeader, err := rtLeaderRepository.FetchById(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -63,7 +64,7 @@ func (r *RTLeaderUsecase) Update(ctx *fiber.Ctx, id string, rtLeaderData *model.
 		FullAddress: rtLeaderData.FullAddress,
 	}
 
-	updatedRtLeader := r.rtLeaderRepository.Update(config.DB, rtLeader, id)
+	updatedRtLeader := rtLeaderRepository.Update(config.DB, rtLeader, id)
 
 	if updatedRtLeader == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)

@@ -22,7 +22,7 @@ func (r *ReferalCodeHttp) GetData(ctx *fiber.Ctx) error {
 }
 
 func (r *ReferalCodeHttp) GetDataById(ctx *fiber.Ctx) error {
-	id := ctx.Params("id")
+	id, _ := strconv.Atoi(ctx.Params("id"))
 
 	return r.referalCodeUsecase.FetchById(ctx, id)
 }

@@ -11,21 +11,22 @@ import (
 )
 
 type UserUsecase struct {
-	userRepository user.UserRepository
-	db             *gorm.DB
+	db *gorm.DB
 }
+
+var userRepository *user.UserRepository
 
 type UserUsecaseInterface interface {
 	Fetch(ctx *fiber.Ctx) error
 	FetchById(ctx *fiber.Ctx, id string) error
 	Register(ctx *fiber.Ctx) error
 	RegisterUserWithTokenVerification(ctx *fiber.Ctx, user *model.User, token string) error
-	registerUserWithTokenVerification(user *model.User, roleId uint, token string) (*model.User, string, error)
+	TokenVerification(user *model.User, roleId uint, token string) (*model.User, string, error)
 	RevokeUserAccess(ctx *fiber.Ctx, userId string) error
 }
 
 func (u *UserUsecase) Fetch(ctx *fiber.Ctx) error {
-	users, err := u.userRepository.Fetch()
+	users, err := userRepository.Fetch()
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -44,7 +45,7 @@ func (u *UserUsecase) Fetch(ctx *fiber.Ctx) error {
 }
 
 func (u *UserUsecase) FetchById(ctx *fiber.Ctx, id string) error {
-	user, err := u.userRepository.FetchById(id)
+	user, err := userRepository.FetchById(id)
 
 	if user == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
@@ -74,7 +75,7 @@ func (u *UserUsecase) Register(ctx *fiber.Ctx) error {
 		)
 	}
 
-	_, err := u.userRepository.RegisterUser(u.db, user, user.RoleID)
+	_, err := userRepository.RegisterUser(u.db, user, user.RoleID)
 
 	if err != nil {
 		return entity.Error(
@@ -91,7 +92,7 @@ func (u *UserUsecase) RegisterUserWithTokenVerification(ctx *fiber.Ctx, user *mo
 		Password: user.Password,
 		RoleID:   4,
 	}
-	user, status, err := u.registerUserWithTokenVerification(newUser, 4, token)
+	user, status, err := u.TokenVerification(newUser, 4, token)
 
 	if status == "invalid" {
 		return entity.Error(ctx, fiber.StatusForbidden, constant.Errors["InvalidToken"].Message, constant.Errors["InvalidToken"].Clue)
@@ -105,7 +106,7 @@ func (u *UserUsecase) RegisterUserWithTokenVerification(ctx *fiber.Ctx, user *mo
 	return entity.Success(ctx, user, "Registrasi Berhasil")
 }
 
-func (u *UserUsecase) registerUserWithTokenVerification(user *model.User, roleId uint, token string) (*model.User, string, error) {
+func (u *UserUsecase) TokenVerification(user *model.User, roleId uint, token string) (*model.User, string, error) {
 	regToken := &register.RegTokenRepository{}
 	tokenFetched, err := regToken.Validate(token)
 
@@ -117,7 +118,7 @@ func (u *UserUsecase) registerUserWithTokenVerification(user *model.User, roleId
 		return nil, "invalid", nil
 	}
 
-	registerUser, err := u.userRepository.RegisterUser(u.db, user, roleId)
+	registerUser, err := userRepository.RegisterUser(u.db, user, roleId)
 
 	if err != nil {
 		return nil, "invalid", err
@@ -128,7 +129,7 @@ func (u *UserUsecase) registerUserWithTokenVerification(user *model.User, roleId
 }
 
 func (u *UserUsecase) RevokeUserAccess(ctx *fiber.Ctx, userId string) error {
-	err := u.userRepository.RevokeUserAccess(userId)
+	err := userRepository.RevokeUserAccess(userId)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
