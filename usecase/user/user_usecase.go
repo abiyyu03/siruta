@@ -4,6 +4,7 @@ import (
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
+	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/abiyyu03/siruta/repository/register"
 	"github.com/abiyyu03/siruta/repository/user"
 	"github.com/gofiber/fiber/v2"
@@ -23,6 +24,7 @@ type UserUsecaseInterface interface {
 	RegisterUserWithTokenVerification(ctx *fiber.Ctx, user *model.User, token string) error
 	TokenVerification(user *model.User, roleId uint, token string) (*model.User, string, error)
 	RevokeUserAccess(ctx *fiber.Ctx, userId string) error
+	UpdateProfilePhoto(ctx *fiber.Ctx, userId string, profileType string, userPhoto *request.UpdateProfilePhoto) error
 }
 
 func (u *UserUsecase) Fetch(ctx *fiber.Ctx) error {
@@ -136,4 +138,14 @@ func (u *UserUsecase) RevokeUserAccess(ctx *fiber.Ctx, userId string) error {
 	}
 
 	return entity.Success(ctx, nil, "User Revoked Successfuly")
+}
+
+func (u *UserUsecase) UpdateProfilePhoto(ctx *fiber.Ctx, userId string, profileType string, userPhoto *request.UpdateProfilePhoto) error {
+	err := userRepository.UpdateProfilePhoto(profileType, userId, userPhoto.Photo)
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	}
+
+	return entity.Success(ctx, nil, "Photo Succesfully updated !")
 }

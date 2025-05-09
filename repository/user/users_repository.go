@@ -65,3 +65,25 @@ func (u *UserRepository) RevokeUserAccess(userId string) error {
 
 	return nil
 }
+
+func (u *UserRepository) UpdateProfilePhoto(profileType string, userId string, urlPhoto string) error {
+	var rtLeader *model.RTLeader
+	var rwLeader *model.RWLeader
+	var member *model.Member
+
+	if profileType == "rt" {
+		if err := config.DB.Model(&rtLeader).Where("user_id =?", userId).Update("photo", urlPhoto).Error; err != nil {
+			return err
+		}
+	} else if profileType == "rw" {
+		if err := config.DB.Model(&rwLeader).Where("user_id =?", userId).Update("photo", urlPhoto).Error; err != nil {
+			return err
+		}
+	} else if profileType == "member" {
+		if err := config.DB.Model(&member).Where("user_id =?", userId).Update("photo", urlPhoto).Error; err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

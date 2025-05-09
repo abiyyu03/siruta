@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/abiyyu03/siruta/usecase/user"
 	"github.com/gofiber/fiber/v2"
 )
@@ -29,4 +30,17 @@ func (u *UserHttp) RevokeUser(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
 	return u.userUsecase.RevokeUserAccess(ctx, id)
+}
+
+func (u *UserHttp) UpdateProfilePhoto(ctx *fiber.Ctx) error {
+	userId := ctx.Params("user_id")
+	queries := ctx.Queries()
+
+	var photo *request.UpdateProfilePhoto
+
+	if err := ctx.BodyParser(&photo); err != nil {
+		return err
+	}
+
+	return u.userUsecase.UpdateProfilePhoto(ctx, userId, queries["profileType"], photo)
 }

@@ -11,5 +11,6 @@ func RegisterUserRoutes(v1 fiber.Router, handler *http.UserHttp) {
 
 	v1.Get("/users", adminOnly, handler.GetData)
 	v1.Get("/users/:id", adminOnly, handler.GetDataById)
+	v1.Get("/users/photo/:id", adminOnly, handler.UpdateProfilePhoto)
 	v1.Put("/users/revoke/:id", adminOnly, handler.RevokeUser)
 }

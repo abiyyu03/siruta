@@ -16,3 +16,7 @@ type MemberRegisterRequest struct {
 	Occupation     string `json:"occupation" validate:"required"`
 	Status         string `json:"status" validate:"required"`
 }
+
+type UpdateProfilePhoto struct {
+	Photo string `json:"photo"`
+}
