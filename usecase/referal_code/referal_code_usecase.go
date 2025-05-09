@@ -13,11 +13,11 @@ type ReferalCodeUsecase struct {
 
 type ReferalCodeUsecaseInterface interface {
 	Fetch(ctx *fiber.Ctx) error
-	FetchById(ctx *fiber.Ctx, id int) error
+	FetchById(ctx *fiber.Ctx, id string) error
 	FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error
 	RegenerateReferalCode(ctx *fiber.Ctx, profileId string, code string) error
 	Validate(ctx *fiber.Ctx, code string) (error, string)
-	Delete(ctx *fiber.Ctx, id int) error
+	Delete(ctx *fiber.Ctx, id string) error
 }
 
 type IdProfileResponse struct {
