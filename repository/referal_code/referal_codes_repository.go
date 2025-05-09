@@ -23,7 +23,7 @@ func (r *ReferalCodeRepository) Fetch() ([]*model.ReferalCode, error) {
 	return referalCodes, nil
 }
 
-func (r *ReferalCodeRepository) FetchById(id string) (*model.ReferalCode, error) {
+func (r *ReferalCodeRepository) FetchById(id int) (*model.ReferalCode, error) {
 	var referalCode *model.ReferalCode
 
 	if err := config.DB.Where("id = ?", id).First(&referalCode).Error; err != nil {

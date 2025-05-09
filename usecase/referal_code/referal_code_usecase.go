@@ -13,11 +13,11 @@ type ReferalCodeUsecase struct {
 
 type ReferalCodeUsecaseInterface interface {
 	Fetch(ctx *fiber.Ctx) error
-	FetchById(ctx *fiber.Ctx, id string) error
+	FetchById(ctx *fiber.Ctx, id int) error
 	FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error
 	RegenerateReferalCode(ctx *fiber.Ctx, profileId string, code string) error
 	Validate(ctx *fiber.Ctx, code string) (error, string)
-	Delete(ctx *fiber.Ctx, id string) error
+	Delete(ctx *fiber.Ctx, id int) error
 }
 
 type IdProfileResponse struct {
@@ -34,7 +34,7 @@ func (r *ReferalCodeUsecase) Fetch(ctx *fiber.Ctx) error {
 	return entity.Success(ctx, &referals, "Data fetched successfully")
 }
 
-func (r *ReferalCodeUsecase) FetchById(ctx *fiber.Ctx, id string) error {
+func (r *ReferalCodeUsecase) FetchById(ctx *fiber.Ctx, id int) error {
 	referal, err := r.referalCodeRepository.FetchById(id)
 
 	if referal == nil {
