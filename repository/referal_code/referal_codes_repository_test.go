@@ -58,7 +58,7 @@ func TestFetchById_NotFound(t *testing.T) {
 	config.DB = db
 	defer func() { config.DB = oldDB }()
 
-	res, err := repo.FetchById("non-existent-id")
+	res, err := repo.FetchById(1)
 	assert.Error(t, err)
 	assert.Nil(t, res)
 }
