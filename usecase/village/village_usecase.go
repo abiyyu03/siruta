@@ -64,6 +64,12 @@ func (v *VillageUsecase) Store(village *model.Village, ctx *fiber.Ctx) error {
 
 func (v *VillageUsecase) Update(village *model.Village, ctx *fiber.Ctx, id int) error {
 
+	data, _ := v.villageRepository.FetchById(id)
+
+	if data == nil {
+		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
+	}
+
 	updateVillage := &model.Village{
 		Name:       village.Name,
 		AltName:    village.AltName,

@@ -11,23 +11,24 @@ import (
 	"gorm.io/gorm"
 )
 
-func SetupTestDB(t *testing.T) *gorm.DB {
+func setupTestDB(t *testing.T) *gorm.DB {
 	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
 	if err != nil {
-		t.Fatalf("failed to connect to test database: %v", err)
+		t.Fatalf("failed to connect to test DB: %v", err)
 	}
+	assert.NoError(t, err)
 
-	// Migrate tabel yang akan dipakai di test
 	err = db.AutoMigrate(&model.RegistrationToken{})
 	if err != nil {
-		t.Fatalf("failed to migrate database: %v", err)
+		t.Fatalf("failed to connect to test DB: %v", err)
 	}
+	assert.NoError(t, err)
 
 	return db
 }
 
 func TestCreateToken_Success(t *testing.T) {
-	db := SetupTestDB(t)
+	db := setupTestDB(t)
 	config.DB = db
 	repo := RegTokenRepository{}
 
@@ -39,7 +40,7 @@ func TestCreateToken_Success(t *testing.T) {
 }
 
 func TestValidateToken_Success(t *testing.T) {
-	db := SetupTestDB(t)
+	db := setupTestDB(t)
 	config.DB = db
 	repo := RegTokenRepository{}
 	token := "valid-token"
@@ -57,7 +58,7 @@ func TestValidateToken_Success(t *testing.T) {
 }
 
 func TestValidateToken_Expired(t *testing.T) {
-	db := SetupTestDB(t)
+	db := setupTestDB(t)
 	config.DB = db
 	repo := RegTokenRepository{}
 	token := "expired-token"
@@ -74,27 +75,29 @@ func TestValidateToken_Expired(t *testing.T) {
 }
 
 func TestRemoveToken_Success(t *testing.T) {
-	SetupTestDB(t) // <- langsung panggil ini
+	db := setupTestDB(t) // ambil db
+	config.DB = db       // simpan ke config.DB agar dipakai di repo
 	repo := RegTokenRepository{}
 	token := "remove-me"
 
 	// Insert token aktif
-	_ = config.DB.Create(&model.RegistrationToken{
+	_ = db.Create(&model.RegistrationToken{
 		Token:     token,
 		ExpiredAt: time.Now().Add(1 * time.Hour),
 	}).Error
 
-	tx := config.DB.Begin()
+	tx := db.Begin()
 	defer tx.Rollback()
 
 	deleted, err := repo.RemoveToken(tx, token)
 	tx.Commit()
+
 	assert.Nil(t, err)
 	assert.True(t, deleted)
 }
 
 func TestRemoveToken_NotFound(t *testing.T) {
-	db := SetupTestDB(t)
+	db := setupTestDB(t)
 	config.DB = db
 	repo := RegTokenRepository{}
 	token := "not-exist"

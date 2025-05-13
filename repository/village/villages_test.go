@@ -67,23 +67,6 @@ func TestStore(t *testing.T) {
 	assert.NotZero(t, result.ID)
 }
 
-func TestUpdate(t *testing.T) {
-	db := setupTestDB(t)
-
-	data := &model.Village{ID: 1, Name: "Old Name", AltName: "OldAlt", Latitude: 0.0, Longitude: 0.0, CodePostal: "00000"}
-	db.Create(&data)
-
-	updated := &model.Village{Name: "New Name", AltName: "NewAlt", Latitude: 1.1, Longitude: 2.2, CodePostal: "99999"}
-
-	result, err := repo.Update(updated, data.ID)
-	assert.NoError(t, err)
-
-	var check *model.Village
-	db.First(&check, data.ID)
-	assert.Equal(t, "New Name", check.Name)
-	assert.Equal(t, result.Name, check.Name)
-}
-
 func TestDelete(t *testing.T) {
 	db := setupTestDB(t)
 
@@ -100,4 +83,20 @@ func TestDelete(t *testing.T) {
 	var check model.Village
 	tx := db.First(&check, data.ID)
 	assert.True(t, errors.Is(tx.Error, gorm.ErrRecordNotFound))
+}
+
+func TestUpdate(t *testing.T) {
+	db := setupTestDB(t)
+
+	data := &model.Village{ID: 1, Name: "Old Name", AltName: "OldAlt", Latitude: 0.0, Longitude: 0.0, CodePostal: "00000"}
+	db.Create(&data)
+
+	updated := &model.Village{Name: "New Name", AltName: "NewAlt", Latitude: 1.1, Longitude: 2.2, CodePostal: "99999"}
+
+	result, err := repo.Update(updated, data.ID)
+	assert.NoError(t, err)
+
+	result2, _ := repo.FetchById(data.ID)
+	assert.Equal(t, "New Name", result2.Name)
+	assert.Equal(t, result.Name, result2.Name)
 }
