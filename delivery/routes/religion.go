@@ -7,13 +7,9 @@ import (
 )
 
 func RegisterReligionRoutes(v1 fiber.Router, handler *http.ReligionHttp) {
-	adminOnly := middleware.JWTMiddleware([]int{1})
-	rtLeaderOnly := middleware.JWTMiddleware([]int{3})
-	memberOnly := middleware.JWTMiddleware([]int{4})
-
-	v1.Get("/religions", adminOnly, rtLeaderOnly, memberOnly, handler.GetData)
-	v1.Get("/religions/:id", adminOnly, handler.GetDataById)
-	v1.Post("/religions", adminOnly, handler.StoreData)
-	v1.Put("/religions/:id", adminOnly, handler.UpdateData)
-	v1.Delete("/religions/:id", adminOnly, handler.DeleteData)
+	v1.Get("/religions", handler.GetData)
+	v1.Get("/religions/:id", middleware.JWTMiddleware([]int{1, 3, 4}), handler.GetDataById)
+	v1.Post("/religions", middleware.JWTMiddleware([]int{1}), handler.StoreData)
+	v1.Put("/religions/:id", middleware.JWTMiddleware([]int{1}), handler.UpdateData)
+	v1.Delete("/religions/:id", middleware.JWTMiddleware([]int{1}), handler.DeleteData)
 }

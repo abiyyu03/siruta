@@ -7,10 +7,7 @@ import (
 )
 
 func RegisterRTProfileRoutes(v1 fiber.Router, handler *http.RTProfileHttp) {
-	adminOnly := middleware.JWTMiddleware([]int{1})
-	rwLeaderOnly := middleware.JWTMiddleware([]int{2})
-
-	v1.Get("/rt-profiles", adminOnly, handler.GetData)
-	v1.Get("/rt-profiles/:id", adminOnly, rwLeaderOnly, handler.GetDataById)
-	v1.Get("/rt-profiles/:rw_profile_id/rw", adminOnly, rwLeaderOnly, handler.GetDataByRWProfileId)
+	v1.Get("/rt-profiles", middleware.JWTMiddleware([]int{1}), handler.GetData)
+	v1.Get("/rt-profiles/:id", middleware.JWTMiddleware([]int{1, 2}), handler.GetDataById)
+	v1.Get("/rt-profiles/:rw_profile_id/rw", middleware.JWTMiddleware([]int{1, 2}), handler.GetDataByRWProfileId)
 }

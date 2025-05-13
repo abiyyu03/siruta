@@ -7,13 +7,9 @@ import (
 )
 
 func RegisterVillageRoutes(v1 fiber.Router, handler *http.VillageHttp) {
-	adminOnly := middleware.JWTMiddleware([]int{1})
-	rtLeaderOnly := middleware.JWTMiddleware([]int{3})
-	memberOnly := middleware.JWTMiddleware([]int{4})
-
-	v1.Get("/villages", adminOnly, rtLeaderOnly, memberOnly, handler.GetData)
-	v1.Get("/villages/:id", adminOnly, handler.GetDataById)
-	v1.Post("/villages", adminOnly, handler.StoreData)
-	v1.Put("/villages/:id", adminOnly, handler.UpdateData)
-	v1.Delete("/villages/:id", adminOnly, handler.DeleteData)
+	v1.Get("/villages", middleware.JWTMiddleware([]int{1, 3, 4}), handler.GetData)
+	v1.Get("/villages/:id", middleware.JWTMiddleware([]int{1}), handler.GetDataById)
+	v1.Post("/villages", middleware.JWTMiddleware([]int{1}), handler.StoreData)
+	v1.Put("/villages/:id", middleware.JWTMiddleware([]int{1}), handler.UpdateData)
+	v1.Delete("/villages/:id", middleware.JWTMiddleware([]int{1}), handler.DeleteData)
 }

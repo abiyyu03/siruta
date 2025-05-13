@@ -7,11 +7,9 @@ import (
 )
 
 func RegisterMemberStatusRoutes(v1 fiber.Router, handler *http.MemberStatusHttp) {
-	adminOnly := middleware.JWTMiddleware([]int{1})
-
-	v1.Get("/member-status", adminOnly, handler.GetData)
-	v1.Get("/member-status/:id", adminOnly, handler.GetDataById)
-	v1.Post("/member-status", adminOnly, handler.StoreData)
-	v1.Put("/member-status/:id", adminOnly, handler.UpdateData)
-	v1.Delete("/member-status/:id", adminOnly, handler.DeleteData)
+	v1.Get("/member-status", handler.GetData) // unauthenticated
+	v1.Get("/member-status/:id", middleware.JWTMiddleware([]int{1}), handler.GetDataById)
+	v1.Post("/member-status", middleware.JWTMiddleware([]int{1}), handler.StoreData)
+	v1.Put("/member-status/:id", middleware.JWTMiddleware([]int{1}), handler.UpdateData)
+	v1.Delete("/member-status/:id", middleware.JWTMiddleware([]int{1}), handler.DeleteData)
 }

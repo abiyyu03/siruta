@@ -7,11 +7,9 @@ import (
 )
 
 func RegisterRoleRoutes(v1 fiber.Router, handler *http.RoleHttp) {
-	adminOnly := middleware.JWTMiddleware([]int{1})
-
-	v1.Get("/roles", adminOnly, handler.GetData)
-	v1.Get("/roles/:id", adminOnly, handler.GetDataById)
-	v1.Post("/roles", adminOnly, handler.StoreData)
-	v1.Put("/roles/:id", adminOnly, handler.UpdateData)
-	v1.Delete("/roles/:id", adminOnly, handler.DeleteData)
+	v1.Get("/roles", middleware.JWTMiddleware([]int{1}), handler.GetData)
+	v1.Get("/roles/:id", middleware.JWTMiddleware([]int{1}), handler.GetDataById)
+	v1.Post("/roles", middleware.JWTMiddleware([]int{1}), handler.StoreData)
+	v1.Put("/roles/:id", middleware.JWTMiddleware([]int{1}), handler.UpdateData)
+	v1.Delete("/roles/:id", middleware.JWTMiddleware([]int{1}), handler.DeleteData)
 }

@@ -7,14 +7,10 @@ import (
 )
 
 func RegisterReferalCodeRoutes(v1 fiber.Router, handler *http.ReferalCodeHttp) {
-	adminOnly := middleware.JWTMiddleware([]int{1})
-	rtLeaderOnly := middleware.JWTMiddleware([]int{3})
-
-	v1.Get("/referal-codes", adminOnly, handler.GetData)
-	v1.Get("/referal-codes/:id", adminOnly, handler.GetDataById)
-	v1.Get("/referal-codes/:rt_profile_id", adminOnly, handler.GetDataByRTProfileId)
+	v1.Get("/referal-codes", middleware.JWTMiddleware([]int{1}), handler.GetData)
+	v1.Get("/referal-codes/:id", middleware.JWTMiddleware([]int{1}), handler.GetDataById)
 	v1.Post("/referal-codes/validate", handler.ValidateReferalCode) //unauthenticated
-	v1.Delete("/referal-codes/:id", adminOnly, handler.GetDataById)
-	v1.Get("/referal-codes/:profile_id/rt", rtLeaderOnly, handler.GetDataByRTProfileId)
-	v1.Put("/referal-codes/:profile_id/rt/regenerate/:code", rtLeaderOnly, handler.RegenerateCode)
+	v1.Delete("/referal-codes/:id", middleware.JWTMiddleware([]int{1}), handler.GetDataById)
+	v1.Get("/referal-codes/:profile_id/rt", middleware.JWTMiddleware([]int{1, 3}), handler.GetDataByRTProfileId)
+	v1.Put("/referal-codes/:profile_id/rt/regenerate/:code", middleware.JWTMiddleware([]int{1, 3}), handler.RegenerateCode)
 }

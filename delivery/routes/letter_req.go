@@ -7,11 +7,7 @@ import (
 )
 
 func RegisterLetterReqRoutes(v1 fiber.Router, handler *http.LetterReqHttp) {
-	adminOnly := middleware.JWTMiddleware([]int{1})
-	rtLeaderOnly := middleware.JWTMiddleware([]int{3})
-	memberOnly := middleware.JWTMiddleware([]int{4})
-
-	v1.Post("/request-letters", rtLeaderOnly, memberOnly, handler.CreateData)
-	v1.Put("/request-letters/approve/:letter_req_id", rtLeaderOnly, handler.UpdateApprovalStatus)
-	v1.Post("/request-letters", adminOnly, memberOnly, handler.CreateData)
+	v1.Post("/request-letters", middleware.JWTMiddleware([]int{3, 4}), handler.CreateData)
+	v1.Put("/request-letters/approve/:letter_req_id", middleware.JWTMiddleware([]int{1, 3}), handler.UpdateApprovalStatus)
+	v1.Post("/request-letters", middleware.JWTMiddleware([]int{1, 3, 4}), handler.CreateData)
 }

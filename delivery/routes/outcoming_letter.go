@@ -7,13 +7,10 @@ import (
 )
 
 func RegisterOutcomingLetterRoutes(v1 fiber.Router, handler *http.OutcomingLetterHttp) {
-	adminOnly := middleware.JWTMiddleware([]int{1})
-	rtLeaderOnly := middleware.JWTMiddleware([]int{3})
-
-	v1.Get("/outcoming-letters", adminOnly, handler.GetData)
-	v1.Get("/outcoming-letters/:rt_profile_id", adminOnly, rtLeaderOnly, handler.GetDataByRTProfileId)
-	v1.Get("/outcoming-letters/:id", adminOnly, rtLeaderOnly, handler.GetDataById)
-	v1.Get("/outcoming-letters/:id/preview", handler.GetPreview)
-	v1.Get("/outcoming-letters/:rt_profile_id/rt", adminOnly, rtLeaderOnly, handler.GetDataByRTProfileId)
-	v1.Delete("/outcoming-letters/:id", adminOnly, rtLeaderOnly, handler.DeleteData)
+	v1.Get("/outcoming-letters", middleware.JWTMiddleware([]int{1}), handler.GetData)
+	v1.Get("/outcoming-letters/:rt_profile_id", middleware.JWTMiddleware([]int{1, 3}), handler.GetDataByRTProfileId)
+	v1.Get("/outcoming-letters/:id", middleware.JWTMiddleware([]int{1, 3}), handler.GetDataById)
+	v1.Get("/outcoming-letters/:id/preview", middleware.JWTMiddleware([]int{1, 3, 4}), handler.GetPreview)
+	v1.Get("/outcoming-letters/:rt_profile_id/rt", middleware.JWTMiddleware([]int{1, 3}), handler.GetDataByRTProfileId)
+	v1.Delete("/outcoming-letters/:id", middleware.JWTMiddleware([]int{1, 3}), handler.DeleteData)
 }
