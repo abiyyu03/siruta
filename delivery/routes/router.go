@@ -5,7 +5,6 @@ import (
 	"github.com/abiyyu03/siruta/delivery/http/auth"
 	"github.com/abiyyu03/siruta/delivery/http/register"
 	"github.com/gofiber/fiber/v2"
-	fiberSwagger "github.com/swaggo/fiber-swagger"
 
 	_ "github.com/swaggo/fiber-swagger/example/docs"
 )
@@ -39,8 +38,6 @@ type HandlerDefinition struct {
 func (handler *HandlerDefinition) HttpRoutes(app *fiber.App) {
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
-
-	api.Get("/swagger/*", fiberSwagger.WrapHandler)
 
 	RegisterRoleRoutes(v1, handler.Role)
 	RegisterCashflowRoutes(v1, handler.Cashflow)
