@@ -3,7 +3,6 @@ package auth
 import (
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
-	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/abiyyu03/siruta/usecase/auth"
 	"github.com/gofiber/fiber/v2"
 )
@@ -21,7 +20,7 @@ func NewAuthHttp(authUC auth.AuthUsecaseInterface) *AuthHttp {
 }
 
 func Login(ctx *fiber.Ctx) error {
-	var request request.LoginRequest
+	var request entity.LoginRequest
 
 	if err := ctx.BodyParser(&request); err != nil {
 		return entity.Error(

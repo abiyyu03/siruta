@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/abiyyu03/siruta/delivery/http"
+	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -54,7 +54,7 @@ func TestLetterReqHttp_CreateData(t *testing.T) {
 		Date:         "2025-01-01",
 	}
 
-	check := &request.CheckResidentMember{
+	check := &entity.CheckResidentMember{
 		MemberStatus: "tetap",
 		BirthDate:    "1990-01-01",
 		NikNumber:    "3201010101010001",

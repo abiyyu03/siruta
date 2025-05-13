@@ -1,7 +1,7 @@
 package http
 
 import (
-	"github.com/abiyyu03/siruta/entity/request"
+	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/usecase/user"
 	"github.com/gofiber/fiber/v2"
 )
@@ -36,7 +36,7 @@ func (u *UserHttp) UpdateProfilePhoto(ctx *fiber.Ctx) error {
 	userId := ctx.Params("user_id")
 	queries := ctx.Queries()
 
-	var photo *request.UpdateProfilePhoto
+	var photo *entity.UpdateProfilePhoto
 
 	if err := ctx.BodyParser(&photo); err != nil {
 		return err

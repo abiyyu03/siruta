@@ -5,7 +5,6 @@ import (
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/abiyyu03/siruta/usecase/rw_profile"
 	"github.com/gofiber/fiber/v2"
 )
@@ -38,7 +37,7 @@ func (r *RWProfileRegisterHttp) RegisterUserRw(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusForbidden, constant.Errors["InvalidToken"].Message, constant.Errors["InvalidToken"].Clue)
 	}
 
-	var userRw *request.LeaderRegisterRequest
+	var userRw *entity.LeaderRegisterRequest
 
 	if err := ctx.BodyParser(&userRw); err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

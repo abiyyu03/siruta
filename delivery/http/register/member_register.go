@@ -3,7 +3,6 @@ package register
 import (
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
-	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/abiyyu03/siruta/usecase/referal_code"
 	"github.com/abiyyu03/siruta/usecase/register"
 	"github.com/gofiber/fiber/v2"
@@ -30,7 +29,7 @@ func (m *MemberRegisterHttp) Register(ctx *fiber.Ctx) error {
 	if profileId == "" {
 		return entity.Error(ctx, fiber.StatusForbidden, constant.Errors["InvalidReferalCode"].Message, constant.Errors["InvalidReferalCode"].Clue)
 	}
-	var userMember *request.MemberRegisterRequest
+	var userMember *entity.MemberRegisterRequest
 
 	if err := ctx.BodyParser(&userMember); err != nil {
 		return err

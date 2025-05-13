@@ -4,7 +4,6 @@ import (
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/abiyyu03/siruta/repository/register"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -16,10 +15,10 @@ type MemberRegisterUsecase struct{}
 var memberRegisterRepository *register.MemberRegisterRepository
 
 type MemberRegisterUsecaseInterface interface {
-	RegisterMember(ctx *fiber.Ctx, userMember *request.MemberRegisterRequest, profileId string) error
+	RegisterMember(ctx *fiber.Ctx, userMember *entity.MemberRegisterRequest, profileId string) error
 }
 
-func (m *MemberRegisterUsecase) RegisterMember(ctx *fiber.Ctx, userMember *request.MemberRegisterRequest, profileId string) error {
+func (m *MemberRegisterUsecase) RegisterMember(ctx *fiber.Ctx, userMember *entity.MemberRegisterRequest, profileId string) error {
 	userId, _ := uuid.NewV7()
 	memberId, _ := uuid.NewV7()
 

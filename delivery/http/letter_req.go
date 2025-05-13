@@ -4,7 +4,6 @@ import (
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/abiyyu03/siruta/usecase/letter"
 	"github.com/gofiber/fiber/v2"
 )
@@ -14,9 +13,9 @@ type LetterReqHttp struct {
 }
 
 type CombinedRequest struct {
-	OutcomingLetter *model.OutcomingLetter       `json:"outcoming_letter"`
-	CheckResident   *request.CheckResidentMember `json:"check_resident"`
-	Member          *model.Member                `json:"member"`
+	OutcomingLetter *model.OutcomingLetter      `json:"outcoming_letter"`
+	CheckResident   *entity.CheckResidentMember `json:"check_resident"`
+	Member          *model.Member               `json:"member"`
 }
 
 func NewLetterReqHttp(letterReqUC letter.LetterReqUsecaseInterface) *LetterReqHttp {

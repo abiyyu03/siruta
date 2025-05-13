@@ -4,7 +4,6 @@ import (
 	"github.com/abiyyu03/siruta/delivery/middleware"
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
-	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/abiyyu03/siruta/usecase/rt_profile"
 	"github.com/gofiber/fiber/v2"
 )
@@ -20,7 +19,7 @@ func NewRTProfileRegisterHttp(registerUC rt_profile.RTProfileRegisterUsecaseInte
 }
 
 func (r *RTProfileRegisterHttp) RegisterRTProfile(ctx *fiber.Ctx) error {
-	var rtProfile *request.RTProfileRegisterRequest
+	var rtProfile *entity.RTProfileRegisterRequest
 
 	if err := ctx.BodyParser(&rtProfile); err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -49,7 +48,7 @@ func (r *RTProfileRegisterHttp) RegisterUserRt(ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusForbidden, constant.Errors["InvalidToken"].Message, constant.Errors["InvalidToken"].Clue)
 	}
 
-	var userRt *request.LeaderRegisterRequest
+	var userRt *entity.LeaderRegisterRequest
 
 	if err := ctx.BodyParser(&userRt); err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

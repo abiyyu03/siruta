@@ -4,7 +4,6 @@ import (
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/abiyyu03/siruta/repository/rt_profile"
 	"github.com/abiyyu03/siruta/usecase/email"
 	"github.com/abiyyu03/siruta/usecase/referal_code"
@@ -20,12 +19,12 @@ var rtNotification *email.EmailRegistrationUsecase
 var regTokenUsecase *referal_code.RegistrationTokenUsecase
 
 type RTProfileRegisterUsecaseInterface interface {
-	RegisterRTProfile(rtProfile *request.RTProfileRegisterRequest, ctx *fiber.Ctx) error
+	RegisterRTProfile(rtProfile *entity.RTProfileRegisterRequest, ctx *fiber.Ctx) error
 	Approve(emailDestination string, rtProfileId string, ctx *fiber.Ctx) error
-	RegisterUserRt(userRt *request.LeaderRegisterRequest, ctx *fiber.Ctx, token string) error
+	RegisterUserRt(userRt *entity.LeaderRegisterRequest, ctx *fiber.Ctx, token string) error
 }
 
-func (r *RTProfileRegisterUsecase) RegisterRTProfile(rtProfile *request.RTProfileRegisterRequest, ctx *fiber.Ctx) error {
+func (r *RTProfileRegisterUsecase) RegisterRTProfile(rtProfile *entity.RTProfileRegisterRequest, ctx *fiber.Ctx) error {
 	id, _ := uuid.NewV7()
 
 	newRTProfile := &model.RTProfile{
@@ -69,7 +68,7 @@ func (r *RTProfileRegisterUsecase) Approve(emailDestination string, rtProfileId 
 	return entity.Success(ctx, nil, "RT Profile approved successfully")
 }
 
-func (r *RTProfileRegisterUsecase) RegisterUserRt(userRt *request.LeaderRegisterRequest, ctx *fiber.Ctx, token string) error {
+func (r *RTProfileRegisterUsecase) RegisterUserRt(userRt *entity.LeaderRegisterRequest, ctx *fiber.Ctx, token string) error {
 	//token verif
 	userId, _ := uuid.NewV7()
 	leaderId, _ := uuid.NewV7()

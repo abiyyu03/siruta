@@ -4,8 +4,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -30,7 +30,7 @@ func (m *MockUserUsecase) Register(c *fiber.Ctx) error {
 func (m *MockUserUsecase) RegisterUserWithTokenVerification(c *fiber.Ctx, user *model.User, token string) error {
 	return m.Called(c, user, token).Error(0)
 }
-func (m *MockUserUsecase) UpdateProfilePhoto(c *fiber.Ctx, userId string, profileType string, req *request.UpdateProfilePhoto) error {
+func (m *MockUserUsecase) UpdateProfilePhoto(c *fiber.Ctx, userId string, profileType string, req *entity.UpdateProfilePhoto) error {
 	return m.Called(c, userId, profileType, req).Error(0)
 }
 

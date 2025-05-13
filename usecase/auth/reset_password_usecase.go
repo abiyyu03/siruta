@@ -6,7 +6,6 @@ import (
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
-	"github.com/abiyyu03/siruta/entity/request"
 	"github.com/abiyyu03/siruta/helper"
 	"github.com/abiyyu03/siruta/repository/auth"
 	"github.com/abiyyu03/siruta/repository/user"
@@ -23,7 +22,7 @@ type ResetPasswordUsecase struct {
 
 type ResetPasswordUsecaseInterface interface {
 	SendForgotPasswordLink(ctx *fiber.Ctx, email string) error
-	ResetPassword(ctx *fiber.Ctx, reset *request.ResetPassword, token string) error
+	ResetPassword(ctx *fiber.Ctx, reset *entity.ResetPassword, token string) error
 }
 
 func (r *ResetPasswordUsecase) SendForgotPasswordLink(ctx *fiber.Ctx, email string) error {
@@ -56,7 +55,7 @@ func (r *ResetPasswordUsecase) SendForgotPasswordLink(ctx *fiber.Ctx, email stri
 	return entity.Success(ctx, nil, "Link reset password sent successfully")
 }
 
-func (r *ResetPasswordUsecase) ResetPassword(ctx *fiber.Ctx, reset *request.ResetPassword, token string) error {
+func (r *ResetPasswordUsecase) ResetPassword(ctx *fiber.Ctx, reset *entity.ResetPassword, token string) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword(
 		[]byte(reset.Password),
 		14,
