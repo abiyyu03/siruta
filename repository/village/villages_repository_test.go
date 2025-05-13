@@ -70,7 +70,7 @@ func TestStore(t *testing.T) {
 func TestUpdate(t *testing.T) {
 	db := setupTestDB(t)
 
-	data := &model.Village{Name: "Old Name", AltName: "OldAlt", Latitude: 0.0, Longitude: 0.0, CodePostal: "00000"}
+	data := &model.Village{ID: 1, Name: "Old Name", AltName: "OldAlt", Latitude: 0.0, Longitude: 0.0, CodePostal: "00000"}
 	db.Create(&data)
 
 	updated := &model.Village{Name: "New Name", AltName: "NewAlt", Latitude: 1.1, Longitude: 2.2, CodePostal: "99999"}
