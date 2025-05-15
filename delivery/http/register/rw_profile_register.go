@@ -20,12 +20,12 @@ func NewRWProfileRegisterHttp(registerUC rw_profile.RWProfileRegisterUsecaseInte
 }
 
 func (r *RWProfileRegisterHttp) RegisterRWProfile(ctx *fiber.Ctx) error {
-	var rwProfile *model.RWProfile
+	var rwProfile model.RWProfile
 
 	if err := ctx.BodyParser(&rwProfile); err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
-	return r.rwProfileRegisterUsecase.RegisterProfileRW(rwProfile, ctx)
+	return r.rwProfileRegisterUsecase.RegisterProfileRW(&rwProfile, ctx)
 }
 
 func (r *RWProfileRegisterHttp) RegisterUserRw(ctx *fiber.Ctx) error {
