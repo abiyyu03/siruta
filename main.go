@@ -6,6 +6,7 @@ import (
 	authHttp "github.com/abiyyu03/siruta/delivery/http/auth"
 	registerHttp "github.com/abiyyu03/siruta/delivery/http/register"
 	"github.com/abiyyu03/siruta/delivery/routes"
+	"github.com/abiyyu03/siruta/repository/database/seeder"
 	"github.com/abiyyu03/siruta/usecase/auth"
 	"github.com/abiyyu03/siruta/usecase/finance"
 	"github.com/abiyyu03/siruta/usecase/guest_list"
@@ -30,8 +31,8 @@ import (
 func main() {
 	config.InitDB()
 
-	// seed := new(seeder.SeederStruct)
-	// seed.RunSeeders()
+	seed := new(seeder.SeederStruct)
+	seed.RunSeeders()
 
 	app := fiber.New()
 	routeDefinition := &routes.HandlerDefinition{
