@@ -35,7 +35,7 @@ services:
     image: nginx:alpine
     container_name: satuwarga-nginx
     ports:
-      - "8080:3000"  # akses dari IP publik: http://your-ip:8080
+      - "3000:8080"  # akses dari IP publik: http://your-ip:8080
     volumes:
       - /home/satuwarga/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - /home/satuwarga/frontend:/usr/share/nginx/html
