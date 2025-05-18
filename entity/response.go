@@ -25,6 +25,16 @@ func Success(c *fiber.Ctx, data interface{}, message string) error {
 
 	return c.Status(fiber.StatusOK).JSON(response)
 }
+func SuccessCreated(c *fiber.Ctx, data interface{}, message string) error {
+	response := Response{
+		Status:  "Berhasil dibuat",
+		Code:    fiber.StatusOK,
+		Message: message,
+		Data:    data,
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(response)
+}
 
 func Error(c *fiber.Ctx, statusCode int, message string, desc string) error {
 	response := Response{
