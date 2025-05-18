@@ -59,7 +59,7 @@ func (v *VillageUsecase) Store(village *model.Village, ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, &storedVillage, "Data updated successfully")
+	return entity.SuccessCreated(ctx, &storedVillage, "Data updated successfully")
 }
 
 func (v *VillageUsecase) Update(village *model.Village, ctx *fiber.Ctx, id int) error {

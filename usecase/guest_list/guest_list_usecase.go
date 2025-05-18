@@ -65,7 +65,7 @@ func (g *GuestListUsecase) Store(ctx *fiber.Ctx, guestListData *model.GuestList)
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, guestList, "Data stored successfully")
+	return entity.SuccessCreated(ctx, guestList, "Data stored successfully")
 }
 
 func (g *GuestListUsecase) Update(ctx *fiber.Ctx, guestListData *model.GuestList, id int) error {

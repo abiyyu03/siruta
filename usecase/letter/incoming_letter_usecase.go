@@ -88,7 +88,7 @@ func (i *IncomingLetterUsecase) Store(incomingLetter *model.IncomingLetter, ctx 
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, &newIncomingLetter, "Data stored successfully")
+	return entity.SuccessCreated(ctx, &newIncomingLetter, "Data stored successfully")
 }
 
 func (i *IncomingLetterUsecase) Update(incomingLetter *model.IncomingLetter, ctx *fiber.Ctx, id int) error {

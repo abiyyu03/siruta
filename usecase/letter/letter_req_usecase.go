@@ -75,7 +75,7 @@ func (l *LetterReqUsecase) StoreOutcomingLetter(ctx *fiber.Ctx, memberData *mode
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, nil, "Request letter created successfully")
+	return entity.SuccessCreated(ctx, nil, "Request letter created successfully")
 }
 
 func (l *LetterReqUsecase) UpdateApprovalStatusByRT(ctx *fiber.Ctx, id string) error {

@@ -68,7 +68,7 @@ func (i *InventoryUsecase) Store(inventory *model.Inventory, ctx *fiber.Ctx) err
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, &storedInventory, "Data updated successfully")
+	return entity.SuccessCreated(ctx, &storedInventory, "Data updated successfully")
 }
 
 func (i *InventoryUsecase) Update(inventory *model.Inventory, ctx *fiber.Ctx, id int) error {

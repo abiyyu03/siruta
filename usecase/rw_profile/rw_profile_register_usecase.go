@@ -47,7 +47,7 @@ func (r *RWProfileRegisterUsecase) RegisterProfileRW(rwProfile *model.RWProfile,
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, &rwProfileRegistration, "RW Profile Registered successfully")
+	return entity.SuccessCreated(ctx, &rwProfileRegistration, "RW Profile Registered successfully")
 }
 func (r *RWProfileRegisterUsecase) RegisterUserRw(register *entity.LeaderRegisterRequest, ctx *fiber.Ctx, token string) error {
 	//token verif
@@ -90,7 +90,7 @@ func (r *RWProfileRegisterUsecase) RegisterUserRw(register *entity.LeaderRegiste
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, nil, "User Registered successfully")
+	return entity.SuccessCreated(ctx, nil, "User Registered successfully")
 }
 
 func (r *RWProfileRegisterUsecase) Approve(emailDestination string, rwProfileId string, ctx *fiber.Ctx) error {

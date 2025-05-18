@@ -44,11 +44,11 @@ func TestFetchLogin_SuccessWithMember(t *testing.T) {
 	member := model.Member{UserId: user.ID, Fullname: "Test User"}
 	db.Create(&member)
 
-	u, m, err := repo.FetchLogin("user@example.com", "secret123")
+	u, err := repo.FetchLogin("user@example.com", "secret123")
 	assert.NoError(t, err)
 	assert.Equal(t, "user@example.com", u.Email)
-	assert.NotNil(t, m)
-	assert.Equal(t, "Test User", m.Fullname)
+	assert.NotNil(t, u)
+	assert.Equal(t, "Test User", u.FullName)
 }
 
 func TestFetchLogin_SuccessWithoutMember(t *testing.T) {
@@ -63,10 +63,10 @@ func TestFetchLogin_SuccessWithoutMember(t *testing.T) {
 	user := model.User{Email: "admin@example.com", Password: string(hashedPassword), RoleID: uint(role.ID)}
 	db.Create(&user)
 
-	u, m, err := repo.FetchLogin("admin@example.com", "adminpass")
+	u, err := repo.FetchLogin("admin@example.com", "adminpass")
 	assert.NoError(t, err)
 	assert.Equal(t, "admin@example.com", u.Email)
-	assert.Nil(t, m)
+	assert.Nil(t, u)
 }
 
 func TestFetchLogin_WrongPassword(t *testing.T) {
@@ -80,18 +80,16 @@ func TestFetchLogin_WrongPassword(t *testing.T) {
 	user := model.User{Email: "guest@example.com", Password: string(hashedPassword), RoleID: uint(role.ID)}
 	db.Create(&user)
 
-	u, m, err := repo.FetchLogin("guest@example.com", "wrongpass")
+	u, err := repo.FetchLogin("guest@example.com", "wrongpass")
 	assert.Error(t, err)
 	assert.Nil(t, u)
-	assert.Nil(t, m)
 }
 
 func TestFetchLogin_UserNotFound(t *testing.T) {
 	db := setupTestDB(t)
 	config.DB = db
 
-	u, m, err := repo.FetchLogin("notfound@example.com", "any")
+	u, err := repo.FetchLogin("notfound@example.com", "any")
 	assert.Error(t, err)
 	assert.Nil(t, u)
-	assert.Nil(t, m)
 }

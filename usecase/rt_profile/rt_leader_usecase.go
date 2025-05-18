@@ -1,6 +1,8 @@
 package rt_profile
 
 import (
+	"log"
+
 	"github.com/abiyyu03/siruta/config"
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
@@ -44,15 +46,26 @@ func (r *RTLeaderUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string)
 func (r *RTLeaderUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 	rtLeader, err := rtLeaderRepository.FetchById(id)
 
-	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
-	}
-
 	if rtLeader == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
 	}
 
-	return entity.Success(ctx, rtLeader, "Data Fetched successfully")
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	}
+
+	result := &model.RTLeader{
+		ID:          rtLeader.ID,
+		Fullname:    rtLeader.Fullname,
+		NikNumber:   rtLeader.NikNumber,
+		KKNumber:    rtLeader.KKNumber,
+		RTProfileId: rtLeader.RTProfileId,
+		Photo:       rtLeader.Photo,
+		UserId:      rtLeader.UserId,
+		FullAddress: rtLeader.FullAddress,
+	}
+
+	return entity.Success(ctx, result, "Data Fetched successfully")
 }
 
 func (r *RTLeaderUsecase) Update(ctx *fiber.Ctx, id string, rtLeaderData *model.RTLeader) error {
@@ -64,11 +77,12 @@ func (r *RTLeaderUsecase) Update(ctx *fiber.Ctx, id string, rtLeaderData *model.
 		FullAddress: rtLeaderData.FullAddress,
 	}
 
-	updatedRtLeader := rtLeaderRepository.Update(config.DB, rtLeader, id)
+	err := rtLeaderRepository.Update(config.DB, rtLeader, id)
 
-	if updatedRtLeader == nil {
+	if err != nil {
+		log.Print(err)
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
 	}
 
-	return entity.Success(ctx, updatedRtLeader, "Data updated successfully")
+	return entity.Success(ctx, nil, "Data updated successfully")
 }

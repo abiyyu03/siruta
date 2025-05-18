@@ -29,9 +29,9 @@ func (r *RTLeaderHttp) GetData(ctx *fiber.Ctx) error {
 }
 
 func (r *RTLeaderHttp) GetDataById(ctx *fiber.Ctx) error {
-	rtProfileId := ctx.Params("id")
+	id := ctx.Params("id")
 
-	return r.rtLeaderUsecase.FetchByRTProfileId(ctx, rtProfileId)
+	return r.rtLeaderUsecase.FetchById(ctx, id)
 }
 
 func (r *RTLeaderHttp) UpdateData(ctx *fiber.Ctx) error {

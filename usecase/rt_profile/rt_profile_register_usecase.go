@@ -45,7 +45,7 @@ func (r *RTProfileRegisterUsecase) RegisterRTProfile(rtProfile *entity.RTProfile
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, registeredUser, "RT Profile Registered successfully")
+	return entity.SuccessCreated(ctx, registeredUser, "RT Profile Registered successfully")
 }
 
 func (r *RTProfileRegisterUsecase) Approve(emailDestination string, rtProfileId string, ctx *fiber.Ctx) error {
@@ -114,5 +114,5 @@ func (r *RTProfileRegisterUsecase) RegisterUserRt(userRt *entity.LeaderRegisterR
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, nil, "User Registered successfully")
+	return entity.SuccessCreated(ctx, nil, "User Registered successfully")
 }

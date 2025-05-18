@@ -33,12 +33,12 @@ func (l *LetterTypeUsecase) Fetch(ctx *fiber.Ctx) error {
 func (l *LetterTypeUsecase) FetchById(ctx *fiber.Ctx, id int) error {
 	letterType, err := letterTypeRepository.FetchById(id)
 
-	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
-	}
-
 	if letterType == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
+	}
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
 	return entity.Success(ctx, &letterType, "Data fetched successfully")
@@ -56,10 +56,15 @@ func (l *LetterTypeUsecase) Store(letterType *model.LetterType, ctx *fiber.Ctx) 
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, &storedLetterType, "Data updated successfully")
+	return entity.SuccessCreated(ctx, &storedLetterType, "Data updated successfully")
 }
 
 func (l *LetterTypeUsecase) Update(letterType *model.LetterType, ctx *fiber.Ctx, id int) error {
+	_, err := letterTypeRepository.FetchById(id)
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
+	}
 
 	updateLetterType := &model.LetterType{
 		TypeName: letterType.TypeName,

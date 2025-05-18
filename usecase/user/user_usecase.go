@@ -83,7 +83,7 @@ func (u *UserUsecase) Register(ctx *fiber.Ctx) error {
 			ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, nil, "Registrasi Pengguna/User Berhasil")
+	return entity.SuccessCreated(ctx, nil, "Registrasi Pengguna/User Berhasil")
 
 }
 
@@ -104,7 +104,7 @@ func (u *UserUsecase) RegisterUserWithTokenVerification(ctx *fiber.Ctx, user *mo
 			ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, user, "Registrasi Berhasil")
+	return entity.SuccessCreated(ctx, user, "Registrasi Berhasil")
 }
 
 func (u *UserUsecase) TokenVerification(user *model.User, roleId uint, token string) (*model.User, string, error) {

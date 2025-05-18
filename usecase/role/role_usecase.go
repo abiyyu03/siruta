@@ -55,7 +55,7 @@ func (r *RoleUsecase) Store(role *model.Role, ctx *fiber.Ctx) error {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, &storedRole, "Data updated successfully")
+	return entity.SuccessCreated(ctx, &storedRole, "Data updated successfully")
 }
 
 func (r *RoleUsecase) Update(role *model.Role, ctx *fiber.Ctx, id int) error {

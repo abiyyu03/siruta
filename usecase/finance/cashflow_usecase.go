@@ -65,7 +65,7 @@ func (c *CashflowUsecase) Store(ctx *fiber.Ctx, cashlogData *model.Cashflow) err
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 
-	return entity.Success(ctx, cashlog, "Data stored successfully")
+	return entity.SuccessCreated(ctx, cashlog, "Data stored successfully")
 }
 
 func (c *CashflowUsecase) Update(ctx *fiber.Ctx, cashlogData *model.Cashflow, id int) error {
