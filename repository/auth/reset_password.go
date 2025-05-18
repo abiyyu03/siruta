@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"log"
 	"time"
 
 	"github.com/abiyyu03/siruta/config"
@@ -66,18 +67,24 @@ func (r *ResetPasswordRepository) ResetPassword(hashedPassword string, token str
 
 	tokenData, err := r.VerifyAndGetResetToken(token)
 
+	log.Print(token)
+
 	if err != nil || tokenData == nil {
+		tx.Rollback()
 		return err
 	}
 
 	if err := r.userRepository.UpdatePassword(tx, tokenData.UserID, hashedPassword); err != nil {
+		tx.Rollback()
 		return err
 	}
 	if err := r.DeleteResetToken(tx, token); err != nil {
+		tx.Rollback()
 		return err
 	}
 
 	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
 		return err
 	}
 

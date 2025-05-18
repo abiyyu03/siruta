@@ -56,6 +56,10 @@ func (r *ResetPasswordUsecase) SendForgotPasswordLink(ctx *fiber.Ctx, email stri
 }
 
 func (r *ResetPasswordUsecase) ResetPassword(ctx *fiber.Ctx, reset *entity.ResetPassword, token string) error {
+	if reset.Password != reset.ConfirmPassword {
+		return entity.Error(ctx, fiber.ErrBadRequest.Code, constant.Errors["NotMatchPassword"].Message, constant.Errors["NotMatchPassword"].Clue)
+	}
+
 	hashedPassword, err := bcrypt.GenerateFromPassword(
 		[]byte(reset.Password),
 		14,

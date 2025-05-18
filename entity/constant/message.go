@@ -45,6 +45,7 @@ var Errors = map[string]ErrorMessage{
 	"InvalidToken":          {Message: "Token tidak valid", Clue: "Pastikan Anda menggunakan token yang benar atau lakukan login ulang."},
 	"TokenExpired":          {Message: "Token sudah kedaluwarsa", Clue: "Silakan login ulang untuk mendapatkan token baru."},
 	"InvalidPassword":       {Message: "Password yang dimasukkan salah", Clue: "Coba periksa kembali password Anda atau lakukan reset password."},
+	"NotMatchPassword":      {Message: "Password konfirmasi tidak cocok", Clue: "Coba periksa kembali inputan anda"},
 	"InvalidRole":           {Message: "Role yang dimasukkan salah", Clue: "Pastikan Anda menggunakan role yang sesuai."},
 	"RoleNotFound":          {Message: "Role yang dimasukkan tidak ditemukan", Clue: "Cek kembali role yang digunakan atau hubungi admin."},
 	"InvalidRolePermission": {Message: "Anda tidak memiliki izin untuk mengakses halaman ini", Clue: "Pastikan akun Anda memiliki hak akses yang sesuai."},
