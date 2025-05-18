@@ -69,10 +69,15 @@ type ResetPassword struct {
 	ConfirmPassword string `json:"confirm_password" validate:"required"`
 }
 
+type LoginRepositoryResponse struct {
+	FullName string `json:"fullname"`
+	Email    string `json:"email"`
+	RoleName string `json:"role_name"`
+	RoleID   int    `json:"role_id"`
+}
+
 type AuthResponse struct {
-	FullName    string `json:"full_name"`
-	Email       string `json:"email"`
-	RoleName    string `json:"role_name"`
+	Data        LoginRepositoryResponse
 	AccessToken string `json:"accessToken"`
 }
 

@@ -11,6 +11,7 @@ type SeederInterface interface {
 // Register the Seeders
 func (s *SeederStruct) seedingProvider() []SeederInterface {
 	return []SeederInterface{
+		&AdminSeederStruct{},
 		&RoleSeederStruct{},
 		&MemberStatusSeederStruct{},
 		&ReligionSeederStruct{},

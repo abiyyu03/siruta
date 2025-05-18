@@ -11,7 +11,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// Dummy user repo
 type MockUserRepository struct {
 	ShouldFail bool
 }
@@ -23,17 +22,8 @@ func (r *MockUserRepository) RegisterUser(tx *gorm.DB, user *model.User, roleId 
 	return user, nil
 }
 
-// Dummy member repo
 type MockMemberRepository struct {
 	ShouldFail bool
-}
-
-func setupTestDatabase(t *testing.T) *gorm.DB {
-	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
-	assert.NoError(t, err)
-	_ = db.AutoMigrate(&model.User{}, &model.Member{})
-	config.DB = db
-	return db
 }
 
 func (r *MockMemberRepository) Store(tx *gorm.DB, member *model.Member) (*model.Member, error) {
@@ -43,58 +33,46 @@ func (r *MockMemberRepository) Store(tx *gorm.DB, member *model.Member) (*model.
 	return member, nil
 }
 
+func setup(t *testing.T) *gorm.DB {
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
+	assert.NoError(t, err)
+	assert.NoError(t, db.AutoMigrate(&model.User{}, &model.Member{}))
+
+	config.DB = db
+	return db
+}
+
 func TestRegisterMember_Success(t *testing.T) {
-	db := setupTestDatabase(t)
+	setup(t)
 
-	// Inject mock
-	register.UserRepository = &MockUserRepository{}
-	register.MemberRepository = &MockMemberRepository{}
+	repo := MemberRegisterRepository{}
 
-	repo := register.MemberRegisterRepository{}
-
-	member := &model.Member{
-		Fullname: "John Doe",
-	}
-	user := &model.User{
-		Email:  "john@example.com",
-		RoleID: 4,
-	}
+	member := &model.Member{Fullname: "John Doe"}
+	user := &model.User{Email: "john@example.com", RoleID: 4}
 
 	err := repo.RegisterMember(member, user)
-
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 }
 
 func TestRegisterMember_UserFail(t *testing.T) {
-	setupTestDatabase(t)
+	setup(t)
+	repo := MemberRegisterRepository{}
 
-	register.UserRepository = &MockUserRepository{ShouldFail: true}
-	register.MemberRepository = &MockMemberRepository{}
-
-	repo := register.MemberRegisterRepository{}
-
-	member := &model.Member{Fullname: "John"}
+	member := &model.Member{Fullname: "Fail User"}
 	user := &model.User{Email: "fail@example.com", RoleID: 4}
 
 	err := repo.RegisterMember(member, user)
-
-	assert.NotNil(t, err)
 	assert.EqualError(t, err, "user register error")
 }
 
 func TestRegisterMember_MemberFail(t *testing.T) {
-	setupTestDatabase(t)
+	setup(t)
 
-	register.UserRepository = &MockUserRepository{}
-	register.MemberRepository = &MockMemberRepository{ShouldFail: true}
-
-	repo := register.MemberRegisterRepository{}
+	repo := MemberRegisterRepository{}
 
 	member := &model.Member{Fullname: "Fail Member"}
-	user := &model.User{Email: "memberfail@example.com", RoleID: 4}
+	user := &model.User{Email: "failmember@example.com", RoleID: 4}
 
 	err := repo.RegisterMember(member, user)
-
-	assert.NotNil(t, err)
 	assert.EqualError(t, err, "member store error")
 }

@@ -1,6 +1,8 @@
 package letter
 
 import (
+	"log"
+
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
@@ -36,6 +38,8 @@ func (l *LetterReqUsecase) StoreOutcomingLetter(ctx *fiber.Ctx, memberData *mode
 		IsRTApproved: outcommingLetter.IsRTApproved,
 		Description:  outcommingLetter.Description,
 	}
+
+	log.Print(memberResult)
 
 	if memberStatus == "guest" {
 		memberId, _ := uuid.NewV7()

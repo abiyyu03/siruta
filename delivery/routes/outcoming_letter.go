@@ -8,7 +8,6 @@ import (
 
 func RegisterOutcomingLetterRoutes(v1 fiber.Router, handler *http.OutcomingLetterHttp) {
 	v1.Get("/outcoming-letters", middleware.JWTMiddleware([]int{1}), handler.GetData)
-	v1.Get("/outcoming-letters/:rt_profile_id", middleware.JWTMiddleware([]int{1, 3}), handler.GetDataByRTProfileId)
 	v1.Get("/outcoming-letters/:id", middleware.JWTMiddleware([]int{1, 3}), handler.GetDataById)
 	v1.Get("/outcoming-letters/:id/preview", middleware.JWTMiddleware([]int{1, 3, 4}), handler.GetPreview)
 	v1.Get("/outcoming-letters/:rt_profile_id/rt", middleware.JWTMiddleware([]int{1, 3}), handler.GetDataByRTProfileId)

@@ -7,9 +7,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type ReferalCodeUsecase struct {
-	referalCodeRepository referal_code.ReferalCodeRepository
-}
+type ReferalCodeUsecase struct{}
+
+var referalCodeRepository *referal_code.ReferalCodeRepository
 
 type ReferalCodeUsecaseInterface interface {
 	Fetch(ctx *fiber.Ctx) error
@@ -25,7 +25,7 @@ type IdProfileResponse struct {
 }
 
 func (r *ReferalCodeUsecase) Fetch(ctx *fiber.Ctx) error {
-	referals, err := r.referalCodeRepository.Fetch()
+	referals, err := referalCodeRepository.Fetch()
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
@@ -35,7 +35,7 @@ func (r *ReferalCodeUsecase) Fetch(ctx *fiber.Ctx) error {
 }
 
 func (r *ReferalCodeUsecase) FetchById(ctx *fiber.Ctx, id int) error {
-	referal, err := r.referalCodeRepository.FetchById(id)
+	referal, err := referalCodeRepository.FetchById(id)
 
 	if referal == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
@@ -49,7 +49,7 @@ func (r *ReferalCodeUsecase) FetchById(ctx *fiber.Ctx, id int) error {
 }
 
 func (r *ReferalCodeUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error {
-	referals, err := r.referalCodeRepository.FetchByRTProfileId(rtProfileId)
+	referals, err := referalCodeRepository.FetchByRTProfileId(rtProfileId)
 
 	if referals == nil {
 		return entity.Error(ctx, fiber.StatusNotFound, constant.Errors["NotFound"].Message, constant.Errors["NotFound"].Clue)
@@ -63,7 +63,7 @@ func (r *ReferalCodeUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId stri
 }
 
 func (r *ReferalCodeUsecase) RegenerateReferalCode(ctx *fiber.Ctx, profileId string, code string) error {
-	regeneratedCode, err := r.referalCodeRepository.RegenerateReferalCode(profileId, code)
+	regeneratedCode, err := referalCodeRepository.RegenerateReferalCode(profileId, code)
 
 	if regeneratedCode == "" {
 		return entity.Error(ctx, fiber.StatusBadRequest, constant.Errors["InvalidReferalCode"].Message, constant.Errors["InvalidReferalCode"].Clue)
@@ -77,7 +77,7 @@ func (r *ReferalCodeUsecase) RegenerateReferalCode(ctx *fiber.Ctx, profileId str
 }
 
 func (r *ReferalCodeUsecase) Validate(ctx *fiber.Ctx, code string) (error, string) {
-	profileId, isValid, err := r.referalCodeRepository.Validate(code)
+	profileId, isValid, err := referalCodeRepository.Validate(code)
 
 	if !isValid {
 		return entity.Error(ctx, fiber.StatusBadRequest, constant.Errors["InvalidReferalCode"].Message, constant.Errors["InvalidReferalCode"].Clue), ""
@@ -95,7 +95,7 @@ func (r *ReferalCodeUsecase) Validate(ctx *fiber.Ctx, code string) (error, strin
 }
 
 func (r *ReferalCodeUsecase) Delete(ctx *fiber.Ctx, id int) error {
-	err := r.referalCodeRepository.Delete(id)
+	err := referalCodeRepository.Delete(id)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

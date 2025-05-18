@@ -138,16 +138,18 @@ func (r *RTProfileRegisterRepository) RegisterUserRt(leader *model.RTLeader, use
 		_, err := userRepository.RegisterUser(tx, user, roleId)
 
 		if err != nil {
-			return err
-		}
-
-		_, err = tokenRegisterRepository.RemoveToken(tx, token)
-
-		if err != nil {
+			log.Print("ERR")
 			return err
 		}
 
 		err = leaderRepository.Store(tx, leader)
+
+		if err != nil {
+			log.Print("ERR")
+			return err
+		}
+
+		_, err = tokenRegisterRepository.RemoveToken(tx, token)
 
 		if err != nil {
 			return err

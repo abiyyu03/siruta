@@ -12,14 +12,14 @@ import (
 	"gorm.io/gorm"
 )
 
-type RWProfileRegisterRepository struct {
-	RWProfileData           *model.RWProfile
-	userRepository          *user.UserRepository
-	memberRepository        *member.MemberRepository
-	tokenRegisterRepository *register.RegTokenRepository
-	referalCode             *referal_code.ReferalCodeRepository
-	leaderRepository        *RWLeaderRepository
-}
+type RWProfileRegisterRepository struct{}
+
+var RWProfileData *model.RWProfile
+var userRepository *user.UserRepository
+var memberRepository *member.MemberRepository
+var tokenRegisterRepository *register.RegTokenRepository
+var referalCode *referal_code.ReferalCodeRepository
+var leaderRepository *RWLeaderRepository
 
 func (r *RWProfileRegisterRepository) RegisterRWProfile(rwProfileRequest *model.RWProfile) (*model.RWProfile, error) {
 	if err := config.DB.Create(&rwProfileRequest).Error; err != nil {
@@ -84,7 +84,7 @@ func (r *RWProfileRegisterRepository) ApproveRegistrant(rwProfileId string) erro
 		}
 
 		// Generate referral code
-		if err := r.referalCode.GenerateReferalCode(tx, rwProfile.ID); err != nil {
+		if err := referalCode.GenerateReferalCode(tx, rwProfile.ID); err != nil {
 			log.Printf("Failed to generate referral code: %v", err)
 			return err // Trigger rollback
 		}
@@ -104,19 +104,19 @@ func (r *RWProfileRegisterRepository) ApproveRegistrant(rwProfileId string) erro
 
 func (r *RWProfileRegisterRepository) RegisterUserRW(leader *model.RWLeader, user *model.User, roleId uint, token string) error {
 	err := config.DB.Transaction(func(tx *gorm.DB) error {
-		_, err := r.userRepository.RegisterUser(tx, user, roleId)
+		_, err := userRepository.RegisterUser(tx, user, roleId)
 
 		if err != nil {
 			return err
 		}
 
-		err = r.leaderRepository.Store(tx, leader)
+		err = leaderRepository.Store(tx, leader)
 
 		if err != nil {
 			return err
 		}
 
-		_, err = r.tokenRegisterRepository.RemoveToken(tx, token)
+		_, err = tokenRegisterRepository.RemoveToken(tx, token)
 
 		if err != nil {
 			return err

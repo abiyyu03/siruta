@@ -1,6 +1,8 @@
 package rt_profile
 
 import (
+	"log"
+
 	"github.com/abiyyu03/siruta/entity"
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
@@ -62,7 +64,7 @@ func (r *RTProfileRegisterUsecase) Approve(emailDestination string, rtProfileId 
 	err = rtNotification.RtNotification(emailDestination, token)
 
 	if err != nil {
-		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InvalidToken"].Message, constant.Errors["InvalidToken"].Clue)
 	}
 
 	return entity.Success(ctx, nil, "RT Profile approved successfully")
@@ -108,6 +110,7 @@ func (r *RTProfileRegisterUsecase) RegisterUserRt(userRt *entity.LeaderRegisterR
 	err = rtProfileRegisterRepository.RegisterUserRt(newLead, newUser, constant.ROLE_RT, token)
 
 	if err != nil {
+		log.Print("err gais", rtProfileId)
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
 	}
 

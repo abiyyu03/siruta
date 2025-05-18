@@ -5,6 +5,7 @@ import (
 	"github.com/abiyyu03/siruta/entity/constant"
 	"github.com/abiyyu03/siruta/entity/model"
 	"github.com/abiyyu03/siruta/repository/rw_profile"
+	"github.com/abiyyu03/siruta/usecase/email"
 	"github.com/abiyyu03/siruta/usecase/referal_code"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -18,6 +19,7 @@ type RWProfileRegisterUsecase struct {
 
 var rwProfileRegisterRepository *rw_profile.RWProfileRegisterRepository
 var regTokenUsecase *referal_code.RegistrationTokenUsecase
+var emailNotification *email.EmailRegistrationUsecase
 
 type RWProfileRegisterUsecaseInterface interface {
 	RegisterProfileRW(rwProfile *model.RWProfile, ctx *fiber.Ctx) error
@@ -68,7 +70,7 @@ func (r *RWProfileRegisterUsecase) RegisterUserRw(register *entity.LeaderRegiste
 
 	user := &model.User{
 		ID:       userId.String(),
-		RoleID:   uint(4),
+		RoleID:   constant.ROLE_RW,
 		Email:    register.Email,
 		Password: string(hashedPassword),
 	}
@@ -96,6 +98,14 @@ func (r *RWProfileRegisterUsecase) Approve(emailDestination string, rwProfileId 
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	}
+
+	token, err := regTokenUsecase.CreateToken(rwProfileId)
+
+	err = emailNotification.RwNotification(emailDestination, token)
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InvalidToken"].Message, constant.Errors["InvalidToken"].Clue)
 	}
 
 	return entity.Success(ctx, nil, "RW Profile approved successfully")

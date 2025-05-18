@@ -9,5 +9,4 @@ import (
 func RegisterLetterReqRoutes(v1 fiber.Router, handler *http.LetterReqHttp) {
 	v1.Post("/request-letters", middleware.JWTMiddleware([]int{3, 4}), handler.CreateData)
 	v1.Put("/request-letters/approve/:letter_req_id", middleware.JWTMiddleware([]int{1, 3}), handler.UpdateApprovalStatus)
-	v1.Post("/request-letters", middleware.JWTMiddleware([]int{1, 3, 4}), handler.CreateData)
 }
