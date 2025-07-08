@@ -40,7 +40,7 @@ func (a *AdminSeederStruct) AdminSeeder() *cobra.Command {
 				ID:       adminID.String(),
 				Password: string(hashedPassword),
 				RoleID:   constant.ROLE_SADMIN,
-				Email:    "anotheriyyu29@gmail.com",
+				Email:    "superadmin@satuwarga.com",
 			}
 
 			tx := config.DB.Begin()

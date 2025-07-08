@@ -16,6 +16,10 @@ func (s *SeederStruct) seedingProvider() []SeederInterface {
 		&ReligionSeederStruct{},
 		&LetterTypeSeeder{},
 		&AdminSeederStruct{},
+		&VillageSeederStruct{},
+		&RWProfileSeederStruct{},
+		&RTProfileSeederStruct{},
+		&MemberSeederStruct{},
 	}
 }
 
