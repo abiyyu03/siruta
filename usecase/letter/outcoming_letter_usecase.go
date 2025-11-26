@@ -15,6 +15,7 @@ type OutcomingLetterUsecaseInterface interface {
 	Fetch(ctx *fiber.Ctx) error
 	FetchById(ctx *fiber.Ctx, id string) error
 	FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error
+	FetchByMemberId(ctx *fiber.Ctx, memberId string) error
 	FetchPreview(ctx *fiber.Ctx, id string) error
 	Delete(ctx *fiber.Ctx, id string) error
 }
@@ -45,6 +46,16 @@ func (o *OutcomingLetterUsecase) FetchById(ctx *fiber.Ctx, id string) error {
 
 func (o *OutcomingLetterUsecase) FetchByRTProfileId(ctx *fiber.Ctx, rtProfileId string) error {
 	letters, err := o.outcomingLetterRepository.FetchByRTProfileId(rtProfileId)
+
+	if err != nil {
+		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)
+	}
+
+	return entity.Success(ctx, &letters, "Data fetched successfully")
+}
+
+func (o *OutcomingLetterUsecase) FetchByMemberId(ctx *fiber.Ctx, rtProfileId string) error {
+	letters, err := o.outcomingLetterRepository.FetchByMemberId(rtProfileId)
 
 	if err != nil {
 		return entity.Error(ctx, fiber.StatusInternalServerError, constant.Errors["InternalError"].Message, constant.Errors["InternalError"].Clue)

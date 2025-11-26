@@ -1,8 +1,6 @@
 package letter
 
 import (
-	"log"
-
 	"github.com/abiyyu03/siruta/config"
 	"github.com/abiyyu03/siruta/entity/model"
 	"gorm.io/gorm"
@@ -112,8 +110,6 @@ func (o *LetterReqRepository) checkNumberAvailability(tx *gorm.DB, outcomingLett
 
 func (o *LetterReqRepository) incrementNumberOfLetter(tx *gorm.DB, outcomingLetter *model.OutcomingLetter, latestNumber int64, id string) error {
 	latestNumber = latestNumber + 1
-	log.Print("updated number : ", latestNumber)
-
 	if err := tx.Model(&outcomingLetter).Where("id = ?", id).Update("letter_number", latestNumber).Error; err != nil {
 		return err
 	}

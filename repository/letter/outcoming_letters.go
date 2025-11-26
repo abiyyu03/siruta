@@ -30,7 +30,24 @@ func (o *OutcomingLetterRepository) FetchById(id string) (*model.OutcomingLetter
 func (o *OutcomingLetterRepository) FetchByRTProfileId(rtProfileId string) ([]*model.OutcomingLetter, error) {
 	var outcomingLetters []*model.OutcomingLetter
 
-	if err := config.DB.Preload("Member").Preload("LetterType").Where("rt_profile_id =?", rtProfileId).Find(&outcomingLetters).Error; err != nil {
+	if err := config.DB.Preload("Member").
+		Preload("LetterType").
+		Preload("RTProfile").
+		Where("rt_profile_id =?", rtProfileId).Find(&outcomingLetters).Error; err != nil {
+		return nil, err
+	}
+
+	return outcomingLetters, nil
+}
+
+func (o *OutcomingLetterRepository) FetchByMemberId(memberId string) ([]*model.OutcomingLetter, error) {
+	var outcomingLetters []*model.OutcomingLetter
+
+	if err := config.DB.Preload("Member").
+		Preload("LetterType").
+		Preload("RTProfile").
+		Where("member_id =?", memberId).
+		Find(&outcomingLetters).Error; err != nil {
 		return nil, err
 	}
 

@@ -37,6 +37,12 @@ func (o *OutcomingLetterHttp) GetDataByRTProfileId(ctx *fiber.Ctx) error {
 	return o.outcomingLetterUsecase.FetchByRTProfileId(ctx, rtProfileId)
 }
 
+func (o *OutcomingLetterHttp) GetDataByMemberId(ctx *fiber.Ctx) error {
+	memberId := ctx.Params("member_id")
+
+	return o.outcomingLetterUsecase.FetchByMemberId(ctx, memberId)
+}
+
 func (o *OutcomingLetterHttp) DeleteData(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
